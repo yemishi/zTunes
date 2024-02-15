@@ -2,32 +2,32 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
+/* Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
 }
 
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+.inputForm {
+  @apply px-3 py-2 mt-auto *:bg-black outline-none text-lg bg-black bg-opacity-45 border duration-200 hover:bg-opacity-55 focus:bg-opacity-65
+  border-opacity-55 hover:border-opacity-80 focus:border-opacity-100 disabled:animate-pulse disabled:bg-white disabled:bg-opacity-15 text-white rounded-md appearance-none;
+}
+.formContainer {
+  @apply mb-7 bg-gradient-to-b from-[#1f1e1a] to-transparent  backdrop-blur w-full flex text-center h-full
+  flex-col pt-10 px-8 text-white gap-4 max-w-[450px] min-[450px]:h-[600px] min-[450px]:rounded-lg overflow-clip justify-center;
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: #ffffff;
+  transition: background-color 5000s ease-in-out 0s;
+  box-shadow: inset 0 0 20px 20px #1c160a;
 }

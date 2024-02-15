@@ -1,0 +1,110 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         String       @id @default(auto()) @map("_id") @db.ObjectId
+  email      String       @unique
+  username   String       @unique
+  password   String?
+  profile    ProfileType?
+  isVerified Boolean      @default(false)
+  isArtist   ArtistType?
+  createdAt  DateTime     @default(now())
+  Account    Account[]
+
+  @@map("User")
+}
+
+model Playlist {
+  id        String     @id @default(auto()) @map("_id") @db.ObjectId
+  title     String
+  isPublic  Boolean    @default(false)
+  userId    String     @db.ObjectId
+  username  String     @unique
+  songs     SongType[]
+  icon      String     @default("https://cdn-icons-png.flaticon.com/512/16/16249.png")
+  createdAt DateTime   @default(now())
+}
+
+model Album {
+  id           String     @id @default(auto()) @map("_id") @db.ObjectId
+  title        String
+  releasedDate DateTime
+  songs        SongType[]
+  userId       String     @db.ObjectId
+  username     String     @unique
+  icon         String     @default("https://cdn-icons-png.flaticon.com/512/16/16249.png")
+  createdAt    DateTime   @default(now())
+}
+
+model Single {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  title        String
+  releasedDate DateTime
+  song         SongType
+  userId       String   @db.ObjectId
+  username     String   @unique
+  icon         String   @default("https://cdn-icons-png.flaticon.com/512/16/16249.png")
+  createdAt    DateTime @default(now())
+}
+
+model FavoriteSongs {
+  id        String     @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String     @db.ObjectId
+  songs     SongType[]
+  createdAt DateTime   @default(now())
+}
+
+model LikedSongs {
+  id        String     @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String     @db.ObjectId
+  songs     SongType[]
+  createdAt DateTime   @default(now())
+}
+
+model Account {
+  id                String  @id @default(auto()) @map("_id") @db.ObjectId
+  type              String
+  provider          String
+  providerAccountId String
+  token_type        String?
+  refresh_token     String? @db.String
+  access_token      String? @db.String
+  id_token          String? @db.String
+  scope             String?
+  session_state     String?
+  expires_at        Int?
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String @db.ObjectId
+
+  @@unique([provider, providerAccountId])
+  @@map("account")
+}
+
+type ProfileType {
+  avatar    String @default("https://i.pinimg.com/564x/a6/aa/5d/a6aa5d80551d471078f799e1473c20fb.jpg")
+  birthDate String
+}
+
+type ArtistType {
+  cover String
+  about AboutType
+}
+
+type AboutType {
+  summary String
+  cover   String
+}
+
+type SongType {
+  title    String
+  urlSong  String
+  category String[]
+}
