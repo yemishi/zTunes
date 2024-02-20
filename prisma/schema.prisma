@@ -13,7 +13,7 @@ model User {
   username   String       @unique
   password   String?
   profile    ProfileType?
-  isVerified Boolean      @default(false)
+  isVerified Boolean?
   isArtist   ArtistType?
   createdAt  DateTime     @default(now())
   Account    Account[]
@@ -21,51 +21,65 @@ model User {
   @@map("User")
 }
 
+model Mix {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  title      String
+  songs      String[]
+  coverPhoto String
+  createdAt  DateTime @default(now())
+}
+
 model Playlist {
-  id        String     @id @default(auto()) @map("_id") @db.ObjectId
-  title     String
-  isPublic  Boolean    @default(false)
-  userId    String     @db.ObjectId
-  username  String     @unique
-  songs     SongType[]
-  icon      String     @default("https://cdn-icons-png.flaticon.com/512/16/16249.png")
-  createdAt DateTime   @default(now())
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  title      String
+  isPublic   Boolean  @default(false)
+  userId     String   @db.ObjectId
+  songs      String[]
+  coverPhoto String   @default("https://cdn-icons-png.flaticon.com/512/16/16249.png")
+  createdAt  DateTime @default(now())
+}
+
+model Songs {
+  id        String        @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  urlSong   String
+  artistId  String
+  category  String[]
+  track     TrackInfoType
+  trackType String
 }
 
 model Album {
-  id           String     @id @default(auto()) @map("_id") @db.ObjectId
-  title        String
-  releasedDate DateTime
-  songs        SongType[]
-  userId       String     @db.ObjectId
-  username     String     @unique
-  icon         String     @default("https://cdn-icons-png.flaticon.com/512/16/16249.png")
-  createdAt    DateTime   @default(now())
-}
-
-model Single {
   id           String   @id @default(auto()) @map("_id") @db.ObjectId
   title        String
-  releasedDate DateTime
-  song         SongType
-  userId       String   @db.ObjectId
-  username     String   @unique
-  icon         String   @default("https://cdn-icons-png.flaticon.com/512/16/16249.png")
+  releasedDate String
+  artistName   String
+  artistId     String   @db.ObjectId
+  coverPhoto   String   @default("https://cdn-icons-png.flaticon.com/512/16/16249.png")
   createdAt    DateTime @default(now())
 }
 
+model PlayCount {
+  id          String        @id @default(auto()) @map("_id") @db.ObjectId
+  musicId     String        @unique @db.ObjectId
+  listenCount Int           @default(0)
+  category    String[]
+  users       UsersPlayed[]
+  createdAt   DateTime      @default(now())
+}
+
 model FavoriteSongs {
-  id        String     @id @default(auto()) @map("_id") @db.ObjectId
-  userId    String     @db.ObjectId
-  songs     SongType[]
-  createdAt DateTime   @default(now())
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String   @db.ObjectId
+  songs     String[]
+  createdAt DateTime @default(now())
 }
 
 model LikedSongs {
-  id        String     @id @default(auto()) @map("_id") @db.ObjectId
-  userId    String     @db.ObjectId
-  songs     SongType[]
-  createdAt DateTime   @default(now())
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String   @db.ObjectId
+  songs     String[]
+  createdAt DateTime @default(now())
 }
 
 model Account {
@@ -80,9 +94,8 @@ model Account {
   scope             String?
   session_state     String?
   expires_at        Int?
-
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId String @db.ObjectId
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId            String  @db.ObjectId
 
   @@unique([provider, providerAccountId])
   @@map("account")
@@ -103,8 +116,18 @@ type AboutType {
   cover   String
 }
 
-type SongType {
-  title    String
-  urlSong  String
-  category String[]
+type TrackInfoType {
+  albumId    String?
+  singleInfo SingleType?
+}
+
+type SingleType {
+  coverPhoto   String
+  releasedDate DateTime
+  createdAt    DateTime @default(now())
+}
+
+type UsersPlayed {
+  userId String @db.ObjectId
+  count  Int    @default(1)
 }

@@ -28,7 +28,7 @@ export default function SignUpForm() {
       name: z
         .string()
         .min(3, "This field must have at least 3 letters")
-        .max(15, "This field must have a maximum of 15 letters"),
+        .max(25, "This field must have a maximum of 25 letters"),
       password: z.string().min(6, "This field must have at least 6 letters"),
       bDay: z.string().min(1, { message: "The day field must have be valid" }),
       bYear: z.string().min(4, "The year field must have be valid"),
@@ -127,7 +127,7 @@ export default function SignUpForm() {
         </div>
       )}
 
-      <AnimatePresence mode="wait">
+      <AnimatePresence mode="wait" initial={false}>
         {!step && (
           <EmailField
             key="emailField"

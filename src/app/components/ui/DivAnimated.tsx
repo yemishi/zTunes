@@ -1,3 +1,4 @@
+import { DivMotionProps } from "@/types/uiTypes";
 import { motion } from "framer-motion";
 import {
   AnimationEventHandler,
@@ -6,30 +7,16 @@ import {
   HTMLAttributes,
 } from "react";
 
-interface DivProps extends HTMLAttributes<HTMLDivElement> {
-  children: ReactNode;
-  onAnimationStart?: AnimationEventHandler<HTMLDivElement>;
-  onAnimationEnd?: AnimationEventHandler<HTMLDivElement>;
-  onDragStart?: DragEventHandler<HTMLDivElement>;
-  onDrag?: DragEventHandler<HTMLDivElement>;
-  onDragEnd?: DragEventHandler<HTMLDivElement>;
-  onTap?: () => void;
-  reverse?: boolean;
-  hidden?: boolean;
-}
-
 export default function DivAnimated({
   onAnimationStart,
-  onAnimationEnd,
   onDragStart,
   onDrag,
   onDragEnd,
-  onTap,
   children,
   reverse,
   hidden,
   ...props
-}: DivProps) {
+}: DivMotionProps) {
   const variant = {
     initial: { x: "100%", opacity: 0 },
     animate: { x: 0, opacity: 1 },
