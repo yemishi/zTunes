@@ -16,7 +16,7 @@ const FormSchema = z.object({
   name: z
     .string()
     .min(3, "This field must have at least 3 letters")
-    .max(15, "max 15 char"),
+    .max(25, "max 25 char"),
   password: z.string().min(6, "This field must have at least 6 letters"),
   bDay: z.string(),
   bYear: z.string(),

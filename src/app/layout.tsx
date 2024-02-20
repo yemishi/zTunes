@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Navigation from "./components/navigation/Navigation";
 import {
   Poppins,
   Playfair_Display,
@@ -7,6 +8,8 @@ import {
   Montserrat,
 } from "next/font/google";
 import "./globals.css";
+import { Session } from "next-auth";
+import Provider from "@/context/Provider";
 
 const nunito = Nunito({ subsets: ["latin"] });
 const poppins = Poppins({
@@ -40,17 +43,24 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
+  session,
 }: Readonly<{
   children: React.ReactNode;
+  session: Session | null;
 }>) {
   return (
     <html
       lang="en"
       className={`overflow-hidden ${poppins.variable} ${kanit.variable} ${playFair.variable} ${montserrat.variable}`}
     >
-      <body className={`w-full h-full  bg-zinc-900 overflow-x-hidden  ${nunito.className}`}>
-        <main className="w-full h-screen  ">{children}</main>
-      </body>
+      <Provider session={session}>
+        <body
+          className={`w-full h-full  bg-zinc-900 overflow-x-hidden  ${nunito.className}`}
+        >
+          <main className="w-full h-screen  ">{children}</main>
+          <Navigation />
+        </body>
+      </Provider>
     </html>
   );
 }

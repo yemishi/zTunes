@@ -32,13 +32,7 @@ export default function ConfirmInfo({
         } font-kanit text-xl bg-white px-3 py-5 rounded-lg border border-white border-opacity-50 mt-3`}
       >
         <p
-          className={`px-3 font-medium ${
-            response
-              ? !response.error
-                ? "text-green-500"
-                : "text-red-500"
-              : ""
-          }`}
+          className="px-3 font-medium"
         >
           {response ? response.message : "If everything is right click below"}
         </p>
