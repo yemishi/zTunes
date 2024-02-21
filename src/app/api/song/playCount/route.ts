@@ -1,34 +1,16 @@
 import { db } from "@/lib/db";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function POST(req: NextRequest) {
-  try {
-    const { musicId, category } = await req.json();
-    await db.playCount.create({
-      data: {
-        musicId,
-        category,
-        users: [],
-      },
-    });
-    return NextResponse.json({
-      message: "music playCount added with successfully",
-    });
-  } catch (error) {
-    return NextResponse.json({ error: true, message: "something went wrong" });
-  }
-}
-
 export async function PATCH(req: NextRequest) {
   try {
-    const { musicId, username } = await req.json();
+    const { songId, username } = await req.json();
     const user = await db.user.findFirst({ where: { username } });
 
     if (!user) {
       return NextResponse.json({ error: true, message: "User not found" });
     }
 
-    const playCount = await db.playCount.findUnique({ where: { musicId } });
+    const playCount = await db.playCount.findUnique({ where: { songId } });
 
     if (!playCount)
       return NextResponse.json({
@@ -50,7 +32,7 @@ export async function PATCH(req: NextRequest) {
     }
 
     await db.playCount.update({
-      where: { musicId },
+      where: { songId },
       data: {
         listenCount: (playCount.listenCount += 1),
         users: playCount.users,
