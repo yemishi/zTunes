@@ -12,60 +12,60 @@ model User {
   email      String       @unique
   username   String       @unique
   password   String?
-  profile    ProfileType?
   isVerified Boolean?
+  profile    ProfileType?
   isArtist   ArtistType?
+  isAdmin    Boolean?
   createdAt  DateTime     @default(now())
   Account    Account[]
+  updatedAt  DateTime     @updatedAt
 
   @@map("User")
 }
 
-model Mix {
-  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+model Playlist {
+  id         String             @id @default(auto()) @map("_id") @db.ObjectId
   title      String
-  songs      String[]
-  coverPhoto String
-  createdAt  DateTime @default(now())
+  userId     String
+  songs      PlaylistSongType[]
+  isPublic   Boolean?
+  officialCategories String[]
+  coverPhoto String             @default("https://cdn-icons-png.flaticon.com/512/16/16249.png")
+  updatedAt  DateTime           @updatedAt
+  createdAt  DateTime           @default(now())
+
+  @@unique([title, userId])
 }
 
-model Playlist {
-  id         String   @id @default(auto()) @map("_id") @db.ObjectId
-  title      String
-  isPublic   Boolean  @default(false)
-  userId     String   @db.ObjectId
-  songs      String[]
-  coverPhoto String   @default("https://cdn-icons-png.flaticon.com/512/16/16249.png")
-  createdAt  DateTime @default(now())
+
+model PlayCount {
+  id          String        @id @default(auto()) @map("_id") @db.ObjectId
+  songId      String        @unique @db.ObjectId
+  listenCount Int           @default(0)
+  category    String[]
+  users       UsersPlayed[]
+  updatedAt   DateTime      @updatedAt
+  createdAt   DateTime      @default(now())
 }
 
 model Songs {
-  id        String        @id @default(auto()) @map("_id") @db.ObjectId
-  name      String
-  urlSong   String
-  artistId  String
-  category  String[]
-  track     TrackInfoType
-  trackType String
+  id       String   @id @default(auto()) @map("_id") @db.ObjectId
+  name     String
+  urlSong  String
+  artistId String
+  category String[]
+  albumId  String   @db.ObjectId
 }
 
 model Album {
   id           String   @id @default(auto()) @map("_id") @db.ObjectId
   title        String
+  type         String   @default("album")
   releasedDate String
   artistName   String
   artistId     String   @db.ObjectId
   coverPhoto   String   @default("https://cdn-icons-png.flaticon.com/512/16/16249.png")
   createdAt    DateTime @default(now())
-}
-
-model PlayCount {
-  id          String        @id @default(auto()) @map("_id") @db.ObjectId
-  musicId     String        @unique @db.ObjectId
-  listenCount Int           @default(0)
-  category    String[]
-  users       UsersPlayed[]
-  createdAt   DateTime      @default(now())
 }
 
 model FavoriteSongs {
@@ -116,18 +116,13 @@ type AboutType {
   cover   String
 }
 
-type TrackInfoType {
-  albumId    String?
-  singleInfo SingleType?
-}
-
-type SingleType {
-  coverPhoto   String
-  releasedDate DateTime
-  createdAt    DateTime @default(now())
-}
-
 type UsersPlayed {
   userId String @db.ObjectId
   count  Int    @default(1)
+}
+
+
+type PlaylistSongType {
+  songId    String   @db.ObjectId
+  createdAt DateTime @default(now())
 }

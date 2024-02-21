@@ -112,12 +112,14 @@ export const authOptions: NextAuthOptions = {
 
     async session({ session, token }) {
       session.user = {
-        ...token,
+        email: token.email as string,
+        name: token.name as string,
+        picture: token.picture as string,
       };
       return session;
     },
     redirect({ baseUrl }) {
-      return `${baseUrl}/`;
+      return `${baseUrl}/home`;
     },
   },
 };

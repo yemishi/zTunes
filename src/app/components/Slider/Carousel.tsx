@@ -7,8 +7,8 @@ type PropsType = {
   title: string;
   id: string;
   coverPhoto: string;
-  artistName: string;
-  artistId: string;
+  artistName?: string;
+  artistId?: string;
 };
 export default function Carousel({
   title,
@@ -47,9 +47,7 @@ export default function Carousel({
             </div>
           );
         })}
-        
       </Slider>
-      
     </div>
   );
 }
