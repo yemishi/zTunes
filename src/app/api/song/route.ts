@@ -3,8 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
   try {
-    const { name, urlSong, artistName, category, track, trackType } =
-      await req.json();
+    const { name, urlSong, artistName, category, albumId } = await req.json();
 
     const artist = await db.user.findUnique({
       where: { username: artistName },
@@ -19,15 +18,21 @@ export async function POST(req: NextRequest) {
       data: {
         artistId: artist.id,
         name,
-        track,
-        trackType,
+        albumId,
         urlSong,
         category,
       },
     });
+    await db.playCount.create({
+      data: {
+        songId: newSong.id,
+        category,
+        users: [],
+      },
+    });
+
     return NextResponse.json({
-      error: false,
-      newSong,
+      message: "Your music has been added with successfully",
     });
   } catch (error) {
     return NextResponse.json({ error: true, message: `error here ${error}` });
