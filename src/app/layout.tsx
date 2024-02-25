@@ -46,7 +46,7 @@ export default function RootLayout({
   session,
 }: Readonly<{
   children: React.ReactNode;
-  session: Session | null;
+  session: never;
 }>) {
   return (
     <html
@@ -55,9 +55,9 @@ export default function RootLayout({
     >
       <Provider session={session}>
         <body
-          className={`w-full h-full  bg-zinc-900 overflow-x-hidden  ${nunito.className}`}
+          className={`w-full h-full text-white bg-[#121212] overflow-x-hidden  ${nunito.className}`}
         >
-          <main className="w-full h-screen  ">{children}</main>
+          <main className="w-full h-screen">{children}</main>
           <Navigation />
         </body>
       </Provider>

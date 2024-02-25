@@ -1,7 +1,7 @@
 import { AnimationEventHandler, DragEventHandler, HTMLAttributes } from "react";
 
 interface DivMotionProps extends HTMLAttributes<HTMLDivElement> {
-  children: React.ReactNode[];
+  children: React.ReactNode;
   onAnimationStart?: AnimationEventHandler<HTMLDivElement>;
   onDragStart?: DragEventHandler<HTMLDivElement>;
   onDrag?: DragEventHandler<HTMLDivElement>;

@@ -35,12 +35,24 @@ const handleSongs = async (
 export async function GET(req: NextRequest) {
   try {
     const id = req.nextUrl.searchParams.get("id") as string;
+    const username = req.nextUrl.searchParams.get("username") as string;
+    const user = await db.user.findFirst({ where: { username } });
 
     const playlist = await db.playlist.findFirst({
       where: { id },
     });
 
-    if (!playlist) return NextResponse.json({ songs: [] });
+    if (!playlist)
+      return NextResponse.json({ error: true, message: "playlist not found" });
+
+    if (!playlist.isPublic) {
+      if (playlist.userId !== user?.id)
+        return NextResponse.json({
+          error: true,
+          message: "playlist not found",
+        });
+    }
+
     const songsId = playlist?.songs.map((obj) => obj.songId);
 
     const songs = await db.songs.findMany({
@@ -56,7 +68,6 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json(songsInfo);
   } catch (error) {
-    console.log(error);
     return NextResponse.json({
       message: "We had a problem trying to get the playlist songs",
     });

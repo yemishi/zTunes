@@ -4,16 +4,44 @@ import { NextRequest, NextResponse } from "next/server";
 export async function GET(req: NextRequest) {
   try {
     const query = req.nextUrl.searchParams.get("q") as string;
+    const artistId = req.nextUrl.searchParams.get("artistId") as string;
+    const albumId = req.nextUrl.searchParams.get("albumId") as string;
+    
+    if (albumId) {
+      const album = await db.album.findUnique({
+        where: { id: albumId },
+      });
+      return NextResponse.json(
+        album || { error: true, message: "Album not found." }
+      );
+    }
+
+    if (artistId) {
+      const albums = await db.album.findMany({
+        where: { artistId },
+      });
+
+      return NextResponse.json(
+        albums || {
+          error: true,
+          message: "We had a problem trying to recover this artist's albums.",
+        }
+      );
+    }
+
     const albums = await db.album.findMany({
       where: {
         title: {
-          contains: query,
+          contains: query || "",
         },
       },
     });
     return NextResponse.json(albums);
   } catch (error) {
-    return NextResponse.json({ error: true, message: `error here ${error}` });
+    return NextResponse.json({
+      error: true,
+      message: `We had a problem trying to recover the albums`,
+    });
   }
 }
 

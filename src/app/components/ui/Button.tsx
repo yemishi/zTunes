@@ -11,9 +11,9 @@ export default function Button({ className, asChild, ...props }: ButtonProps) {
   return (
     <Component
       {...props}
-      className={`${
-        className ? className : ""
-      } px-4 py-2 rounded-full border border-white border-opacity-30 backdrop-brightness-50 font-kanit text-lg hover:backdrop-brightness-150
+      className={`${className ? className : ""} ${
+        className?.includes("bg-transparent") ? "" : "backdrop-brightness-50"
+      }  px-4 py-2 rounded-full border border-white border-opacity-30 font-kanit text-lg hover:backdrop-brightness-150
       disabled:animate-pulse duration-200 ${
         !className?.includes("bg") ? "bg-amber-500" : ""
       } bg-opacity-75 hover:bg-opacity-85 `}

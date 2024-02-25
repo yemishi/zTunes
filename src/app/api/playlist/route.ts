@@ -1,20 +1,29 @@
 import { db } from "@/lib/db";
-import { Songs } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
   try {
+    const authorName = req.nextUrl.searchParams.get("author") as string;
     const username = req.nextUrl.searchParams.get("username") as string;
+    const author = await db.user.findFirst({ where: { username: authorName } });
     const user = await db.user.findFirst({ where: { username } });
 
-    if (!user)
+    if (!author)
       return NextResponse.json({ error: true, message: "user not found" });
 
     const playlist = await db.playlist.findMany({
-      where: { userId: user.id },
+      where: { userId: author.id },
     });
 
-    return NextResponse.json(playlist);
+    const filteredPlaylist = playlist.filter((playlist) => {
+      if (!playlist.isPublic) {
+        if (!user) return false;
+        return playlist.userId === user.id;
+      }
+      return playlist;
+    });
+
+    return NextResponse.json(filteredPlaylist);
   } catch (error) {
     return NextResponse.json({
       message: "We had a problem trying to get the playlist songs",
@@ -98,7 +107,6 @@ export async function PATCH(req: NextRequest) {
     });
     return NextResponse.json({ message: "playlist updated with successfully" });
   } catch (error) {
-    console.log(error);
     return NextResponse.json({
       message: "we had a problem trying to update the playlist",
     });
