@@ -24,19 +24,18 @@ model User {
 }
 
 model Playlist {
-  id         String             @id @default(auto()) @map("_id") @db.ObjectId
-  title      String
-  userId     String
-  songs      PlaylistSongType[]
-  isPublic   Boolean?
+  id                 String             @id @default(auto()) @map("_id") @db.ObjectId
+  title              String
+  userId             String
+  songs              PlaylistSongType[]
+  isPublic           Boolean?
   officialCategories String[]
-  coverPhoto String             @default("https://cdn-icons-png.flaticon.com/512/16/16249.png")
-  updatedAt  DateTime           @updatedAt
-  createdAt  DateTime           @default(now())
+  coverPhoto         String             @default("https://cdn-icons-png.flaticon.com/512/16/16249.png")
+  updatedAt          DateTime           @updatedAt
+  createdAt          DateTime           @default(now())
 
   @@unique([title, userId])
 }
-
 
 model PlayCount {
   id          String        @id @default(auto()) @map("_id") @db.ObjectId
@@ -82,6 +81,13 @@ model LikedSongs {
   createdAt DateTime @default(now())
 }
 
+model Followers {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String   @db.ObjectId
+  users     String[]
+  createdAt DateTime @default(now())
+}
+
 model Account {
   id                String  @id @default(auto()) @map("_id") @db.ObjectId
   type              String
@@ -120,7 +126,6 @@ type UsersPlayed {
   userId String @db.ObjectId
   count  Int    @default(1)
 }
-
 
 type PlaylistSongType {
   songId    String   @db.ObjectId
