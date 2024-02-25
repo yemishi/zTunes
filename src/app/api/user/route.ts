@@ -55,6 +55,14 @@ export async function POST(req: NextRequest) {
         },
       },
     });
+
+    await db.followers.create({
+      data: {
+        userId: newUser.id,
+        users: [],
+      },
+    });
+
     createdUserEmail(newUser.email, newUser.id);
 
     return NextResponse.json({

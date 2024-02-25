@@ -7,7 +7,7 @@ export async function GET(req: NextRequest) {
     const user = await db.user.findFirst({ where: { username } });
 
     if (!user) {
-      return NextResponse.json({ message: "User not found" });
+      return NextResponse.json({ error: true, message: "User not found" });
     }
 
     const historicPlayed = await db.playCount.findMany({
@@ -18,6 +18,7 @@ export async function GET(req: NextRequest) {
 
     if (categories.length === 0) {
       return NextResponse.json({
+        error: true,
         message: "No categories in the user's history",
       });
     }
@@ -31,9 +32,17 @@ export async function GET(req: NextRequest) {
         categories.includes(category)
       );
     });
+    const playlistsCharge = filteredBundle.map((playlist) => {
+      const { title, id, coverPhoto } = playlist;
+      return {
+        title,
+        id,
+        coverPhoto,
+      };
+    });
 
-    return NextResponse.json(filteredBundle);
+    return NextResponse.json(playlistsCharge);
   } catch (error) {
-    return NextResponse.json({ message: "We had a problem" });
+    return NextResponse.json({ error: true, message: "We had a problem" });
   }
 }

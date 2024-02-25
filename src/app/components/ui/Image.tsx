@@ -20,6 +20,7 @@ export default function Image({
   return (
     <NextImage
       {...props}
+      draggable={false}
       src={src}
       alt=""
       priority={priority}

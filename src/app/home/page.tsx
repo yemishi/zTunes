@@ -1,37 +1,48 @@
 import { authOptions } from "@/lib/auth";
 import { getServerSession } from "next-auth";
-import Carousel from "../components/Slider/Carousel";
+import ArtistsOrganizer from "../components/organizer/ArtistsOrganizer";
+import BundleOrganizer from "../components/organizer/BundleOrganizer";
 
-async function getData() {
-  const response = await fetch("http://localhost:3000/api/album?q=a").then(
-    (res) => res.json()
+async function getData(username: string) {
+  const albumProps = await fetch(`${process.env.URL}/api/album`).then((res) =>
+    res.json()
   );
-  return response;
+  const artistsProps = await fetch(
+    `${process.env.URL}/api/artist?getAll=true`
+  ).then((res) => res.json());
+
+  const recommendedProps = await fetch(
+    `${process.env.URL}/api/playlist/recommended?username=${username}`
+  ).then((res) => res.json());
+  return {
+    albumProps,
+    artistsProps,
+    recommendedProps,
+  };
 }
 
 export default async function Home() {
   const session = await getServerSession(authOptions);
-  const recommendedPlaylists: {
-    songs: [];
-    isOfficial: { title: string; category: string[] };
-    title: string;
-    id: string;
-    userId: string;
-    coverPhoto: string;
-  }[] = await fetch(
-    `${process.env.URL}/api/playlist/recommended?username=${session?.user.name}`
-  ).then((res) => res.json());
-
-  const propsRecommended = recommendedPlaylists.map((playlist) => {
-    const { coverPhoto, id, isOfficial, songs, title, userId } = playlist;
-    return { title, id, coverPhoto };
-  });
-
-  const data = await getData();
+  const data = await getData(session?.user.name as string);
+  const { albumProps, artistsProps, recommendedProps } = data;
   return (
-    <div className="w-full h-full">
-      <Carousel title="popular albums" baseUrl="/album" props={data} />;
-      <Carousel title="Recommended musics" baseUrl="/album" props={propsRecommended} />;
+    <div className="w-full min-h-full flex flex-col  pb-16">
+      <BundleOrganizer
+        title="popular albums"
+        baseUrl="/album"
+        props={albumProps}
+      />
+
+      {!recommendedProps.error && (
+        <BundleOrganizer
+          title="Recommended musics"
+          baseUrl="/album"
+          isOfficial
+          props={recommendedProps}
+        />
+      )}
+
+      <ArtistsOrganizer title="artists" props={artistsProps} />
     </div>
   );
 }

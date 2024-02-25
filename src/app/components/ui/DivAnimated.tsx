@@ -1,11 +1,5 @@
 import { DivMotionProps } from "@/types/uiTypes";
 import { motion } from "framer-motion";
-import {
-  AnimationEventHandler,
-  DragEventHandler,
-  ReactNode,
-  HTMLAttributes,
-} from "react";
 
 export default function DivAnimated({
   onAnimationStart,
