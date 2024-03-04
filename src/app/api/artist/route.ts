@@ -2,10 +2,9 @@ import { db } from "@/lib/db";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
+  const id = req.nextUrl.searchParams.get("id") as string;
+  const getAll = req.nextUrl.searchParams.get("getAll") as string;
   try {
-    const id = req.nextUrl.searchParams.get("id") as string;
-    const getAll = req.nextUrl.searchParams.get("getAll") as string;
-
     if (getAll) {
       const artists = await db.user.findMany({
         where: {
