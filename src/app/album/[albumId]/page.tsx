@@ -1,12 +1,12 @@
 import GenericHeader from "@/app/components/headers/GenericHeader";
 import SongsOrganizer from "@/app/components/organizer/SongsOrganizer";
 import { getVibrantColor } from "@/app/utils/fnc";
-import { AlbumType, ErrorType, SongType } from "@/types/response";
+import { BundleType, ErrorType, SongType } from "@/types/response";
 import { redirect } from "next/navigation";
 
 async function fetchData(albumId: string) {
   try {
-    const album: AlbumType | ErrorType = await fetch(
+    const album: BundleType | ErrorType = await fetch(
       `${process.env.URL}/api/album?albumId=${albumId}`
     ).then((res) => res.json());
 
