@@ -75,17 +75,24 @@ export async function PATCH(req: NextRequest) {
       officialCategories,
       title,
       coverPhoto,
-      removeSongs,
-      addSongs,
+      force,
+      toRemove,
+      songSelected,
     } = await req.json();
 
     const playlist = await db.playlist.findUnique({ where: { id } });
+    const songs = playlist?.songs;
 
-    if (addSongs && addSongs.length) {
-      addSongs.forEach((newSong: string) => {
-        if (!playlist?.songs.some((song) => song.songId === newSong)) {
-          playlist?.songs.push({ songId: newSong, createdAt: new Date() });
-        }
+    if (songSelected && typeof songSelected === "string") {
+      if (!force && songs?.some((song) => song.songId === songSelected))
+        return NextResponse.json({
+          error: true,
+          alreadyIn: true,
+          message: "Song already in this playlist",
+        });
+      songs?.push({
+        createdAt: new Date(),
+        songId: songSelected,
       });
     }
 
@@ -95,13 +102,13 @@ export async function PATCH(req: NextRequest) {
         coverPhoto: coverPhoto || playlist?.coverPhoto,
         isPublic,
         officialCategories,
-        songs:
-          removeSongs && removeSongs.length
-            ? playlist?.songs.filter(
-                (song) => !removeSongs.includes(song.songId)
-              )
-            : playlist?.songs,
-
+        songs: toRemove
+          ? songs?.filter(
+              (song) =>
+                song.createdAt === songSelected.createdAt &&
+                song.songId === songSelected.songId
+            )
+          : songs,
         title: title || playlist?.title,
       },
     });

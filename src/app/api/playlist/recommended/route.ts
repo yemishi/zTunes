@@ -2,10 +2,9 @@ import { db } from "@/lib/db";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
+  const username = req.nextUrl.searchParams.get("username") as string;
   try {
-    const username = req.nextUrl.searchParams.get("username") as string;
     const user = await db.user.findFirst({ where: { username } });
-
     if (!user) {
       return NextResponse.json({ error: true, message: "User not found" });
     }
@@ -43,6 +42,6 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json(playlistsCharge);
   } catch (error) {
-    return NextResponse.json({ error: true, message: "We had a problem" });
+    return NextResponse.json({ error: true, message: "we had a problem" });
   }
 }
