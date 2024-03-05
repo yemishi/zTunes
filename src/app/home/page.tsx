@@ -25,6 +25,7 @@ export default async function Home() {
   const session = await getServerSession(authOptions);
   const data = await getData(session?.user.name as string);
   const { albumProps, artistsProps, recommendedProps } = data;
+
   return (
     <div className="w-full min-h-full flex flex-col  pb-16">
       <BundleOrganizer
@@ -36,7 +37,7 @@ export default async function Home() {
       {!recommendedProps.error && (
         <BundleOrganizer
           title="Recommended musics"
-          baseUrl="/album"
+          baseUrl="/playlist"
           isOfficial
           props={recommendedProps}
         />

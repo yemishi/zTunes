@@ -6,13 +6,20 @@ export async function GET(req: NextRequest) {
     const query = req.nextUrl.searchParams.get("q") as string;
     const artistId = req.nextUrl.searchParams.get("artistId") as string;
     const albumId = req.nextUrl.searchParams.get("albumId") as string;
-    
+
     if (albumId) {
       const album = await db.album.findUnique({
         where: { id: albumId },
       });
+      const artist = await db.user.findUnique({
+        where: { id: album?.artistId },
+      });
+
       return NextResponse.json(
-        album || { error: true, message: "Album not found." }
+        { ...album, avatar: artist?.profile?.avatar } || {
+          error: true,
+          message: "Album not found.",
+        }
       );
     }
 

@@ -23,18 +23,15 @@ model User {
   @@map("User")
 }
 
-model Playlist {
-  id                 String             @id @default(auto()) @map("_id") @db.ObjectId
-  title              String
-  userId             String
-  songs              PlaylistSongType[]
-  isPublic           Boolean?
-  officialCategories String[]
-  coverPhoto         String             @default("https://cdn-icons-png.flaticon.com/512/16/16249.png")
-  updatedAt          DateTime           @updatedAt
-  createdAt          DateTime           @default(now())
-
-  @@unique([title, userId])
+model Songs {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  name       String
+  urlSong    String
+  artistId   String
+  artistName String
+  coverPhoto String
+  category   String[]
+  albumId    String   @db.ObjectId
 }
 
 model PlayCount {
@@ -47,13 +44,19 @@ model PlayCount {
   createdAt   DateTime      @default(now())
 }
 
-model Songs {
-  id       String   @id @default(auto()) @map("_id") @db.ObjectId
-  name     String
-  urlSong  String
-  artistId String
-  category String[]
-  albumId  String   @db.ObjectId
+model Playlist {
+  id                 String             @id @default(auto()) @map("_id") @db.ObjectId
+  title              String
+  userId             String
+  songs              PlaylistSongType[]
+  isPublic           Boolean?
+  desc               String?
+  officialCategories String[]
+  coverPhoto         String             @default("https://cdn-icons-png.flaticon.com/512/16/16249.png")
+  updatedAt          DateTime           @updatedAt
+  createdAt          DateTime           @default(now())
+
+  @@unique([title, userId])
 }
 
 model Album {
@@ -67,16 +70,9 @@ model Album {
   createdAt    DateTime @default(now())
 }
 
-model FavoriteSongs {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  userId    String   @db.ObjectId
-  songs     String[]
-  createdAt DateTime @default(now())
-}
-
 model LikedSongs {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  userId    String   @db.ObjectId
+  userId    String
   songs     String[]
   createdAt DateTime @default(now())
 }

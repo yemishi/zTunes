@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Navigation from "./components/navigation/Navigation";
 import {
   Poppins,
   Playfair_Display,
@@ -8,8 +7,8 @@ import {
   Montserrat,
 } from "next/font/google";
 import "./globals.css";
-import { Session } from "next-auth";
 import Provider from "@/context/Provider";
+import UnderBar from "./components/underBar/underBar";
 
 const nunito = Nunito({ subsets: ["latin"] });
 const poppins = Poppins({
@@ -58,7 +57,7 @@ export default function RootLayout({
           className={`w-full h-full text-white bg-[#121212] overflow-x-hidden  ${nunito.className}`}
         >
           <main className="w-full h-screen">{children}</main>
-          <Navigation />
+          <UnderBar />
         </body>
       </Provider>
     </html>

@@ -3,7 +3,7 @@ interface ErrorType {
   message: string;
 }
 
-interface BundleType {
+interface BundleTypeType {
   id: string;
   title: string;
   type: string;
@@ -15,7 +15,20 @@ interface BundleType {
   error: false;
 }
 
-interface Artist {
+interface BundleType {
+  avatar: string;
+  id: string;
+  title: string;
+  type: string;
+  releasedDate?: string;
+  artistName: string;
+  artistId: string;
+  coverPhoto: string;
+  createdAt: Date;
+  error: false;
+}
+
+interface ArtistType {
   id: string;
   name: string;
   about: {
@@ -29,7 +42,7 @@ interface Artist {
   };
   error: false;
 }
-interface Playlist {
+interface PlaylistType {
   id: string;
   title: string;
   userId: string;
@@ -45,8 +58,9 @@ interface Playlist {
   error: false;
 }
 
-interface Song {
-  createdAt: Date | undefined;
+interface SongType {
+  id: string;
+  createdAt: Date;
   artistId: string;
   artistName: string;
   albumTitle: string;
@@ -57,24 +71,19 @@ interface Song {
   error: false;
 }
 
-interface Recommended {
+interface RecommendedType {
   title: string;
   id: string;
   coverPhoto: string;
   error: false;
 }
 
-type PlaylistResponse = Playlist | ErrorType;
-type BundleResponse = BundleType[] | ErrorType;
-type SongResponse = Song | ErrorType;
-type RecommendedResponse = Recommended[] | ErrorType;
-type ArtistResponse = Artist | ErrorType;
-
 export type {
-  PlaylistResponse,
-  BundleResponse,
-  SongResponse,
-  RecommendedResponse,
-  ArtistResponse,
+  SongType,
+  ArtistType,
+  BundleTypeType,
+  PlaylistType,
+  RecommendedType,
+  ErrorType,
   BundleType,
 };

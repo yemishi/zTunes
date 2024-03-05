@@ -1,15 +1,19 @@
 "use server";
 
-import { BundleType, ArtistResponse } from "@/types/response";
+import { BundleType, ArtistType, SongType } from "@/types/response";
 import { redirect } from "next/navigation";
 import { getVibrantColor } from "@/app/utils/fnc";
 import ArtistHeader from "@/app/components/headers/ArtistHeader";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import BundleOrganizer from "@/app/components/organizer/BundleOrganizer";
+import SongsOrganizer from "@/app/components/organizer/SongsOrganizer";
+import Link from "next/link";
+import Button from "@/app/components/ui/Button";
+import ArtistAbout from "@/app/components/artistAbout/ArtistAbout";
 
 async function getData(artistId: string) {
-  const artistInfo: ArtistResponse = await fetch(
+  const artistInfo: ArtistType = await fetch(
     `${process.env.URL}/api/artist?id=${artistId}`
   ).then((res) => res.json());
 
@@ -17,7 +21,12 @@ async function getData(artistId: string) {
     `${process.env.URL}/api/album?artistId=${artistId}`
   ).then((res) => res.json());
 
+  const songs: SongType[] = await fetch(
+    `${process.env.URL}/api/song?artistId=${artistId}`
+  ).then((res) => res.json());
+
   return {
+    songs,
     artistInfo,
     albums,
   };
@@ -35,7 +44,7 @@ export default async function Artist({
 }: {
   params: { artistId: string };
 }) {
-  const { albums, artistInfo } = await getData(params.artistId);
+  const { albums, artistInfo, songs } = await getData(params.artistId);
 
   if (artistInfo.error) return redirect("404");
 
@@ -45,9 +54,9 @@ export default async function Artist({
     session?.user.name as string,
     artistInfo.id
   );
-  console.log(albums);
+
   return (
-    <div className="w-full h-full flex flex-col">
+    <div className="w-full h-full flex flex-col gap-3 pb-28 overflow-y-scroll">
       <ArtistHeader
         username={session?.user.name as string}
         followersLength={followers.length}
@@ -59,7 +68,15 @@ export default async function Artist({
           cover: artistInfo.cover,
         }}
       />
-      <BundleOrganizer baseUrl="/album" title="Albuns" props={albums} />
+      <SongsOrganizer songs={songs} title="Musics" />
+      <Button
+        asChild
+        className="bg-white rounded-lg self-start ml-4 text-black"
+      >
+        <Link href={`/artist/${artistInfo.id}/musics`}>Show all</Link>
+      </Button>
+      <BundleOrganizer baseUrl="/album" title="Albums" props={albums} />
+      <ArtistAbout about={artistInfo.about} />
     </div>
   );
 }

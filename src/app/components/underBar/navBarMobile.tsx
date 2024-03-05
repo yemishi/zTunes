@@ -1,19 +1,13 @@
-"use client";
-import { PiHouseLight } from "react-icons/pi";
-import { PiMagnifyingGlassLight } from "react-icons/pi";
-import { IoPersonOutline } from "react-icons/io5";
-import { BiLibrary } from "react-icons/bi";
-
-import { navbarHidden, urlMatch } from "@/app/utils/fnc";
-import { useSession } from "next-auth/react";
 import Link from "next/link";
+import { BiLibrary } from "react-icons/bi";
+import { IoPersonOutline } from "react-icons/io5";
+import { PiHouseLight, PiMagnifyingGlassLight } from "react-icons/pi";
+import { navbarHidden, urlMatch } from "@/app/utils/fnc";
 
-export default function Navigation() {
-  const { data, status } = useSession();
-  const user = data?.user;
+export default function NavBarMobile() {
   if (navbarHidden()) return;
   return (
-    <div className="w-full flex items-center justify-around h-16 bg-gradient-to-b  backdrop-brightness-50 fixed bottom-0">
+    <div className="w-full flex items-center justify-around h-16 bg-gradient-to-b backdrop-brightness-50">
       <Link href="/home">
         <PiHouseLight
           className={`w-6 h-6 text-white ${
