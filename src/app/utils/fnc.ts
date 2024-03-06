@@ -2,14 +2,11 @@ import { ErrorType } from "@/types/response";
 import { usePathname } from "next/navigation";
 import Vibrant from "node-vibrant";
 
-export const navbarHidden = () => {
-  return (
-    urlMatch("sign-in") ||
-    urlMatch("sign-up") ||
-    urlMatch("validation") ||
-    urlMatch("password-reset")
-  );
-};
+export const navbarHidden = () =>
+  urlMatch("sign-in") ||
+  urlMatch("sign-up") ||
+  urlMatch("validation") ||
+  urlMatch("password-reset");
 
 export const urlMatch = (path: string) => {
   const pathName = usePathname();

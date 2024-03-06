@@ -25,6 +25,7 @@ interface BundleType {
   artistId: string;
   coverPhoto: string;
   createdAt: Date;
+  isOfficial?: boolean;
   error: false;
 }
 

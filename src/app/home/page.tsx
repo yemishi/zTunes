@@ -38,7 +38,6 @@ export default async function Home() {
         <BundleOrganizer
           title="Recommended musics"
           baseUrl="/playlist"
-          isOfficial
           props={recommendedProps}
         />
       )}

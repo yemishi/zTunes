@@ -2,11 +2,10 @@ import { db } from "@/lib/db";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
+  const query = req.nextUrl.searchParams.get("q") as string;
+  const artistId = req.nextUrl.searchParams.get("artistId") as string;
+  const albumId = req.nextUrl.searchParams.get("albumId") as string;
   try {
-    const query = req.nextUrl.searchParams.get("q") as string;
-    const artistId = req.nextUrl.searchParams.get("artistId") as string;
-    const albumId = req.nextUrl.searchParams.get("albumId") as string;
-
     if (albumId) {
       const album = await db.album.findUnique({
         where: { id: albumId },
@@ -74,7 +73,6 @@ export async function POST(req: NextRequest) {
       newAlbum,
     });
   } catch (error) {
-    console.log("error here", error);
     return NextResponse.json(error);
   }
 }

@@ -2,9 +2,9 @@ import { db } from "@/lib/db";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
+  const authorName = req.nextUrl.searchParams.get("author") as string;
+  const username = req.nextUrl.searchParams.get("username") as string;
   try {
-    const authorName = req.nextUrl.searchParams.get("author") as string;
-    const username = req.nextUrl.searchParams.get("username") as string;
     const author = await db.user.findFirst({ where: { username: authorName } });
     const user = await db.user.findFirst({ where: { username } });
 

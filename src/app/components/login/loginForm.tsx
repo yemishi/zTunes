@@ -1,15 +1,18 @@
-import { SubmitHandler, useForm } from "react-hook-form";
-import { FacebookButton, GoogleButton } from "../ui/AuthButtons";
-import DivAnimated from "../ui/DivAnimated";
+"use client";
+
 import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { IoEyeSharp } from "react-icons/io5";
+import { FaEyeSlash } from "react-icons/fa";
+import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
+import { useState } from "react";
+
+import { FacebookButton, GoogleButton } from "../ui/AuthButtons";
 import Button from "../ui/Button";
 import Input from "../ui/Input";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
-import { FaEyeSlash } from "react-icons/fa";
-import { IoEyeSharp } from "react-icons/io5";
-import { useRouter } from "next/navigation";
+import DivAnimated from "../ui/DivAnimated";
 
 export default function LoginForm({ close }: { close: () => void }) {
   type InputsType = z.infer<typeof FormSchema>;
@@ -79,7 +82,6 @@ export default function LoginForm({ close }: { close: () => void }) {
         <Input
           disabled={isLoading}
           {...register("name")}
-          id="name"
           type="text"
           autoComplete="display_name"
           placeholder="Email or username"
@@ -94,7 +96,7 @@ export default function LoginForm({ close }: { close: () => void }) {
           label="Password"
           type={isPass ? "password" : "text"}
           icon={icon}
-          placeholder="password"
+          placeholder="Password"
         />
 
         <Button

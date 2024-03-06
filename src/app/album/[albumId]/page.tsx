@@ -16,13 +16,12 @@ async function fetchData(albumId: string) {
     const validSongs: SongType[] = songs.filter((song) => !song.error);
 
     if (album.error) return redirect("404");
-
     return {
       album,
       songs: validSongs,
     };
   } catch (error) {
-    console.log(error);
+    return redirect("404");
   }
 }
 

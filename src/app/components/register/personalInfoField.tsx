@@ -5,6 +5,7 @@ import { ChangeEvent, useState } from "react";
 import { format, lastDayOfMonth } from "date-fns";
 import { IoAlertCircleOutline } from "react-icons/io5";
 import DivAnimated from "../ui/DivAnimated";
+import SelectMonth from "../ui/SelectMoth";
 
 export default function PersonalInfoField({
   error,
@@ -42,9 +43,6 @@ export default function PersonalInfoField({
     });
   };
 
-  const months = Array.from({ length: 12 }, (_, index) =>
-    format(new Date(2024, index, 1), "MMMM")
-  );
   const lastDay = format(
     lastDayOfMonth(
       new Date(Number(birthDate.bdayYear), Number(birthDate?.month))
@@ -102,8 +100,6 @@ export default function PersonalInfoField({
         {...register("name")}
         error={error}
         label="Name"
-        id="name"
-        name="name"
         placeholder="Mohammed"
         autoComplete="display_name"
         type="text"
@@ -137,26 +133,13 @@ export default function PersonalInfoField({
             onChange={handleInput}
           />
 
-          <select
-            name="month"
-            disabled={isLoading}
-            style={{ inlineSize: "100%" }}
-            className={`inputForm ${errors?.bMonth && "border-red-500"}`}
-            id="month"
+          <SelectMonth
             onChange={handleInput}
-            defaultValue=""
-          >
-            <option disabled value="">
-              Month
-            </option>
-            {months.map((value, index) => {
-              return (
-                <option value={index} key={`${value}_${index}`}>
-                  {value}
-                </option>
-              );
-            })}
-          </select>
+            disabled={isLoading}
+            error={errors?.bMonth && true}
+            id="month"
+            name="month"
+          />
 
           <Input
             disabled={isLoading}

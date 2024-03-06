@@ -112,7 +112,7 @@ export default function Slider({
         dragTransition={{ bounceDamping: 18 }}
         className={` ${props.className ? props.className : ""} ${
           disableDrag ? "w-full" : "w-max"
-        } flex flex-row  gap-4 `}
+        } flex flex-row gap-4 `}
         {...props}
       >
         {React.Children.toArray(children).slice(

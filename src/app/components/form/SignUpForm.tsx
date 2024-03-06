@@ -1,22 +1,24 @@
 "use client";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { useState } from "react";
 
 import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { lazy, useState } from "react";
+import { AnimatePresence } from "framer-motion";
+
 import EmailField from "../register/emailField";
+
+const PassField = lazy(() => import("../register/passField"));
+const PersonalInfoField = lazy(() => import("../register/personalInfoField"));
+const ConfirmInfo = lazy(() => import("../register/confirmInfo"));
+
 import {
   RegisterInputsType,
   RegisterResponseType,
 } from "../register/types/registerTypes";
 
-import PassField from "../register/passField";
-import PersonalInfoField from "../register/personalInfoField";
-import { AnimatePresence } from "framer-motion";
-import ConfirmInfo from "../register/confirmInfo";
-
 export default function SignUpForm() {
-  const [step, setStep] = useState<number>(0);
+  const [step, setStep] = useState<number>(2);
   const [response, setResponse] = useState<RegisterResponseType>();
 
   const FormSchema = z
