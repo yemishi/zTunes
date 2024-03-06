@@ -43,6 +43,7 @@ export default function ForgotPass({ close }: { close: () => void }) {
       <h1 className="text-3xl font-montserrat font-bold self-start tracking-tighter ">
         {message ? "Email sent" : "Reset your password"}
       </h1>
+
       <p className="text-left pr-3 mt-3">
         {message
           ? message
@@ -54,16 +55,20 @@ export default function ForgotPass({ close }: { close: () => void }) {
           <Button disabled={isLoading} onClick={close}>
             Back to login
           </Button>
+
           <Button
             disabled={isLoading}
             onClick={() => setMessage(null)}
-            className="bg-transparent"
+            className="bg-none"
           >
             Edit email/username
           </Button>
         </div>
       ) : (
-        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-7">
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="flex flex-col gap-7 h-full"
+        >
           <Input
             disabled={isLoading}
             error={errors.name}
@@ -72,8 +77,21 @@ export default function ForgotPass({ close }: { close: () => void }) {
             type="text"
             className="mt-11"
           />
-          <Button disabled={isLoading} type="submit" className="mt-auto">
+          <Button
+            disabled={isLoading}
+            type="submit"
+            className="mt-auto text-black"
+          >
             Send link
+          </Button>
+
+          <Button
+            disabled={isLoading}
+            onClick={close}
+            type="button"
+            className="mt-auto self-center bg-transparent"
+          >
+            Back
           </Button>
         </form>
       )}

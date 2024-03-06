@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 export async function GET(req: NextRequest) {
   const albumId = req.nextUrl.searchParams.get("albumId") as string;
   const artistId = req.nextUrl.searchParams.get("artistId") as string;
+  const username = req.nextUrl.searchParams.get("username") as string;
   const getAll = req.nextUrl.searchParams.get("getAll") as string;
   const songId = req.nextUrl.searchParams.get("songId") as string;
 
@@ -12,18 +13,28 @@ export async function GET(req: NextRequest) {
       const songs = await db.songs.findMany({ where: { albumId } });
       return NextResponse.json(songs);
     }
+
+    const artist = await db.user.findFirst({ where: { id: artistId } });
+    const user = await db.user.findFirst({
+      where: { username: username || "" },
+    });
+
     if (artistId) {
+      if (!artist?.isArtist && artist?.id !== user?.id)
+        return NextResponse.json({ error: true, message: "Artist not found" });
+
       const songs = getAll
         ? await db.songs.findMany({ where: { artistId } })
         : await db.songs.findMany({ where: { artistId }, take: 5 });
       return NextResponse.json(songs);
     }
+
     const song = await db.songs.findUnique({ where: { id: songId } });
     return NextResponse.json(song);
   } catch (error) {
     return NextResponse.json({
       error: true,
-      message: "We had a problem trying to recover the songs",
+      message: "We had a problem trying recover the songs",
     });
   }
 }

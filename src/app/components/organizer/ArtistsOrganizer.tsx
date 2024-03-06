@@ -1,4 +1,5 @@
 "use client";
+
 import Link from "next/link";
 import Slider from "../Slider/Slider";
 import Image from "../ui/Image";
@@ -24,10 +25,7 @@ export default function ArtistsOrganizer({
   return (
     <div className="text-white p-4 flex flex-col font-kanit gap-3">
       <h2 className="text-xl first-letter:uppercase">{title}</h2>
-      <Slider
-        disableDrag={!isMobileDev}
-  
-      >
+      <Slider disableDrag={!isMobileDev}>
         {props.map((item, index) => {
           const { id, name, cover } = item;
 

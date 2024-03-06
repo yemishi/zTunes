@@ -1,15 +1,15 @@
 "use client";
 
-import ForgotPass from "../login/forgotPass";
+import { lazy, useState } from "react";
 import { AnimatePresence } from "framer-motion";
-import { useState } from "react";
+const ForgotPass = lazy(() => import("../login/forgotPass"));
 import LoginForm from "../login/loginForm";
 
 export default function SignInForm() {
   const [isForgotPass, setIsForgotPass] = useState<boolean>(false);
 
   return (
-    <div className="formContainer ">
+    <div className="formContainer">
       <AnimatePresence mode="wait" initial={false}>
         {!isForgotPass && (
           <LoginForm key="manageLogin" close={() => setIsForgotPass(true)} />

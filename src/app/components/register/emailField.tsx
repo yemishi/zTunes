@@ -1,10 +1,10 @@
+import { RegisterPropsType, RegisterResponseType } from "./types/registerTypes";
 import { FacebookButton, GoogleButton } from "../ui/AuthButtons";
+import { useState } from "react";
+import Link from "next/link";
+import DivAnimated from "../ui/DivAnimated";
 import Input from "../ui/Input";
 import Button from "../ui/Button";
-import Link from "next/link";
-import { RegisterPropsType, RegisterResponseType } from "./types/registerTypes";
-import DivAnimated from "../ui/DivAnimated";
-import { useState } from "react";
 
 export default function EmailField({
   error,
@@ -36,7 +36,7 @@ export default function EmailField({
   };
 
   return (
-    <DivAnimated key="emailField" className="flex flex-col gap-6 h-full mt-5">
+    <DivAnimated className="flex flex-col h-full gap-6 mt-5">
       <Input
         autoFocus
         disabled={isLoading}

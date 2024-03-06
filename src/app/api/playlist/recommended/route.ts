@@ -34,6 +34,7 @@ export async function GET(req: NextRequest) {
     const playlistsCharge = filteredBundle.map((playlist) => {
       const { title, id, coverPhoto } = playlist;
       return {
+        isOfficial: true,
         title,
         id,
         coverPhoto,

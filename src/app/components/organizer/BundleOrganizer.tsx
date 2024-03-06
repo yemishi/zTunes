@@ -11,18 +11,14 @@ export default function BundleOrganizer({
   title,
   props,
   baseUrl,
-  isOfficial,
 }: {
   title: string;
-  isOfficial?: boolean;
   props: BundleType[];
   baseUrl: string;
 }) {
   const [isMobileDev, setIsMobileDev] = useState<boolean>();
 
-  useEffect(() => {
-    setIsMobileDev(isMobile);
-  }, []);
+  useEffect(() => setIsMobileDev(isMobile), []);
 
   return (
     <div className="text-white p-4 flex flex-col font-kanit gap-3">
@@ -30,7 +26,8 @@ export default function BundleOrganizer({
 
       <Slider disableDrag={!isMobileDev}>
         {props.map((item, index) => {
-          const { coverPhoto, id, title, artistId, artistName } = item;
+          const { coverPhoto, id, title, artistId, artistName, isOfficial } =
+            item;
           return (
             <div
               key={`${id}_${index}`}

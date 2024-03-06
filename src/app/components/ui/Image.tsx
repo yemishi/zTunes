@@ -24,7 +24,7 @@ export default function Image({
       src={src}
       alt=""
       priority={priority}
-      
+      quality={100}
       onLoad={() => setIsLoading(false)}
       className={`${className ? className : ""} ${
         isLoading ? "brightness-50" : ""

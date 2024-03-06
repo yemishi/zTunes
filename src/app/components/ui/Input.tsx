@@ -44,7 +44,11 @@ const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
   return (
     <span className={`${className} flex flex-col gap-1 font-kanit text-left `}>
       <span>
-        <label className="text-gray-200" htmlFor={id}>
+        <label
+          className="text-gray-200"
+          htmlFor={id || rest.name}
+          aria-label={rest.name}
+        >
           {label}
         </label>
         {info && <p className="text-gray-400 text-sm">{info}</p>}
@@ -55,7 +59,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
       >
         <input
           type={checkType}
-          id={id}
+          id={id || rest.name}
           className={`w-full h-full inputForm  ${
             error ? "border-red-500" : "border-white"
           }`}

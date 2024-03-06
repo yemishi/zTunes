@@ -1,5 +1,6 @@
 "use client";
-import { useEffect, useState } from "react";
+
+import { useState } from "react";
 import Image from "../ui/Image";
 import Button from "../ui/Button";
 import { useRouter } from "next/navigation";

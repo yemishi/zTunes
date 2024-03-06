@@ -1,24 +1,26 @@
 "use client";
 
-import { SongType } from "@/types/response";
 import { AnimatePresence, motion } from "framer-motion";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { SongType } from "@/types/response";
+import { useSession } from "next-auth/react";
+import { usePathname, useRouter } from "next/navigation";
+import Link from "next/link";
+
+import { toast } from "react-toastify";
 import { IoIosArrowDown } from "react-icons/io";
 import { TbDots } from "react-icons/tb";
-import SongOptions from "../songOptions/songOptions";
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import { toast } from "react-toastify";
+import { MdPlayCircleFilled } from "react-icons/md";
+import { PiPauseCircleFill } from "react-icons/pi";
+import { IoPlaySkipBackSharp, IoPlaySkipForward } from "react-icons/io5";
+import { LiaVolumeUpSolid } from "react-icons/lia";
 import { formatDuration } from "@/app/utils/formatting";
+
+import SongOptions from "../songOptions/songOptions";
 import AddToPlaylist from "../songOptions/addToPlaylist";
 import Image from "../ui/Image";
 import ProgressBar from "../ui/ProgressBar";
-import { MdPlayCircleFilled } from "react-icons/md";
-import { PiPauseCircleFill } from "react-icons/pi";
-import Link from "next/link";
-import { IoPlaySkipBackSharp, IoPlaySkipForward } from "react-icons/io5";
 import ToggleLike from "../ui/ToggleLike";
-import { LiaVolumeUpSolid } from "react-icons/lia";
 
 type PropsType = {
   song: SongType;
@@ -68,6 +70,11 @@ export default function PlayerDetails({
   const { data: session } = useSession();
   const user = session?.user;
   const { push } = useRouter();
+  const pathname = usePathname();
+
+  useEffect(() => {
+    onClose();
+  }, [pathname]);
 
   return (
     <AnimatePresence>
@@ -141,7 +148,7 @@ export default function PlayerDetails({
                 currentProgress={volume}
               />
             )}
-            <LiaVolumeUpSolid  className="size-8 rotate-180" />
+            <LiaVolumeUpSolid className="size-8 rotate-180" />
           </div>
 
           <div className="grid grid-cols-3 gap-6 items-center px-4 ">

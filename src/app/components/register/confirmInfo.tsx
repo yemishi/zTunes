@@ -3,12 +3,14 @@ import DivAnimated from "../ui/DivAnimated";
 import { format } from "date-fns";
 import { RegisterResponseType } from "./types/registerTypes";
 import Link from "next/link";
+
 type PropsType = {
   name: String;
   email: String;
   bDay: String;
-  response: RegisterResponseType;
+  response?: RegisterResponseType;
 };
+
 export default function ConfirmInfo({
   email,
   name,
@@ -31,9 +33,7 @@ export default function ConfirmInfo({
           response ? "bg-opacity-35" : "bg-opacity-20"
         } font-kanit text-xl bg-white px-3 py-5 rounded-lg border border-white border-opacity-50 mt-3`}
       >
-        <p
-          className="px-3 font-medium"
-        >
+        <p className="px-3 font-medium">
           {response ? response.message : "If everything is right click below"}
         </p>
       </div>

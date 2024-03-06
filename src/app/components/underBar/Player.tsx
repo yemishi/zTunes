@@ -1,25 +1,15 @@
 "use client";
 import { usePlayerContext } from "@/context/Provider";
-import {
-  ChangeEvent,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { IoPlaySkipForward } from "react-icons/io5";
 import { IoPlaySkipBackSharp } from "react-icons/io5";
 import { IoIosPlay } from "react-icons/io";
 import { IoIosPause } from "react-icons/io";
 import Image from "../ui/Image";
-import Vibrant from "node-vibrant";
 import PlayerDetails from "./PlayerDetails";
-import { formatDuration } from "@/app/utils/formatting";
-import ProgressBar from "../ui/ProgressBar";
 
 export default function Player() {
-  const { currSong, player, setCurrSong, setPlayer } = usePlayerContext();
+  const { currSong, player, setCurrSong } = usePlayerContext();
   const audioRef = useRef<HTMLAudioElement>(null);
 
   const [isPlaying, setIsPlaying] = useState<boolean>(true);
@@ -43,6 +33,7 @@ export default function Player() {
       setIsPlaying(false);
     }
   };
+
   useEffect(() => {
     const fetchData = async () => {
       const data = await fetch(`/api/vibrant-color?imgUrl=${coverPhoto}`).then(
@@ -107,27 +98,6 @@ export default function Player() {
         </div>
       </div>
 
-      {/*       <ProgressBar
-        value={currentTime}
-        onChange={handleProgress}
-        max={duration || 0}
-        onClick={(e) => e.stopPropagation()}
-        currentProgress={currentTime / Number(duration)}
-      /> */}
-
-      {/*       <ProgressBar
-        vertical
-        value={volume}
-        onChange={handleVolumeChange}
-        className="bg-black"
-        max={1.0}
-        min={0.0}
-        step={0.01}
-        onClick={(e) => {
-          e.stopPropagation();
-        }}
-        currentProgress={Number(volume)}
-      /> */}
       <div
         onClick={(e) => e.stopPropagation()}
         className="flex  items-center gap-3 p-2"
@@ -142,7 +112,6 @@ export default function Player() {
       </div>
 
       <audio
-
         autoPlay={isPlaying}
         onEnded={() => {
           setCurrSong(currSong + 1);
