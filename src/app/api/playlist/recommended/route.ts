@@ -23,14 +23,22 @@ export async function GET(req: NextRequest) {
     }
 
     const playlists = await db.playlist.findMany({
-      where: { officialCategories: { isEmpty: false } },
+      where: { officialCategories: { isEmpty: false }, isPublic: true },
+      take: 10,
     });
+
+    if (!playlists.length)
+      return NextResponse.json({
+        error: true,
+        message: "Without recommendations playlists",
+      });
 
     const filteredBundle = playlists.filter((playlist) => {
       return playlist.officialCategories.some((category) =>
         categories.includes(category)
       );
     });
+
     const playlistsCharge = filteredBundle.map((playlist) => {
       const { title, id, coverPhoto } = playlist;
       return {

@@ -10,6 +10,7 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   info?: string;
   noMessage?: boolean;
   isPassword?: boolean;
+  classNameInput?: string;
 }
 
 const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
@@ -22,27 +23,27 @@ const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
     id,
     isPassword,
     noMessage,
+    classNameInput,
     ...rest
   } = props;
   const [isPass, setIsPass] = useState<boolean>(true);
 
-  const passIcon = (
-    <span
-      onClick={() => setIsPass(!isPass)}
-      className="absolute top-2/4 -translate-y-2/4 right-2 cursor-pointer"
-    >
-      {isPass ? (
-        <FaEyeSlash className="w-6 h-6" />
-      ) : (
-        <IoEyeSharp className="w-6 h-6" />
-      )}
-    </span>
-  );
+  const PassIcon = isPass ? FaEyeSlash : IoEyeSharp;
 
   const checkType = isPassword ? (isPass ? "password" : "text") : undefined;
+  const hasBg = classNameInput?.includes("bg-")
+    ? ""
+    : "bg-black bg-opacity-45 focus:bg-opacity-65";
+  const hasBorder = classNameInput?.includes("border")
+    ? ""
+    : "border-opacity-55 border border-white";
 
   return (
-    <span className={`${className} flex flex-col gap-1 font-kanit text-left `}>
+    <span
+      className={`${
+        className ? className : ""
+      }  flex flex-col gap-1 font-kanit text-left `}
+    >
       <span>
         <label
           className="text-gray-200"
@@ -53,6 +54,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
         </label>
         {info && <p className="text-gray-400 text-sm">{info}</p>}
       </span>
+
       <span
         className={`text-lg relative text-white rounded-md w-full 
        ${icon && "relative"}`}
@@ -60,17 +62,24 @@ const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
         <input
           type={checkType}
           id={id || rest.name}
-          className={`w-full h-full inputForm  ${
-            error ? "border-red-500" : "border-white"
+          className={`w-full h-full inputForm ${classNameInput} ${hasBg} ${hasBorder} ${
+            error ? "!border-red-500 border" : ""
           }`}
           ref={ref}
           {...rest}
         />
         {icon}
-        {isPassword && passIcon}
+        {isPassword && (
+          <span
+            onClick={() => setIsPass(!isPass)}
+            className="absolute top-2/4 -translate-y-2/4 right-2 cursor-pointer"
+          >
+            <PassIcon className="w-6 h-6" />
+          </span>
+        )}
       </span>
       {error?.message && !noMessage && (
-        <span className="ml-1  text-sm text-red-500">{error.message}</span>
+        <span className="ml-1 text-sm text-red-500">{error.message}</span>
       )}
     </span>
   );

@@ -2,10 +2,9 @@ import { db } from "@/lib/db";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
+  const username = req.nextUrl.searchParams.get("username") as string;
+  const artistId = req.nextUrl.searchParams.get("artistId") as string;
   try {
-    const username = req.nextUrl.searchParams.get("username") as string;
-    const artistId = req.nextUrl.searchParams.get("artistId") as string;
-
     const followers = await db.followers.findFirst({
       where: { userId: artistId },
     });
@@ -17,7 +16,6 @@ export async function GET(req: NextRequest) {
       isInclude: followers?.users.includes(user?.id as string),
     });
   } catch (error) {
-    console.log(error);
     return NextResponse.json({
       message: "We had an error trying get the user follower",
     });

@@ -1,6 +1,6 @@
-import Input from "../ui/Input";
+import Input from "../ui/inputs/Input";
 import { RegisterPropsType } from "./types/registerTypes";
-import Button from "../ui/Button";
+import Button from "../ui/buttons/Button";
 import DivAnimated from "../ui/DivAnimated";
 
 export default function PassField({

@@ -1,3 +1,16 @@
+export type {
+  SongType,
+  ArtistType,
+  BundleTypeType,
+  PlaylistType,
+  RecommendedType,
+  ManyPlaylistType,
+  ErrorType,
+  BundleType,
+  FollowersType,
+  UserType,
+};
+
 interface ErrorType {
   error: true;
   message: string;
@@ -15,6 +28,11 @@ interface BundleTypeType {
   error: false;
 }
 
+interface UserType {
+  avatar: string;
+  name: string;
+  id: string;
+}
 interface BundleType {
   avatar: string;
   id: string;
@@ -27,6 +45,11 @@ interface BundleType {
   createdAt: Date;
   isOfficial?: boolean;
   error: false;
+}
+
+interface FollowersType {
+  length: number;
+  isInclude: boolean;
 }
 
 interface ArtistType {
@@ -43,10 +66,18 @@ interface ArtistType {
   };
   error: false;
 }
+
+interface ManyPlaylistType {
+  playlists: PlaylistType[];
+  hasMore: boolean;
+  error: false;
+}
+
 interface PlaylistType {
   id: string;
   title: string;
   userId: string;
+  desc?: string;
   isPublic: boolean;
   officialCategories: string[];
   coverPhoto: string;
@@ -78,13 +109,3 @@ interface RecommendedType {
   coverPhoto: string;
   error: false;
 }
-
-export type {
-  SongType,
-  ArtistType,
-  BundleTypeType,
-  PlaylistType,
-  RecommendedType,
-  ErrorType,
-  BundleType,
-};

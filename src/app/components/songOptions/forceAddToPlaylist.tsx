@@ -1,5 +1,5 @@
 import { toast } from "react-toastify";
-import Button from "../ui/Button";
+import Button from "../ui/buttons/Button";
 import { motion } from "framer-motion";
 
 type PropsType = {

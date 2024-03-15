@@ -1,4 +1,4 @@
-import Button from "../ui/Button";
+import Button from "../ui/buttons/Button";
 import DivAnimated from "../ui/DivAnimated";
 import { format } from "date-fns";
 import { RegisterResponseType } from "./types/registerTypes";

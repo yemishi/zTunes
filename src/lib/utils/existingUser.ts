@@ -21,7 +21,6 @@ export const findByEmail = async (email: string): Promise<Response> => {
       error: false,
     };
   } catch (error) {
-    console.error(error);
     return {
       error: true,
       message: "Something went wrong, try again.",
@@ -46,7 +45,6 @@ export const findByName = async (username: string): Promise<Response> => {
       error: false,
     };
   } catch (error) {
-    console.error(error);
     return {
       error: true,
       message: "Something went wrong, try again.",

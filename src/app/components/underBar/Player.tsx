@@ -1,4 +1,5 @@
 "use client";
+
 import { usePlayerContext } from "@/context/Provider";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { IoPlaySkipForward } from "react-icons/io5";
@@ -85,8 +86,8 @@ export default function Player() {
   return (
     <div
       onClick={() => !showDetails && setShowDetails(true)}
-      style={{ background: vibrantColor || "rgb(78,62,86)" }}
-      className="w-[90%] h-14 rounded-lg flex items-center justify-between p-2 duration-100"
+      style={{ background: vibrantColor || "rgb(33 33 33)" }}
+      className="w-[90%] h-14 rounded-lg flex items-center justify-between p-2 duration-150"
     >
       <div className="flex gap-2 font-kanit items-center">
         <Image src={coverPhoto} className="size-10 rounded" />

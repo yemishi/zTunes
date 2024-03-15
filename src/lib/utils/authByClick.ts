@@ -6,7 +6,7 @@ export const authByClick = async ({
 }: {
   profile: UserToken;
 }): Promise<UserToken> => {
-  const { email, name, picture, password } = profile;
+  const { email, name, picture } = profile;
 
   const existingUser = await db.user.findFirst({
     where: {
@@ -19,6 +19,7 @@ export const authByClick = async ({
       email: existingUser.email,
       name: existingUser.username,
       picture: existingUser.profile?.avatar as string,
+      isAdmin: !!existingUser.isAdmin,
     };
   }
   const pictureUrl =
@@ -42,5 +43,6 @@ export const authByClick = async ({
     email: newUser.email,
     name: newUser.username,
     picture: newUser.profile?.avatar as string,
+    isAdmin: false,
   };
 };

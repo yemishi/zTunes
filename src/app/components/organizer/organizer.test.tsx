@@ -2,7 +2,7 @@ import { render } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import BundleOrganizer from "./BundleOrganizer";
 import { BundleType, SongType } from "@/types/response";
-import ArtistsOrganizer from "./ArtistsOrganizer";
+import ProfileOrganizer from "./ProfileOrganizer";
 import SongsOrganizer from "./SongsOrganizer";
 import Provider from "@/context/Provider";
 
@@ -61,13 +61,13 @@ describe("ArtistOrganizer Component", () => {
       cover: "https://test.png",
       id: "1",
       name: "Test name",
-      error: false,
+      isArtist: true,
     },
   ];
 
   it("renders ArtistOrganizer correctly", () => {
     const { getByText } = render(
-      <ArtistsOrganizer title="Test Artist" props={sampleProps} />
+      <ProfileOrganizer title="Test Artist" props={sampleProps} />
     );
     sampleProps.forEach((item) =>
       expect(getByText(item.name)).toBeInTheDocument()

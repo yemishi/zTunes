@@ -1,23 +1,24 @@
 "use server";
 
+import Link from "next/link";
 import { BundleType, ArtistType, SongType } from "@/types/response";
 import { redirect } from "next/navigation";
 import { getVibrantColor } from "@/app/utils/fnc";
-import ArtistHeader from "@/app/components/headers/ArtistHeader";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
+
+import Button from "@/app/components/ui/buttons/Button";
+import ArtistAbout from "@/app/components/artistAbout/ArtistAbout";
+import ProfileHeader from "@/app/components/headers/ProfileHeader";
 import BundleOrganizer from "@/app/components/organizer/BundleOrganizer";
 import SongsOrganizer from "@/app/components/organizer/SongsOrganizer";
-import Link from "next/link";
-import Button from "@/app/components/ui/Button";
-import ArtistAbout from "@/app/components/artistAbout/ArtistAbout";
 
 async function getData(artistId: string) {
   const artistInfo: ArtistType = await fetch(
     `${process.env.URL}/api/artist?id=${artistId}`
   ).then((res) => res.json());
 
-  const albums: BundleType[] = await fetch(
+  const albumsBundle: BundleType[] = await fetch(
     `${process.env.URL}/api/album?artistId=${artistId}`
   ).then((res) => res.json());
 
@@ -28,7 +29,7 @@ async function getData(artistId: string) {
   return {
     songs,
     artistInfo,
-    albums,
+    albumsBundle,
   };
 }
 
@@ -44,27 +45,34 @@ export default async function Artist({
 }: {
   params: { artistId: string };
 }) {
-  const { albums, artistInfo, songs } = await getData(params.artistId);
+  const { albumsBundle, artistInfo, songs } = await getData(params.artistId);
 
   if (artistInfo.error) return redirect("404");
 
-  const vibrantColor = await getVibrantColor(artistInfo.cover);
+  const vibrantColor = await getVibrantColor(artistInfo.cover).then(
+    (res) => res?.mutedDark
+  );
   const session = await getServerSession(authOptions);
   const followers = await getFollowers(
     session?.user.name as string,
     artistInfo.id
   );
-
+  const singles = albumsBundle.filter(
+    (album) => album.type.toLowerCase() === "single"
+  );
+  const albums = albumsBundle.filter(
+    (album) => album.type.toLowerCase() === "album"
+  );
   return (
     <div className="w-full h-full flex flex-col gap-3 pb-28 overflow-y-scroll">
-      <ArtistHeader
+      <ProfileHeader
         username={session?.user.name as string}
         followersLength={followers.length}
         isInclude={followers.isInclude}
-        vibrantColor={vibrantColor.mutedDark}
-        artistInfo={{
-          artistId: artistInfo.id,
-          artistName: artistInfo.name,
+        vibrantColor={vibrantColor || "transparent"}
+        profileInfo={{
+          profileId: artistInfo.id,
+          profileName: artistInfo.name,
           cover: artistInfo.cover,
         }}
       />
@@ -75,7 +83,20 @@ export default async function Artist({
       >
         <Link href={`/artist/${artistInfo.id}/musics`}>Show all</Link>
       </Button>
-      <BundleOrganizer baseUrl="/album" title="Albums" props={albums} />
+
+      <Link
+        href={`/artist/${artistInfo.id}/discography`}
+        className="self-end mr-4 font-kanit text-lg text-white text-opacity-50 underline underline-offset-[6px] hover:text-opacity-100 duration-100"
+      >
+        See discography
+      </Link>
+      {!!albums.length && (
+        <BundleOrganizer baseUrl="/album" title="Albums" props={albums} />
+      )}
+      {!!singles.length && (
+        <BundleOrganizer baseUrl="/album" title="Singles" props={singles} />
+      )}
+
       <ArtistAbout about={artistInfo.about} />
     </div>
   );

@@ -30,7 +30,7 @@ function FacebookButton({ children, ...props }: ButtonProps) {
 
 function GoogleButton({ children, ...props }: ButtonProps) {
   const googleSigIn = async () => {
-    const login = await signIn("google", {
+    await signIn("google", {
       redirect: false,
     });
   };

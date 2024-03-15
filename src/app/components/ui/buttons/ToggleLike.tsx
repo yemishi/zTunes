@@ -22,7 +22,7 @@ export default function ToggleLike({
 }: PropsType) {
   const { data: session } = useSession();
   const username = session?.user.name;
-  const { push } = useRouter();
+  const { push, refresh } = useRouter();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -50,6 +50,7 @@ export default function ToggleLike({
       method: "PATCH",
       body: JSON.stringify(body),
     });
+    refresh();
   };
   return (
     <button

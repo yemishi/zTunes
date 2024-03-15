@@ -4,6 +4,7 @@ import { SongType } from "@/types/response";
 import { Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
 import { createContext, useContext, useState } from "react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 interface PlayerContextProps {
   player: SongType[] | undefined;
@@ -13,6 +14,7 @@ interface PlayerContextProps {
 }
 
 const PlayerContext = createContext<PlayerContextProps | undefined>(undefined);
+const queryClient = new QueryClient();
 
 export const usePlayerContext = () => {
   const context = useContext(PlayerContext);
@@ -33,11 +35,13 @@ export default function Provider({
   const [player, setPlayer] = useState<SongType[]>();
   return (
     <SessionProvider session={session}>
-      <PlayerContext.Provider
-        value={{ currSong, setCurrSong, player, setPlayer }}
-      >
-        {children}
-      </PlayerContext.Provider>
+      <QueryClientProvider client={queryClient}>
+        <PlayerContext.Provider
+          value={{ currSong, setCurrSong, player, setPlayer }}
+        >
+          {children}
+        </PlayerContext.Provider>
+      </QueryClientProvider>
     </SessionProvider>
   );
 }

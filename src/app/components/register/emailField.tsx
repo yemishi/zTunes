@@ -1,10 +1,10 @@
 import { RegisterPropsType, RegisterResponseType } from "./types/registerTypes";
-import { FacebookButton, GoogleButton } from "../ui/AuthButtons";
+import { FacebookButton, GoogleButton } from "../ui/buttons/AuthButtons";
 import { useState } from "react";
 import Link from "next/link";
 import DivAnimated from "../ui/DivAnimated";
-import Input from "../ui/Input";
-import Button from "../ui/Button";
+import Input from "../ui/inputs/Input";
+import Button from "../ui/buttons/Button";
 
 export default function EmailField({
   error,
@@ -24,7 +24,7 @@ export default function EmailField({
     if (isEmail) {
       setIsLoading(true);
       const existingEmail: RegisterResponseType = await (
-        await fetch(`/api/user?value=${value}&field=email`)
+        await fetch(`/api/user/validation?value=${value}&field=email`)
       ).json();
       if (!existingEmail.error) {
         setIsLoading(false);

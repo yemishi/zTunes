@@ -2,7 +2,7 @@
 
 import GenericHeader from "@/app/components/headers/GenericHeader";
 import SongsOrganizer from "@/app/components/organizer/SongsOrganizer";
-import { getVibrantColor } from "@/app/utils/fnc";
+
 import { authOptions } from "@/lib/auth";
 import { getServerSession } from "next-auth";
 
@@ -21,15 +21,15 @@ export default async function Playlist({
   const session = await getServerSession(authOptions);
   const user = session?.user;
   const data = await getData(params.playlistId, user?.name as string);
-  const vibrantColor = await getVibrantColor(data.info.coverPhoto);
+
   return (
     <div className="flex flex-col pb-32">
       <GenericHeader
-        bgFrom={vibrantColor.default}
         info={data.info}
         songs={data.songs}
+        playlistId={params.playlistId}
       />
-      <SongsOrganizer playlistId={data.info.playlistId} songs={data.songs} />
+      <SongsOrganizer playlistId={params.playlistId} songs={data.songs} />
     </div>
   );
 }

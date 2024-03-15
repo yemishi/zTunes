@@ -1,0 +1,101 @@
+import ProfileHeader from "@/app/components/headers/ProfileHeader";
+import BundleOrganizer from "@/app/components/organizer/BundleOrganizer";
+import ProfileOrganizer from "@/app/components/organizer/ProfileOrganizer";
+import { getVibrantColor } from "@/app/utils/fnc";
+import { authOptions } from "@/lib/auth";
+import { BundleType, FollowersType, UserType } from "@/types/response";
+import { getServerSession } from "next-auth";
+import { redirect } from "next/navigation";
+
+async function fetchData(userId: string, username: string) {
+  try {
+    const followersInfo: FollowersType = await fetch(
+      `${process.env.URL}/api/followers?username=${username}&artistId=${userId}`
+    ).then((res) => res.json());
+
+    const userData: UserDataType = await fetch(
+      `${process.env.URL}/api/user?userId=${userId}&getFollows=true`
+    ).then((res) => res.json());
+
+    const { followsInfo, userInfo, hasMore: hasMoreFollows } = userData;
+
+    const playlistData: { playlists: BundleType[]; hasMore: boolean } =
+      await fetch(
+        `${process.env.URL}/api/playlist?username=${username}&authorName=${userInfo.name}&limit=5`
+      ).then((res) => res.json());
+
+    return {
+      followersInfo,
+      userInfo,
+      playlistData,
+      followsInfo,
+      hasMoreFollows,
+    };
+  } catch (error) {
+    redirect("404");
+  }
+}
+
+export default async function UserPage({
+  params: { userId },
+}: {
+  params: { userId: string };
+}) {
+  const session = await getServerSession(authOptions);
+  const username = session?.user.name as string;
+
+  const { followersInfo, userInfo, followsInfo, playlistData, hasMoreFollows } =
+    await fetchData(userId, username);
+
+  const { hasMore, playlists } = playlistData;
+
+  const vibrantColor = await getVibrantColor(userInfo.avatar).then(
+    (res) => res?.default
+  );
+
+  const profileInfo = {
+    profileName: userInfo.name,
+    profileId: userInfo.id,
+    cover: userInfo.avatar,
+  };
+
+  return (
+    <div className="flex flex-col gap-4 pb-32">
+      <ProfileHeader
+        username={username}
+        profileInfo={profileInfo}
+        followersLength={followersInfo.length}
+        isInclude={followersInfo.isInclude}
+        vibrantColor={vibrantColor || "transparent"}
+      />
+
+      {playlists.length > 0 && (
+        <BundleOrganizer
+          seeMore={hasMore ? `/user/${userId}/playlists` : undefined}
+          baseUrl="/playlist"
+          props={playlists}
+          title="Playlists"
+        />
+      )}
+
+      {followsInfo.length > 0 && (
+        <ProfileOrganizer
+          seeMore={hasMoreFollows ? `/user/${userId}/follows` : undefined}
+          title="Follows"
+          props={followsInfo}
+        />
+      )}
+    </div>
+  );
+}
+
+type UserDataType = {
+  hasMore: boolean;
+  userInfo: UserType;
+  followsInfo: {
+    id: string;
+    name: string;
+    cover: string;
+    isArtist: boolean;
+  }[];
+};
