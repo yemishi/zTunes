@@ -4,45 +4,51 @@ import { NextRequest, NextResponse } from "next/server";
 export async function GET(req: NextRequest) {
   const id = req.nextUrl.searchParams.get("id") as string;
   const getAll = req.nextUrl.searchParams.get("getAll") as string;
+
+  const take = req.nextUrl.searchParams.get("take") as string;
+  const offset = req.nextUrl.searchParams.get("offset") as string;
+
   try {
-    if (getAll) {
-      const artists = await db.user.findMany({
+    if (id) {
+      const artistResponse = await db.user.findFirst({
         where: {
-          isArtist: { isSet: true },
+          id,
+          AND: { isArtist: { isSet: true } },
         },
       });
-      const organizeArtists = artists.map((artist) => {
-        return {
-          id: artist.id,
-          name: artist.username,
-          about: artist.isArtist?.about,
-          cover: artist.isArtist?.cover,
-          profile: artist.profile,
-        };
-      });
+      if (!artistResponse)
+        return NextResponse.json({ error: true, message: "Artist not found" });
 
-      return NextResponse.json(organizeArtists || []);
+      const artist = {
+        id: artistResponse.id,
+        name: artistResponse.username,
+        about: artistResponse.isArtist?.about,
+        cover: artistResponse.isArtist?.cover,
+        profile: artistResponse.profile,
+      };
+      return NextResponse.json(artist);
     }
 
-    const user = await db.user.findFirst({
+    const skip = (Number(offset) || 0) * (Number(take) || 10);
+
+    const artists = await db.user.findMany({
       where: {
-        id,
-        AND: { isArtist: { isSet: true } },
+        isArtist: { isSet: true },
       },
+      skip,
+      take: skip + (Number(take) || 10),
     });
 
-    if (!user)
-      return NextResponse.json({ error: true, message: "User is not artist." });
+    const organizeArtists = artists.map((artist) => {
+      return {
+        id: artist.id,
+        name: artist.username,
+        cover: artist.isArtist?.cover,
+        isArtist: true,
+      };
+    });
 
-    const artist = {
-      id: user.id,
-      name: user.username,
-      about: user.isArtist?.about,
-      cover: user.isArtist?.cover,
-      profile: user.profile,
-    };
-
-    return NextResponse.json(artist);
+    return NextResponse.json(organizeArtists || []);
   } catch (error) {
     return NextResponse.json({
       error: true,

@@ -1,110 +1,81 @@
 import { db } from "@/lib/db";
 import { NextRequest, NextResponse } from "next/server";
-import bcrypt from "bcrypt";
-import { createdUserEmail, updatedUserEmail } from "@/app/utils/sendEmail";
 
 export async function GET(req: NextRequest) {
-  try {
-    const value = req.nextUrl.searchParams.get("value") as string;
-    const field = req.nextUrl.searchParams.get("field") as "username" | "email";
+  const userId = req.nextUrl.searchParams.get("userId") as string;
+  const limit = Number(req.nextUrl.searchParams.get("limit")) || 10;
+  const page = Number(req.nextUrl.searchParams.get("page")) || 0;
+  const getFollows = req.nextUrl.searchParams.get("getFollows") as string;
 
-    const existingUser = await db.user.findFirst({
+  try {
+    const user = await db.user.findFirst({ where: { id: userId } });
+
+    if (!user || user.isArtist)
+      return NextResponse.json({ error: true, message: "User not found" });
+
+    const userInfo = {
+      id: user.id,
+      name: user.username,
+      avatar: user.profile?.avatar,
+    };
+
+    if (!getFollows) return NextResponse.json(userInfo);
+
+    const followsData = await db.followers.findMany({
       where: {
-        [field]: value,
+        users: { has: user.id },
       },
     });
-    if (existingUser) {
-      return NextResponse.json({
-        error: true,
-        message: `User with this ${field} already created.`,
-      });
-    }
+    const skip = page * limit;
 
-    return NextResponse.json({ error: false });
-  } catch (error) {
-    return NextResponse.json({
-      error: true,
-      message: `Something went wrong.`,
+    const followsResponse = await db.user.findMany({
+      where: { id: { in: followsData.map((ele) => ele.userId) } },
     });
-  }
-}
+    const followsSliced = followsResponse.slice(skip, skip + limit);
 
-export async function POST(req: NextRequest) {
-  try {
-    const { username, email, password, birthDate } = await req.json();
-    const hashedPass = bcrypt.hashSync(password, 10);
-
-    const existingUser = await db.user.findFirst({
-      where: { OR: [{ username, email }] },
+    const followsInfo = followsSliced.map((user) => {
+      return {
+        id: user.id,
+        name: user.username,
+        cover: user.profile?.avatar,
+        isArtist: !!user.isArtist,
+      };
     });
-
-    if (existingUser) {
-      return NextResponse.json({
-        error: true,
-        message: `User with this name or email already created.`,
-      });
-    }
-
-    const newUser = await db.user.create({
-      data: {
-        email,
-        username,
-        password: hashedPass,
-        profile: {
-          birthDate,
-        },
-      },
-    });
-
-    await db.followers.create({
-      data: {
-        userId: newUser.id,
-        users: [],
-      },
-    });
-
-    createdUserEmail(newUser.email, newUser.id);
 
     return NextResponse.json({
-      error: false,
-      message: `User created successfully, check your email to validate your account!`,
+      followsInfo,
+      userInfo,
+      hasMore: followsData.length > skip + limit,
     });
   } catch (error) {
     return NextResponse.json({
       error: true,
-      message: `Something went wrong.`,
+      message: "We had a problem trying to get user info",
     });
   }
 }
 
 export async function PATCH(req: NextRequest) {
   try {
-    const { userId } = await req.json();
+    const { userId, avatar, username } = await req.json();
     const user = await db.user.findFirst({
       where: {
         id: userId,
       },
     });
 
-    if (user?.isVerified) {
-      console.log("isVerified");
-      return NextResponse.json({
-        message: "User already verified",
-      });
-    }
-
-    const userUpdated = await db.user.update({
-      where: { id: userId },
+    await db.user.update({
+      where: { id: user?.id },
       data: {
-        isVerified: true,
+        username: username ? username : user?.username,
+        profile: avatar
+          ? { avatar, birthDate: user?.profile?.birthDate }
+          : user?.profile,
       },
     });
 
-    updatedUserEmail(userUpdated.email, userUpdated.username);
-    return NextResponse.json({
-      message: "User updated with successfully",
-    });
+    return NextResponse.json({ message: "User updated with success" });
   } catch (error) {
-    return NextResponse.json({ message: "something went wrong." });
+    return NextResponse.json({ error: true, message: "something went wrong." });
   }
 }

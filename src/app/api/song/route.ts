@@ -10,7 +10,9 @@ export async function GET(req: NextRequest) {
 
   try {
     if (albumId) {
-      const songs = await db.songs.findMany({ where: { albumId } });
+      const songs = await db.songs.findMany({
+        where: { albumId },
+      });
       return NextResponse.json(songs);
     }
 
@@ -32,6 +34,7 @@ export async function GET(req: NextRequest) {
     const song = await db.songs.findUnique({ where: { id: songId } });
     return NextResponse.json(song);
   } catch (error) {
+    console.log(error);
     return NextResponse.json({
       error: true,
       message: "We had a problem trying recover the songs",
@@ -41,8 +44,15 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
-    const { name, urlSong, username, category, albumId, coverPhoto } =
-      await req.json();
+    const {
+      name,
+      urlSong,
+      username,
+      category,
+      albumId,
+      coverPhoto,
+      albumName,
+    } = await req.json();
 
     const artist = await db.user.findUnique({
       where: { username },
@@ -58,6 +68,7 @@ export async function POST(req: NextRequest) {
         artistId: artist.id,
         name,
         albumId,
+        albumName,
         urlSong,
         category,
         artistName: artist.username,

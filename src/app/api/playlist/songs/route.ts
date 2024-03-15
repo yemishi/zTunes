@@ -3,14 +3,14 @@ import { db } from "@/lib/db";
 import { Songs } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
-const getSongsInfo = async (
-  song: Songs[],
+const organizerSongInfo = async (
+  songs: Songs[],
   playlist: {
     songId: string;
     createdAt: Date;
   }
 ) => {
-  const songSelected = song.find(
+  const songSelected = songs.find(
     (song) => song.id === playlist.songId
   ) as Songs;
 
@@ -22,23 +22,15 @@ const getSongsInfo = async (
     artistId,
     artistName,
     coverPhoto,
+    albumName,
   } = songSelected;
-
-  const album = await db.album.findFirst({ where: { id: albumId } });
-
-  if (!album) {
-    return NextResponse.json({
-      error: true,
-      message: "We had a problem trying to get the playlist songs",
-    });
-  }
 
   return {
     id: songId,
     createdAt: playlist?.createdAt,
     artistId,
     artistName,
-    albumName: album.title,
+    albumName,
     coverPhoto,
     albumId,
     name,
@@ -54,7 +46,6 @@ export async function GET(req: NextRequest) {
     const playlist = await db.playlist.findUnique({
       where: { id: playlistId },
     });
-
     if (!playlist)
       return NextResponse.json({ error: true, message: "playlist not found" });
 
@@ -63,19 +54,20 @@ export async function GET(req: NextRequest) {
         error: true,
         message: "playlist not found",
       });
-    const author = await db.user.findUnique({ where: { id: playlist.userId } });
 
+    const author = await db.user.findUnique({ where: { id: playlist.userId } });
+    console.log(playlist.userId, "AAAAAAAAAAAAAA");
     const info = {
-      avatar: author?.profile?.avatar,
-      title: playlist.title,
-      author: author?.username,
-      coverPhoto: playlist.coverPhoto,
-      isUser: !author?.isArtist,
-      releasedDate: dateFormat(playlist.createdAt),
-      id: author?.id,
+      authorId: author?.id,
       desc: playlist.desc,
+      title: playlist.title,
+      isOwner: playlist.userId === user?.id,
+      author: author?.username,
+      isUser: !author?.isArtist,
+      coverPhoto: playlist.coverPhoto,
+      avatar: author?.profile?.avatar,
       isOfficial: playlist.officialCategories,
-      playlistId: playlist.userId === user?.id && playlist.id,
+      releasedDate: dateFormat(playlist.createdAt),
     };
 
     const songsId = playlist?.songs.map((obj) => obj.songId);
@@ -89,11 +81,12 @@ export async function GET(req: NextRequest) {
     });
 
     const songsInfo = await Promise.all(
-      playlist.songs.map((song) => getSongsInfo(songs, song))
+      playlist.songs.map((song) => organizerSongInfo(songs, song))
     );
 
     return NextResponse.json({ songs: songsInfo, info });
   } catch (error) {
+    console.log(error);
     return NextResponse.json({
       error: true,
       message: "We had a problem trying to get the playlist songs",

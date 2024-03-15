@@ -1,4 +1,4 @@
-import Button from "@/app/components/ui/Button";
+import Button from "@/app/components/ui/buttons/Button";
 import InvalidToken from "@/app/components/user/invalidToken";
 import Jwt from "jsonwebtoken";
 import Link from "next/link";
@@ -16,7 +16,7 @@ async function getData(token: string) {
     const body = {
       userId: decoded.id,
     };
-    await fetch(`${process.env.URL}/api/user`, {
+    await fetch(`${process.env.URL}/api/user/validation`, {
       method: "PATCH",
       body: JSON.stringify(body),
     }).then((res) => res.json());
