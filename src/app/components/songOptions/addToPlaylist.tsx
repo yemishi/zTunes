@@ -2,7 +2,7 @@
 
 import { lazy, useEffect, useState } from "react";
 import Image from "../ui/Image";
-import Button from "../ui/Button";
+import Button from "../ui/buttons/Button";
 import { Playlist } from "@prisma/client";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
@@ -33,10 +33,10 @@ export default function AddToPlaylist({
 
   useEffect(() => {
     const fetchData = async () => {
-      const data: Playlist[] = await fetch(
-        `/api/playlist?username=${username}&author=${username}`
+      const data: { playlists: Playlist[]; hasMore: boolean } = await fetch(
+        `/api/playlist?username=${username}&authorName=${username}&limit=50`
       ).then((res) => res.json());
-      setPlaylists(data);
+      setPlaylists(data.playlists);
     };
     fetchData();
   }, [options]);
@@ -74,7 +74,7 @@ export default function AddToPlaylist({
       coverPhoto,
       username,
       title,
-      addSongs: [{ createdAt: new Date(), songId }],
+      songs: [{ createdAt: new Date(), songId }],
     };
     const newPlaylist = await fetch(`/api/playlist`, {
       method: "POST",

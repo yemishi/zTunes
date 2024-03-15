@@ -56,7 +56,7 @@ export async function GET(req: NextRequest) {
       });
 
     const author = await db.user.findUnique({ where: { id: playlist.userId } });
-    console.log(playlist.userId, "AAAAAAAAAAAAAA");
+
     const info = {
       authorId: author?.id,
       desc: playlist.desc,

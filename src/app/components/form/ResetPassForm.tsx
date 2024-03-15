@@ -1,8 +1,8 @@
 "use client";
 
 import { SubmitHandler, useForm } from "react-hook-form";
-import Button from "../ui/Button";
-import Input from "../ui/Input";
+import Button from "../ui/buttons/Button";
+import Input from "../ui/inputs/Input";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";

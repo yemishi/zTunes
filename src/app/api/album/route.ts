@@ -44,6 +44,7 @@ export async function GET(req: NextRequest) {
     });
     return NextResponse.json(albums);
   } catch (error) {
+    console.log(error)
     return NextResponse.json({
       error: true,
       message: `We had a problem trying to recover the albums`,

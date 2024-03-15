@@ -8,11 +8,9 @@ import React, {
 } from "react";
 import { DivMotionProps } from "@/types/uiTypes";
 import { motion } from "framer-motion";
+import isMobile from "@/app/utils/isMobile";
 
 interface CustomBreakPoints {
-  360: { sliderPerView?: number | false };
-  640: { sliderPerView?: number | false };
-  768: { sliderPerView?: number | false };
   1024: { sliderPerView?: number | false };
   1280: { sliderPerView?: number | false };
   1536: { sliderPerView?: number | false };
@@ -20,8 +18,8 @@ interface CustomBreakPoints {
 
 interface PropsType extends DivMotionProps {
   customBreakPoints?: CustomBreakPoints;
-  disableDrag?: boolean;
   children: React.ReactNode[];
+  persistentDrag?: true;
 }
 
 export default function Slider({
@@ -30,25 +28,25 @@ export default function Slider({
   onDrag,
   onDragEnd,
   customBreakPoints,
-  disableDrag,
+  persistentDrag,
   children,
   ...props
 }: PropsType) {
   const sliderRef = useRef<HTMLDivElement>(null);
   const slidesRef = useRef<HTMLDivElement>(null);
+
   const [rangeLeft, setRangeLeft] = useState<number>(0);
   const [sliderPerView, setSliderPerView] = useState<number | false>();
 
+  const isDisableDrag = persistentDrag === undefined && !isMobile();
+
   const breakPoints = useMemo(() => {
     return {
-      "360": { sliderPerView: disableDrag && 2 },
-      "640": { sliderPerView: disableDrag && 2 },
-      "768": { sliderPerView: disableDrag && 3 },
-      "1024": { sliderPerView: disableDrag && 4 },
-      "1280": { sliderPerView: disableDrag && 5 },
-      "1536": { sliderPerView: disableDrag && 6 },
+      "1024": { sliderPerView: isDisableDrag && 4 },
+      "1280": { sliderPerView: isDisableDrag && 5 },
+      "1536": { sliderPerView: isDisableDrag && 6 },
     };
-  }, [disableDrag]);
+  }, [isDisableDrag]);
 
   const checkMediaQuery = (size: string) => {
     return window.matchMedia(`(max-width: ${size}px)`).matches;
@@ -61,10 +59,10 @@ export default function Slider({
         return checkMediaQuery(point) && sliderPerView;
       }
     );
-
-    if (foundSize && disableDrag) setSliderPerView(foundSize[1].sliderPerView);
+    if (foundSize && isDisableDrag)
+      setSliderPerView(foundSize[1].sliderPerView);
     else setSliderPerView(false);
-  }, [customBreakPoints, disableDrag]);
+  }, [customBreakPoints, isDisableDrag]);
 
   const calcRange = useCallback(() => {
     if (!slidesRef.current) return;
@@ -94,13 +92,12 @@ export default function Slider({
       window.removeEventListener("resize", handleResize);
     };
   }, [calcRange, updateSliderPerView]);
-
   const isDrag =
     (Number(slidesRef.current?.clientWidth) + 16 || 0) >
-      (sliderRef.current?.clientWidth || 0) && !disableDrag;
+      (sliderRef.current?.clientWidth || 0) && !isDisableDrag;
 
   return (
-    <div ref={sliderRef} className={disableDrag ? "w-full" : "w-screen"}>
+    <div ref={sliderRef} className={!isDrag ? "w-full" : "w-screen"}>
       <motion.div
         ref={slidesRef}
         drag={isDrag ? "x" : false}
@@ -111,7 +108,7 @@ export default function Slider({
         dragElastic={0.2}
         dragTransition={{ bounceDamping: 18 }}
         className={` ${props.className ? props.className : ""} ${
-          disableDrag ? "w-full" : "w-max"
+          isDisableDrag ? "w-full" : "w-max"
         } flex flex-row gap-4 `}
         {...props}
       >

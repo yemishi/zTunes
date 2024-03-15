@@ -18,7 +18,7 @@ import {
 } from "../register/types/registerTypes";
 
 export default function SignUpForm() {
-  const [step, setStep] = useState<number>(2);
+  const [step, setStep] = useState<number>(0);
   const [response, setResponse] = useState<RegisterResponseType>();
 
   const FormSchema = z
@@ -83,7 +83,7 @@ export default function SignUpForm() {
       email,
     };
 
-    const response: RegisterResponseType = await fetch("/api/user", {
+    const response: RegisterResponseType = await fetch("/api/user/validation", {
       method: "POST",
       body: JSON.stringify(body),
     }).then((res) => res.json());

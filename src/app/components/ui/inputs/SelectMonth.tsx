@@ -15,7 +15,9 @@ const SelectMonth = forwardRef<HTMLSelectElement, SelectType>((props, ref) => {
     <select
       ref={ref}
       {...rest}
-      className={`inputForm ${error && "border-red-500"}`}
+      className={`inputForm bg-black bg-opacity-45 border border-white border-opacity-55 ${
+        error && "border-red-500"
+      }`}
       defaultValue={rest.defaultValue || ""}
     >
       <option disabled value="">

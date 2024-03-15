@@ -15,9 +15,11 @@ const AddToPlaylist = lazy(() => import("../songOptions/addToPlaylist"));
 export default function SongsOrganizer({
   songs,
   playlistId,
+  asOl,
   title,
 }: {
   songs: SongType[];
+  asOl?: true;
   title?: string;
   playlistId?: string;
 }) {
@@ -38,7 +40,7 @@ export default function SongsOrganizer({
   };
 
   return (
-    <div className="w-full  flex flex-col gap-4 ">
+    <div className="w-full flex flex-col gap-2 ">
       {title && <h2 className="font-kanit text-xl ml-4">{title}</h2>}
 
       {songs.map((song, index) => {
@@ -47,14 +49,20 @@ export default function SongsOrganizer({
         return (
           <div
             onClick={() => turnOnPlayer(index)}
-            className={`w-full flex font-kanit font-light items-center gap-3 px-3 py-2 hover:backdrop-brightness-125 ${
+            className={`w-full flex font-kanit font-light items-center gap-3 px-3 py-2 hover:bg-neutral-900 hover:bg-opacity-35 ${
               currSong === index && player?.some((song) => song.id === id)
-                ? "backdrop-brightness-150"
+                ? "bg-neutral-900"
                 : ""
             }`}
             key={`${id}_${index}`}
           >
-            <Image src={coverPhoto} className="size-12 rounded" />
+            {asOl ? (
+              <span className="text-lg text-white font-mono text-opacity-75">
+                {index + 1}
+              </span>
+            ) : (
+              <Image src={coverPhoto} className="size-12 rounded" />
+            )}
             <div className="flex flex-col">
               <span className="first-letter:uppercase text-lg ">{name}</span>
               <Link
@@ -67,7 +75,9 @@ export default function SongsOrganizer({
 
             <RxDotsVertical
               className="h-10 w-6 ml-auto"
-              onClick={() => setSelectedSong(song)}
+              onClick={(e) => {
+                e.stopPropagation(), setSelectedSong(song);
+              }}
             />
           </div>
         );

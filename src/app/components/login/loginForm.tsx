@@ -9,9 +9,9 @@ import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
 import { useState } from "react";
 
-import { FacebookButton, GoogleButton } from "../ui/AuthButtons";
-import Button from "../ui/Button";
-import Input from "../ui/Input";
+import { FacebookButton, GoogleButton } from "../ui/buttons/AuthButtons";
+import Button from "../ui/buttons/Button";
+import Input from "../ui/inputs/Input";
 import DivAnimated from "../ui/DivAnimated";
 
 export default function LoginForm({ close }: { close: () => void }) {

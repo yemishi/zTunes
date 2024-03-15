@@ -9,6 +9,8 @@ import {
 import "./globals.css";
 import Provider from "@/context/Provider";
 import UnderBar from "./components/underBar/underBar";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const nunito = Nunito({ subsets: ["latin"] });
 const poppins = Poppins({
@@ -54,8 +56,13 @@ export default function RootLayout({
     >
       <Provider session={session}>
         <body
-          className={`w-full h-full text-white bg-[#121212] overflow-x-hidden  ${nunito.className}`}
+          className={`w-full h-full text-white bg-black-700 overflow-x-hidden ${nunito.className}`}
         >
+          <ToastContainer
+            autoClose={3000}
+            theme="dark"
+            position="bottom-center"
+          />
           <main className="w-full h-screen">{children}</main>
           <UnderBar />
         </body>

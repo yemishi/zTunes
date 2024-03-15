@@ -1,11 +1,11 @@
 import { RegisterPropsType, RegisterResponseType } from "./types/registerTypes";
-import Button from "../ui/Button";
-import Input from "../ui/Input";
+import Button from "../ui/buttons/Button";
+import Input from "../ui/inputs/Input";
 import { ChangeEvent, useState } from "react";
 import { format, lastDayOfMonth } from "date-fns";
 import { IoAlertCircleOutline } from "react-icons/io5";
 import DivAnimated from "../ui/DivAnimated";
-import SelectMonth from "../ui/SelectMoth";
+import SelectMonth from "../ui/inputs/SelectMonth";
 
 export default function PersonalInfoField({
   error,

@@ -1,8 +1,23 @@
-import { render } from "@testing-library/react";
+import { act, render, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import ArtistHeader from "./ArtistHeader";
+import ProfileHeader from "./ProfileHeader";
 import GenericHeader from "./GenericHeader";
 import { SongType } from "@/types/response";
+
+jest.mock("next-auth/react", () => {
+  const originalModule = jest.requireActual("next-auth/react");
+  const mockSession = {
+    expires: new Date(Date.now() + 2 * 86400).toISOString(),
+    user: { name: "userTest" },
+  };
+  return {
+    __esModule: true,
+    ...originalModule,
+    useSession: jest.fn(() => {
+      return { data: mockSession, status: "authenticated" };
+    }),
+  };
+});
 
 jest.mock("next/navigation", () => ({
   useRouter() {
@@ -12,17 +27,21 @@ jest.mock("next/navigation", () => ({
   },
 }));
 
-describe("ArtistHeader component", () => {
-  const artistInfo = {
-    artistId: "artist1",
-    artistName: "artist test",
+global.fetch = jest.fn().mockResolvedValue({
+  json: () => Promise.resolve("black"),
+});
+
+describe("ProfileHeader component", () => {
+  const profileInfo = {
+    profileId: "artist1",
+    profileName: "artist test",
     cover: "https://coverTest",
   };
 
   it("render correctly", () => {
     const { getByText } = render(
-      <ArtistHeader
-        artistInfo={artistInfo}
+      <ProfileHeader
+        profileInfo={profileInfo}
         followersLength={0}
         isInclude={false}
         username="user test"
@@ -30,7 +49,7 @@ describe("ArtistHeader component", () => {
       />
     );
 
-    const artistName = getByText(artistInfo.artistName);
+    const artistName = getByText(profileInfo.profileName);
     const isFollow = getByText(/follow/i);
 
     expect(isFollow).toBeTruthy();
@@ -39,11 +58,23 @@ describe("ArtistHeader component", () => {
 });
 
 describe("GenericHeader component", () => {
+  beforeEach(() => {
+    class MockAudio extends HTMLAudioElement {
+      constructor() {
+        super();
+        this.load = jest.fn();
+      }
+    }
+    window.Audio = MockAudio;
+  });
+
   const info = {
     avatar: "https://avatartest",
     title: "Header test",
     author: "author test",
     coverPhoto: "https://covertest",
+    authorId: "author1",
+    isOwner: false,
     id: "1",
   };
 
@@ -62,14 +93,14 @@ describe("GenericHeader component", () => {
     },
   ];
 
-  it("render correctly", () => {
-    const { getByText } = render(
-      <GenericHeader bgFrom="black" info={info} songs={songs} />
-    );
-    const title = getByText(info.title);
-    const author = getByText(info.author);
+  it("should render correctly", async () => {
+    const { getByText } = render(<GenericHeader info={info} songs={songs} />);
+    await waitFor(() => {
+      const title = getByText(info.title);
+      const author = getByText(info.author);
 
-    expect(title).toBeTruthy();
-    expect(author).toBeTruthy();
+      expect(title).toBeTruthy();
+      expect(author).toBeTruthy();
+    });
   });
 });

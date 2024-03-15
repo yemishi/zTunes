@@ -20,7 +20,7 @@ import SongOptions from "../songOptions/songOptions";
 import AddToPlaylist from "../songOptions/addToPlaylist";
 import Image from "../ui/Image";
 import ProgressBar from "../ui/ProgressBar";
-import ToggleLike from "../ui/ToggleLike";
+import ToggleLike from "../ui/buttons/ToggleLike";
 
 type PropsType = {
   song: SongType;

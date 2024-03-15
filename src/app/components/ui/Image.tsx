@@ -17,12 +17,21 @@ export default function Image({
 }: ImgProps) {
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
+  const parseAlt = (imageUrl: String) => {
+    try {
+      const parts = imageUrl.split("/");
+      const fileName = parts[parts.length - 1];
+      const altName = fileName.split("?")[0];
+      return altName;
+    } catch (error) {
+      return "";
+    }
+  };
   return (
     <NextImage
       {...props}
-      draggable={false}
       src={src}
-      alt=""
+      alt={isLoading ? "image loading" : parseAlt(src)}
       priority={priority}
       quality={100}
       onLoad={() => setIsLoading(false)}

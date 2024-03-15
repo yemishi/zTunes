@@ -12,8 +12,8 @@ import { removeFromPlaylist } from "@/app/utils/fnc";
 
 import Image from "../ui/Image";
 import Link from "next/link";
-import Button from "../ui/Button";
-import ToggleLike from "../ui/ToggleLike";
+import Button from "../ui/buttons/Button";
+import ToggleLike from "../ui/buttons/ToggleLike";
 
 export default function SongOptions({
   song,

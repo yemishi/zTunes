@@ -1,8 +1,10 @@
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { NextAuthOptions } from "next-auth";
+
 import FacebookProvider from "next-auth/providers/facebook";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
+
 import { db } from "./db";
 import { compare } from "bcrypt";
 import { authByClick } from "./utils/authByClick";
@@ -11,6 +13,7 @@ export type UserToken = {
   name: String;
   email: String;
   picture: String;
+  isAdmin: boolean;
   password?: String;
 };
 
@@ -33,7 +36,7 @@ export const authOptions: NextAuthOptions = {
         name: { label: "name", type: "text", placeholder: "jsmith" },
         password: { label: "Password", type: "password" },
       },
-      async authorize(credentials, req) {
+      async authorize(credentials) {
         if (!credentials?.name || !credentials.password) return null;
         const { name, password } = credentials;
         const existingUser = await db.user.findFirst({
@@ -51,6 +54,7 @@ export const authOptions: NextAuthOptions = {
           email: existingUser.email,
           name: existingUser.username,
           image: existingUser.profile?.avatar,
+          isAdmin: existingUser.isAdmin,
         };
       },
     }),
@@ -88,23 +92,25 @@ export const authOptions: NextAuthOptions = {
   ],
 
   callbacks: {
-    async jwt({ token, user, account, profile }) {
-      if (user || account) {
-        if (
-          account?.provider === "google" ||
-          account?.provider === "facebook"
-        ) {
-          const { email, name, picture } = await authByClick({ profile } as {
-            profile: any;
-          });
+    async jwt({ token, account, profile, trigger, session }) {
+      if (account?.provider === "google" || account?.provider === "facebook") {
+        const { email, name, picture, isAdmin } = await authByClick({
+          profile,
+        } as {
+          profile: any;
+        });
 
-          token = {
-            ...token,
-            email: email as string,
-            name: name as string,
-            picture: picture as string,
-          };
-        }
+        token = {
+          ...token,
+          email: email as string,
+          name: name as string,
+          picture: picture as string,
+          isAdmin: isAdmin,
+        };
+      }
+
+      if (trigger === "update" && session.name) {
+        token.name = session.name;
       }
 
       return token;
@@ -115,6 +121,7 @@ export const authOptions: NextAuthOptions = {
         email: token.email as string,
         name: token.name as string,
         picture: token.picture as string,
+        isAdmin: !!token.isAdmin,
       };
       return session;
     },
