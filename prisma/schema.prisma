@@ -31,6 +31,7 @@ model Songs {
   artistName String
   coverPhoto String
   category   String[]
+  albumName  String
   albumId    String   @db.ObjectId
 }
 
@@ -52,7 +53,7 @@ model Playlist {
   isPublic           Boolean?
   desc               String?
   officialCategories String[]
-  coverPhoto         String             @default("https://cdn-icons-png.flaticon.com/512/16/16249.png")
+  coverPhoto         String
   updatedAt          DateTime           @updatedAt
   createdAt          DateTime           @default(now())
 
@@ -66,7 +67,7 @@ model Album {
   releasedDate String
   artistName   String
   artistId     String   @db.ObjectId
-  coverPhoto   String   @default("https://cdn-icons-png.flaticon.com/512/16/16249.png")
+  coverPhoto   String
   createdAt    DateTime @default(now())
 }
 
