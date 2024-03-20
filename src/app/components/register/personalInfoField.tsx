@@ -1,11 +1,11 @@
 import { RegisterPropsType, RegisterResponseType } from "./types/registerTypes";
 import Button from "../ui/buttons/Button";
 import Input from "../ui/inputs/Input";
-import { ChangeEvent, useState } from "react";
-import { format, lastDayOfMonth } from "date-fns";
+import { useState } from "react";
 import { IoAlertCircleOutline } from "react-icons/io5";
 import DivAnimated from "../ui/DivAnimated";
-import SelectMonth from "../ui/inputs/SelectMonth";
+import DateFields from "../ui/inputs/DateFields";
+import { isValidDate } from "@/app/utils/fnc";
 
 export default function PersonalInfoField({
   error,
@@ -18,63 +18,31 @@ export default function PersonalInfoField({
   value,
 }: RegisterPropsType) {
   const [birthDate, setBirthDate] = useState<{
-    bday: string;
+    day: string;
     month: string;
-    bdayYear: string;
+    year: string;
   }>({
-    bday: "",
+    day: "",
     month: "",
-    bdayYear: "",
+    year: "",
   });
   const [isLoading, setIsLoading] = useState<boolean>(false);
-
-  const handleInput = (
-    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
-    const { name, value } = e.target;
-    setBirthDate({
-      ...birthDate,
-      [name]:
-        name === "bday"
-          ? handleLimitDay(value)
-          : name === "bdayYear"
-          ? handleLimitYear(value)
-          : value,
-    });
-  };
-
-  const lastDay = format(
-    lastDayOfMonth(
-      new Date(Number(birthDate.bdayYear), Number(birthDate?.month))
-    ),
-    "d"
-  );
-
-  const handleLimitDay = (value: string) => {
-    if (Number(value) >= Number(lastDay)) {
-      return lastDay;
-    } else {
-      return value || "";
-    }
-  };
-
-  const handleLimitYear = (value: string) => {
-    if (value.length > 4) return value.slice(0, 4);
-    else {
-      return value || "";
-    }
-  };
 
   const handleNext = async (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
     e.preventDefault();
-    if (birthDate.bday > lastDay) {
+    const checkDate = isValidDate(
+      birthDate.day,
+      birthDate.month,
+      birthDate.year
+    );
+    if (!checkDate) {
       return setError("bDay", { message: "The day field needs to be valid." });
     }
     if (setValue) {
-      setValue("bYear", birthDate.bdayYear);
-      setValue("bDay", birthDate.bday);
+      setValue("bYear", birthDate.year);
+      setValue("bDay", birthDate.day);
       setValue("bMonth", birthDate.month);
     }
     const checkValues = await trigger(["bDay", "bMonth", "bYear", "name"]);
@@ -82,7 +50,7 @@ export default function PersonalInfoField({
 
     setIsLoading(true);
     const { error, message }: RegisterResponseType = await (
-      await fetch(`/api/user?value=${value}&field=username`)
+      await fetch(`/api/user/validation?value=${value}&field=username`)
     ).json();
     if (error) {
       setIsLoading(false);
@@ -98,7 +66,7 @@ export default function PersonalInfoField({
         autoFocus
         disabled={isLoading}
         {...register("name")}
-        error={error}
+        error={error?.message}
         label="Name"
         placeholder="Mohammed"
         autoComplete="display_name"
@@ -117,7 +85,51 @@ export default function PersonalInfoField({
           </p>
         </span>
 
-        <span className="grid grid-cols-[1fr_2fr_1.5fr] gap-3 ">
+        <DateFields
+          setValues={setBirthDate}
+          values={birthDate}
+          errors={{
+            day: errors?.bDay as string | undefined,
+            month: errors?.bMonth as string | undefined,
+            year: errors?.bYear as string | undefined,
+          }}
+        />
+
+        <div className="text-red-500 self-star text-left mt-2 text-sm">
+          {errors?.bDay && (
+            <span className="flex gap-1 items-center">
+              <IoAlertCircleOutline className="w-4 h-4" />
+              <p>{errors?.bDay?.message}</p>
+            </span>
+          )}
+          {errors?.bMonth && (
+            <span className="flex gap-1 items-center">
+              <IoAlertCircleOutline className="w-4 h-4" />
+              <p>{errors?.bMonth?.message}</p>
+            </span>
+          )}
+          {errors?.bYear && (
+            <span className="flex gap-1 items-center">
+              <IoAlertCircleOutline className="w-4 h-4" />
+              <p>{errors?.bYear?.message}</p>
+            </span>
+          )}
+        </div>
+      </div>
+
+      <Button
+        disabled={isLoading}
+        onClick={handleNext}
+        type="submit"
+        className="text-black"
+      >
+        Next
+      </Button>
+    </DivAnimated>
+  );
+}
+
+/*   <span className="grid grid-cols-[1fr_2fr_1.5fr] gap-3 ">
           <Input
             disabled={isLoading}
             noMessage
@@ -154,38 +166,4 @@ export default function PersonalInfoField({
             autoComplete="bday-year"
             name="bdayYear"
           />
-        </span>
-
-        <div className="text-red-500 self-star text-left mt-2 text-sm">
-          {errors?.bDay && (
-            <span className="flex gap-1 items-center">
-              <IoAlertCircleOutline className="w-4 h-4" />
-              <p>{errors?.bDay?.message}</p>
-            </span>
-          )}
-          {errors?.bMonth && (
-            <span className="flex gap-1 items-center">
-              <IoAlertCircleOutline className="w-4 h-4" />
-              <p>{errors?.bMonth?.message}</p>
-            </span>
-          )}
-          {errors?.bYear && (
-            <span className="flex gap-1 items-center">
-              <IoAlertCircleOutline className="w-4 h-4" />
-              <p>{errors?.bYear?.message}</p>
-            </span>
-          )}
-        </div>
-      </div>
-
-      <Button
-        disabled={isLoading}
-        onClick={handleNext}
-        type="submit"
-        className="text-black"
-      >
-        Next
-      </Button>
-    </DivAnimated>
-  );
-}
+        </span> */

@@ -22,7 +22,7 @@ export default function PassField({
       <Input
         autoFocus
         {...register("password")}
-        error={error}
+        error={error?.message}
         label="Password"
         isPassword
         placeholder="securepass"

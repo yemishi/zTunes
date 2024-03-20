@@ -3,8 +3,6 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
   const id = req.nextUrl.searchParams.get("id") as string;
-  const getAll = req.nextUrl.searchParams.get("getAll") as string;
-
   const take = req.nextUrl.searchParams.get("take") as string;
   const offset = req.nextUrl.searchParams.get("offset") as string;
 
@@ -16,14 +14,14 @@ export async function GET(req: NextRequest) {
           AND: { isArtist: { isSet: true } },
         },
       });
-      if (!artistResponse)
+      if (!artistResponse || !artistResponse.isArtist)
         return NextResponse.json({ error: true, message: "Artist not found" });
 
       const artist = {
         id: artistResponse.id,
         name: artistResponse.username,
-        about: artistResponse.isArtist?.about,
-        cover: artistResponse.isArtist?.cover,
+        summary: artistResponse.isArtist?.summary,
+        cover: artistResponse.isArtist.cover,
         profile: artistResponse.profile,
       };
       return NextResponse.json(artist);
@@ -59,29 +57,26 @@ export async function GET(req: NextRequest) {
 
 export async function PATCH(req: NextRequest) {
   try {
-    const { username, cover, about } = await req.json();
-    const user = await db.user.findFirst({ where: { username } });
+    const { userId, cover, summary } = await req.json();
+    const user = await db.user.findFirst({ where: { id: userId } });
 
-    if (!user)
-      return NextResponse.json({ error: true, message: "user not found" });
-    if (user.isArtist) {
-      return NextResponse.json({
-        error: true,
-        message: "You already is artist.",
-      });
-    }
+    if (!user || !user.isArtist)
+      return NextResponse.json({ error: true, message: "artist not found" });
 
     await db.user.update({
       where: { id: user?.id },
       data: {
-        isArtist: { cover, about },
+        isArtist: {
+          cover: cover || user.isArtist.cover,
+          summary: summary || user.isArtist.summary,
+        },
       },
     });
 
-    return NextResponse.json({ message: "User updated with successfully" });
+    return NextResponse.json({ message: "Artist updated with successfully" });
   } catch (error) {
     return NextResponse.json({
-      message: "We had a problem retrieving artist information",
+      message: "We had a problem trying to updated artist information",
     });
   }
 }

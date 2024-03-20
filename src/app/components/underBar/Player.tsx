@@ -37,9 +37,9 @@ export default function Player() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const data = await fetch(`/api/vibrant-color?imgUrl=${coverPhoto}`).then(
-        (res) => res.json()
-      );
+      const data = await fetch(
+        `/api/vibrant-color?imgUrl=${encodeURI(coverPhoto)}`
+      ).then((res) => res.json());
       setVibrantColor(data);
     };
     fetchData();
@@ -124,10 +124,15 @@ export default function Player() {
       <PlayerDetails
         isVisible={showDetails}
         onClose={() => setShowDetails(false)}
-        handlers={{ handleProgress, handleVolumeChange, togglePlayer }}
+        handlers={{
+          handleProgress,
+          handleVolumeChange,
+          togglePlayer,
+        }}
         values={{ isPlaying, volume, duration: Number(duration), currentTime }}
         song={player[currSong]}
         next={next}
+        audioRef={audioRef}
         previous={previous}
         vibrantColor={vibrantColor as string}
       />

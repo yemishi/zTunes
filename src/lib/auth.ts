@@ -1,13 +1,9 @@
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { NextAuthOptions } from "next-auth";
-
-import FacebookProvider from "next-auth/providers/facebook";
 import CredentialsProvider from "next-auth/providers/credentials";
-import GoogleProvider from "next-auth/providers/google";
 
 import { db } from "./db";
 import { compare } from "bcrypt";
-import { authByClick } from "./utils/authByClick";
 
 export type UserToken = {
   name: String;
@@ -26,7 +22,7 @@ export const authOptions: NextAuthOptions = {
   },
   pages: {
     signIn: "/sign-in",
-    signOut: "/sign-out",
+    signOut: "/sign-in",
   },
 
   providers: [
@@ -58,59 +54,13 @@ export const authOptions: NextAuthOptions = {
         };
       },
     }),
-    GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID as string,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
-      authorization: {
-        params: {
-          prompt: "consent",
-          access_type: "offline",
-          response_type: "code",
-        },
-      },
-    }),
-
-    FacebookProvider({
-      clientId: process.env.FACEBOOK_CLIENT_ID as string,
-      clientSecret: process.env.FACEBOOK_CLIENT_SECRET as string,
-      authorization: {
-        params: {
-          prompt: "consent",
-          access_type: "offline",
-          response_type: "code",
-        },
-      },
-      async profile(profile) {
-        return {
-          id: profile.id,
-          name: profile.display_name,
-          email: profile.email,
-          image: "",
-        };
-      },
-    }),
   ],
 
   callbacks: {
-    async jwt({ token, account, profile, trigger, session }) {
-      if (account?.provider === "google" || account?.provider === "facebook") {
-        const { email, name, picture, isAdmin } = await authByClick({
-          profile,
-        } as {
-          profile: any;
-        });
-
-        token = {
-          ...token,
-          email: email as string,
-          name: name as string,
-          picture: picture as string,
-          isAdmin: isAdmin,
-        };
-      }
-
-      if (trigger === "update" && session.name) {
-        token.name = session.name;
+    async jwt({ token, trigger, session }) {
+      if (trigger === "update" && (session.name || session.picture)) {
+        token.name = session.name || token.name;
+        token.picture = session.picture || token.name;
       }
 
       return token;
@@ -125,8 +75,8 @@ export const authOptions: NextAuthOptions = {
       };
       return session;
     },
-    redirect({ baseUrl }) {
-      return `${baseUrl}/home`;
+    redirect({ baseUrl, url }) {
+      return `${baseUrl}/sign-in`;
     },
   },
 };

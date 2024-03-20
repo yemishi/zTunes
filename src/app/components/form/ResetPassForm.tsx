@@ -96,7 +96,7 @@ export default function ResetPassForm({ userId }: { userId: string }) {
                   isPassword
                   autoFocus
                   {...register("password")}
-                  error={errors.password}
+                  error={errors.password?.message}
                   label="New password"
                 />
 
@@ -104,7 +104,7 @@ export default function ResetPassForm({ userId }: { userId: string }) {
                   disabled={isLoading}
                   isPassword
                   {...register("confirmPass")}
-                  error={errors.confirmPass}
+                  error={errors.confirmPass?.message}
                   label="Confirm new password"
                 />
                 <Button type="submit" className="mt-10">

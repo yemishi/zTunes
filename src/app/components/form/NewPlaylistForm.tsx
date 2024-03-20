@@ -8,11 +8,11 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { useState } from "react";
 import { ErrorType } from "@/types/response";
 
-import Button from "../components/ui/buttons/Button";
+import Button from "../ui/buttons/Button";
 import uploadImage from "@/firebase/handleImage";
-import Input from "../components/ui/inputs/Input";
-import InputFileImg from "../components/ui/inputs/imageUploader";
-import AddOfficialCategories from "./AddOfficialCategories";
+import Input from "../ui/inputs/Input";
+import InputFileImg from "../ui/inputs/InputFileImg";
+import AddCategories from "../ui/inputs/AddCategories";
 
 export default function NewPlaylistForm({
   username,
@@ -110,7 +110,7 @@ export default function NewPlaylistForm({
 
       <Input
         type="text"
-        error={errors.name}
+        error={errors.name?.message}
         label="Name"
         {...register("name")}
         placeholder="Playlist name"
@@ -148,7 +148,7 @@ export default function NewPlaylistForm({
             setState={setIsCategories}
           />
           {isCategories && (
-            <AddOfficialCategories
+            <AddCategories
               categories={categories}
               setCategories={setCategories}
             />

@@ -1,14 +1,14 @@
 import { authOptions } from "@/lib/auth";
-import { BundleType, ManyPlaylistType } from "@/types/response";
+import { ErrorType, ManyPlaylistType } from "@/types/response";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import Card from "../components/card/Card";
 
 async function fetchData(username: string) {
-  const playlistsData: ManyPlaylistType = await fetch(
+  const playlistsData: ManyPlaylistType | ErrorType = await fetch(
     `${process.env.URL}/api/playlist?username=${username}&authorName=${username}`
   ).then((res) => res.json());
-
+  if (playlistsData.error) return redirect("404");
   return {
     playlistsData,
   };
@@ -16,11 +16,8 @@ async function fetchData(username: string) {
 
 export default async function MyLib() {
   const session = await getServerSession(authOptions);
-  if (!session?.user) return redirect("404");
+  if (!session?.user) return redirect("/sign-in");
   const username = session.user.name;
-
-  if (!username) return redirect("404");
-
   const {
     playlistsData: { playlists },
   } = await fetchData(username);

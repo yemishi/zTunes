@@ -1,13 +1,14 @@
-"use client";
 import { useRouter } from "next/navigation";
 import { memo } from "react";
 import { IoArrowBackOutline } from "react-icons/io5";
 
 interface DivProps extends React.HTMLAttributes<HTMLDivElement> {}
 
+const hasPrevious = typeof window !== "undefined" && window.history?.length;
+
 function PreviousPage({ ...props }: DivProps) {
   const { back } = useRouter();
-  const hasPrevious = window.history?.length;
+
   return (
     <div
       {...props}
@@ -17,9 +18,10 @@ function PreviousPage({ ...props }: DivProps) {
     >
       <IoArrowBackOutline
         onClick={() => (hasPrevious ? back() : null)}
-        className={`size-7 text-white ${hasPrevious ? "" : "text-opacity-30"} `}
+        className={`size-7 text-white`}
       />
     </div>
   );
 }
+
 export default memo(PreviousPage);

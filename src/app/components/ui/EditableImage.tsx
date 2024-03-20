@@ -1,18 +1,19 @@
 import { useState } from "react";
-import InputFile from "./inputs/InputFile";
 import Image from "./Image";
-import InputFileImg from "./inputs/imageUploader";
+import InputFileImg from "./inputs/InputFileImg";
 import { toast } from "react-toastify";
 import handleImage, { deleteImage } from "@/firebase/handleImage";
 import { ErrorType } from "@/types/response";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 interface InputProps extends React.HTMLAttributes<HTMLElement> {
   isOwner: boolean;
   initialValue: string;
   uploadUrl: string;
-  extraBody?: object;
   fieldUpload: string;
+  updateSession?: boolean;
+  extraBody?: object;
   method?: string;
 }
 
@@ -23,6 +24,7 @@ export default function EditableImage({
   extraBody,
   fieldUpload,
   method,
+  updateSession,
   ...props
 }: InputProps) {
   const { className, ...rest } = props;
@@ -31,6 +33,7 @@ export default function EditableImage({
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
+  const { update: updateImg, data: session } = useSession();
   const { refresh } = useRouter();
 
   const defaultSize =
@@ -42,16 +45,15 @@ export default function EditableImage({
   const defaultRadius = className?.includes("rounded") ? "" : "rounded-full";
 
   const onchange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!e.target.files || !e.target.files[0].type.startsWith("image/"))
-      return toast.error("Invalid image type");
-
     setIsLoading(true);
-    const upload = await handleImage(e.target.files);
+    const upload = await handleImage(e.target.files as FileList);
 
     if (upload.error) return toast.error(upload.message), setIsLoading(false);
-
     const oldUrl = coverPhoto;
     setCoverPhoto(upload.url);
+    if (updateSession) {
+      await updateImg({ picture: upload.url });
+    }
 
     const body = { [fieldUpload]: upload.url, ...extraBody };
     const update: ErrorType = await fetch(uploadUrl, {
@@ -61,6 +63,7 @@ export default function EditableImage({
 
     if (update.error) toast.error(update.message);
     await deleteImage(oldUrl);
+
     refresh(), setIsLoading(false);
   };
 
@@ -72,7 +75,7 @@ export default function EditableImage({
       <Image
         onMouseEnter={() => setIsEdit(true)}
         src={coverPhoto}
-        className="h-full w-full"
+        className={`h-full w-full ${defaultRadius}`}
       />
 
       {((isEdit && isOwner) || isLoading) && (
@@ -81,7 +84,7 @@ export default function EditableImage({
           onChange={onchange}
           onMouseLeave={() => setIsEdit(false)}
           error={false}
-          className="absolute top-0 left-0 w-full bg-transparent backdrop-brightness-75 h-full"
+          className={`absolute top-0 left-0 w-full bg-transparent backdrop-brightness-75 h-full ${defaultRadius}`}
         />
       )}
     </div>

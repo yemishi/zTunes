@@ -8,6 +8,7 @@ interface DivMotionProps extends HTMLAttributes<HTMLDivElement> {
   onDragEnd?: DragEventHandler<HTMLDivElement>;
   reverse?: boolean;
   hidden?: boolean;
+  oneSide?: boolean;
 }
 
 export type { DivMotionProps };

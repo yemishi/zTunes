@@ -2,7 +2,7 @@ import { format } from "date-fns";
 import { SelectHTMLAttributes, forwardRef } from "react";
 
 interface SelectType extends SelectHTMLAttributes<HTMLSelectElement> {
-  error?: boolean;
+  error?: string | undefined;
 }
 
 const SelectMonth = forwardRef<HTMLSelectElement, SelectType>((props, ref) => {

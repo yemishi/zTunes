@@ -1,4 +1,5 @@
 import { db } from "@/lib/db";
+import { Prisma } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
@@ -44,35 +45,42 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
-    const {
-      name,
-      urlSong,
-      username,
-      category,
-      albumId,
-      coverPhoto,
-      albumName,
-    } = await req.json();
+    const { name, urlSong, artistId, category, albumId } = await req.json();
 
     const artist = await db.user.findUnique({
-      where: { username },
+      where: { id: artistId },
     });
+
     if (!artist)
       return NextResponse.json({
         error: true,
-        message: `something went wrong`,
+        message: `Artist not found`,
+      });
+
+    const album = await db.album.findFirst({ where: { id: albumId } });
+    if (!album)
+      return NextResponse.json({ error: true, message: "Album not found" });
+
+    const availableName = await db.songs.findFirst({
+      where: { albumId, name: { equals: name, mode: "insensitive" } },
+    });
+
+    if (availableName)
+      return NextResponse.json({
+        error: true,
+        message: "Name is not available",
       });
 
     const newSong = await db.songs.create({
       data: {
-        artistId: artist.id,
+        artistId,
         name,
         albumId,
-        albumName,
+        albumName: album.title,
         urlSong,
         category,
         artistName: artist.username,
-        coverPhoto,
+        coverPhoto: album.coverPhoto,
       },
     });
     await db.playCount.create({
@@ -88,5 +96,74 @@ export async function POST(req: NextRequest) {
     });
   } catch (error) {
     return NextResponse.json({ error: true, message: `error here ${error}` });
+  }
+}
+
+export async function PATCH(req: NextRequest) {
+  try {
+    const { songId, albumId, name } = await req.json();
+    if (!name)
+      return NextResponse.json({ error: true, message: "Invalid name" });
+
+    const availableName = await db.songs.findFirst({
+      where: { albumId, name: { equals: name, mode: "insensitive" } },
+    });
+
+    if (availableName)
+      return NextResponse.json({
+        error: true,
+        message: "Name is not available",
+      });
+
+    await db.songs.update({
+      where: { id: songId, albumId },
+      data: {
+        name,
+      },
+    });
+
+    return NextResponse.json({ message: "Song updated with success" });
+  } catch (error) {
+    return NextResponse.json({
+      error: true,
+      message: "We had a problem trying to update the song",
+    });
+  }
+}
+
+export async function DELETE(req: NextRequest) {
+  try {
+    const { songId, artistId } = await req.json();
+
+    const likedList = await db.likedSongs.findMany({
+      where: { songs: { has: songId } },
+    });
+
+    const updatePromises = likedList.map(async (list) => {
+      const newList = list.songs.filter((id) => id !== songId);
+      await db.likedSongs.update({
+        where: { id: list.id },
+        data: {
+          songs: newList,
+        },
+      });
+    });
+
+    await Promise.all(updatePromises);
+    await db.playCount.delete({ where: { songId } });
+    await db.songs.delete({ where: { id: songId, artistId } });
+    await db.playlist.updateMany({
+      where: { songs: { some: { songId } } },
+      data: {
+        songs: { deleteMany: { where: { songId } } },
+      },
+    });
+
+    return NextResponse.json({ message: "Song deleted with success" });
+  } catch (error) {
+    return NextResponse.json({
+      error: true,
+      message: "We ha a problem trying to delete the song",
+    });
   }
 }

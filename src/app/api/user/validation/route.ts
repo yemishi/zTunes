@@ -10,10 +10,15 @@ export async function GET(req: NextRequest) {
   try {
     const existingUser = await db.user.findFirst({
       where: {
-        [field]: value,
+        [field]: {
+          contains: value,
+          mode: field === "username" ? "insensitive" : "default",
+        },
+        AND: {
+          isVerified: { isSet: true },
+        },
       },
     });
-
     if (isAvailable) return NextResponse.json(!!existingUser);
 
     if (existingUser) {
@@ -36,17 +41,6 @@ export async function POST(req: NextRequest) {
   try {
     const { username, email, password, birthDate } = await req.json();
     const hashedPass = bcrypt.hashSync(password, 10);
-
-    const existingUser = await db.user.findFirst({
-      where: { OR: [{ username, email }] },
-    });
-
-    if (existingUser) {
-      return NextResponse.json({
-        error: true,
-        message: `User with this name or email already created.`,
-      });
-    }
 
     const newUser = await db.user.create({
       data: {

@@ -40,6 +40,7 @@ type PropsType = {
   next: () => void;
   previous: () => void;
   onClose: () => void;
+  audioRef: React.RefObject<HTMLAudioElement>;
 };
 
 export default function PlayerDetails({
@@ -51,6 +52,7 @@ export default function PlayerDetails({
   vibrantColor,
   handlers,
   values,
+  audioRef,
 }: PropsType) {
   const { coverPhoto, name, artistId, artistName, id } = song;
 
@@ -122,6 +124,12 @@ export default function PlayerDetails({
             <ProgressBar
               value={currentTime}
               onChange={handleProgress}
+              onMouseUp={() =>
+                audioRef.current ? (audioRef.current.muted = false) : null
+              }
+              onMouseDown={() =>
+                audioRef.current ? (audioRef.current.muted = true) : null
+              }
               max={duration || 0}
               currentProgress={currentTime / Number(duration)}
             />

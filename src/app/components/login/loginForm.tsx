@@ -9,7 +9,6 @@ import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
 import { useState } from "react";
 
-import { FacebookButton, GoogleButton } from "../ui/buttons/AuthButtons";
 import Button from "../ui/buttons/Button";
 import Input from "../ui/inputs/Input";
 import DivAnimated from "../ui/DivAnimated";
@@ -66,16 +65,6 @@ export default function LoginForm({ close }: { close: () => void }) {
         Log in to zTunes
       </h1>
 
-      <ul className="flex flex-col gap-2 mt-5">
-        <li>
-          <GoogleButton disabled={isLoading} />
-        </li>
-
-        <li>
-          <FacebookButton disabled={isLoading} />
-        </li>
-      </ul>
-
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-2">
         <div className="w-full my-4 h-[1px] bg-white bg-opacity-20" />
 
@@ -86,13 +75,13 @@ export default function LoginForm({ close }: { close: () => void }) {
           autoComplete="display_name"
           placeholder="Email or username"
           label="Email or username"
-          error={errors.name}
+          error={errors.name?.message}
         />
 
         <Input
           disabled={isLoading}
           {...register("password")}
-          error={errors.password}
+          error={errors.password?.message}
           label="Password"
           type={isPass ? "password" : "text"}
           icon={icon}

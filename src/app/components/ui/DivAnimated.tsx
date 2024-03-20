@@ -9,18 +9,19 @@ export default function DivAnimated({
   children,
   reverse,
   hidden,
+  oneSide,
   ...props
 }: DivMotionProps) {
   const variant = {
     initial: { x: "100%", opacity: 0 },
     animate: { x: 0, opacity: 1 },
-    exit: { x: "-100%", opacity: 0 },
+    exit: { x: oneSide ? "100%" : "-100%", opacity: 0 },
   };
 
   const variantReverse = {
     initial: { x: "-100%", opacity: 0 },
     animate: { x: 0, opacity: 1 },
-    exit: { x: "100%", opacity: 0 },
+    exit: { x: oneSide ? "-100%" : "100%", opacity: 0 },
   };
 
   return (

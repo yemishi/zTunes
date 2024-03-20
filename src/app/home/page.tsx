@@ -24,7 +24,6 @@ async function getData(username: string) {
 export default async function Home() {
   const session = await getServerSession(authOptions);
   const data = await getData(session?.user.name as string);
-
   const { albumProps, artistsProps, recommendedProps } = data;
 
   return (

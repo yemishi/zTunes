@@ -7,7 +7,7 @@ import {
 import { analytics } from "./firebase-config";
 import { ErrorType } from "@/types/response";
 
-export default async function (
+export default async function uploadImg(
   file: FileList
 ): Promise<{ error: false; url: string } | ErrorType> {
   try {
@@ -35,12 +35,11 @@ export default async function (
 
 export async function deleteImage(
   url: string
-): Promise<{ error: false; message: string } | ErrorType> {
+): Promise<{ error?: false; message: string } | ErrorType> {
   try {
     const fileRef = ref(analytics, url);
     await deleteObject(fileRef);
     return {
-      error: false,
       message: "Image deleted with success",
     };
   } catch (error) {
