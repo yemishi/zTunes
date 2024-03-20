@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { BundleType, ArtistType, SongType } from "@/types/response";
 import { redirect } from "next/navigation";
-import { getVibrantColor } from "@/app/utils/fnc";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 
@@ -15,7 +14,8 @@ import SongsOrganizer from "@/app/components/organizer/SongsOrganizer";
 
 async function getData(artistId: string) {
   const artistInfo: ArtistType = await fetch(
-    `${process.env.URL}/api/artist?id=${artistId}`
+    `${process.env.URL}/api/artist?id=${artistId}`,
+    { cache: "no-store" }
   ).then((res) => res.json());
 
   const albumsBundle: BundleType[] = await fetch(
@@ -49,20 +49,23 @@ export default async function Artist({
 
   if (artistInfo.error) return redirect("404");
 
-  const vibrantColor = await getVibrantColor(artistInfo.cover).then(
-    (res) => res?.mutedDark
-  );
+  const vibrantColor = await fetch(
+    `${process.env.URL}/api/vibrant-color?imgUrl=${encodeURI(artistInfo.cover)}`
+  ).then((res) => res.json());
+
   const session = await getServerSession(authOptions);
   const followers = await getFollowers(
     session?.user.name as string,
     artistInfo.id
   );
+
   const singles = albumsBundle.filter(
     (album) => album.type.toLowerCase() === "single"
   );
   const albums = albumsBundle.filter(
     (album) => album.type.toLowerCase() === "album"
   );
+
   return (
     <div className="w-full h-full flex flex-col gap-3 pb-28 overflow-y-scroll">
       <ProfileHeader
@@ -75,6 +78,7 @@ export default async function Artist({
           profileName: artistInfo.name,
           cover: artistInfo.cover,
         }}
+        isArtist
       />
       <SongsOrganizer songs={songs} title="Musics" />
       <Button
@@ -97,7 +101,7 @@ export default async function Artist({
         <BundleOrganizer baseUrl="/album" title="Singles" props={singles} />
       )}
 
-      <ArtistAbout about={artistInfo.about} />
+      <ArtistAbout summary={artistInfo.summary} cover={artistInfo.cover} />
     </div>
   );
 }

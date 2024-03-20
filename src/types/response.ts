@@ -1,7 +1,6 @@
 export type {
   SongType,
   ArtistType,
-  BundleTypeType,
   PlaylistType,
   RecommendedType,
   ManyPlaylistType,
@@ -16,22 +15,12 @@ interface ErrorType {
   message: string;
 }
 
-interface BundleTypeType {
-  id: string;
-  title: string;
-  type: string;
-  releasedDate: string;
-  artistName: string;
-  artistId: string;
-  coverPhoto: string;
-  createdAt: Date;
-  error: false;
-}
-
 interface UserType {
   avatar: string;
   name: string;
+  isArtist: boolean;
   id: string;
+  error: false;
 }
 interface BundleType {
   avatar: string;
@@ -55,10 +44,9 @@ interface FollowersType {
 interface ArtistType {
   id: string;
   name: string;
-  about: {
-    summary: string;
-    cover: string;
-  };
+
+  summary: string;
+
   cover: string;
   profile: {
     avatar: string;

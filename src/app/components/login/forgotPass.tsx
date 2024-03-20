@@ -71,7 +71,7 @@ export default function ForgotPass({ close }: { close: () => void }) {
         >
           <Input
             disabled={isLoading}
-            error={errors.name}
+            error={errors.name?.message}
             {...register("name")}
             label="Email or Username"
             type="text"

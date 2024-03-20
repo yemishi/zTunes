@@ -1,21 +1,30 @@
+import { compare } from "bcrypt";
+import { deleteImage } from "@/firebase/handleImage";
+import { deleteSong } from "@/firebase/handleSong";
 import { db } from "@/lib/db";
+import { User } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
   const userId = req.nextUrl.searchParams.get("userId") as string;
+  const username = req.nextUrl.searchParams.get("username") as string;
+  const artistToo = req.nextUrl.searchParams.get("artistToo") as string;
   const limit = Number(req.nextUrl.searchParams.get("limit")) || 10;
   const page = Number(req.nextUrl.searchParams.get("page")) || 0;
   const getFollows = req.nextUrl.searchParams.get("getFollows") as string;
 
   try {
-    const user = await db.user.findFirst({ where: { id: userId } });
+    const user = await db.user.findFirst({
+      where: username ? { username } : { id: userId },
+    });
 
-    if (!user || user.isArtist)
+    if (!user || (user.isArtist && !artistToo))
       return NextResponse.json({ error: true, message: "User not found" });
 
     const userInfo = {
       id: user.id,
       name: user.username,
+      isArtist: !!user.isArtist,
       avatar: user.profile?.avatar,
     };
 
@@ -78,4 +87,116 @@ export async function PATCH(req: NextRequest) {
   } catch (error) {
     return NextResponse.json({ error: true, message: "something went wrong." });
   }
+}
+
+export async function DELETE(req: NextRequest) {
+  try {
+    const { userId, password } = await req.json();
+    const user = await db.user.findFirst({ where: { id: userId } });
+    if (!user)
+      return NextResponse.json({
+        error: true,
+        message: "User not found",
+      });
+    const checkPass = await compare(password, user.password as string);
+
+    if (!checkPass)
+      return NextResponse.json({
+        error: true,
+        message: "Password incorrect",
+      });
+
+    await deleteArtistDrawer(user);
+
+    const followers = await db.followers.findMany({
+      where: { users: { has: user.id } },
+    });
+
+    const followersPromise = followers.map(async (res) => {
+      const filteredList = res.users.filter((id) => id !== user.id);
+      await db.followers.update({
+        where: { id: res.id },
+        data: { users: filteredList },
+      });
+    });
+    await Promise.all(followersPromise);
+
+    const playlists = await db.playlist.findMany({
+      where: { userId: user.id },
+    });
+    const playlistPromise = playlists.map(async (res) => {
+      await deleteImage(res.coverPhoto);
+    });
+    await Promise.all(playlistPromise);
+
+    await db.likedSongs.deleteMany({ where: { userId: user.id } });
+    await db.playlist.deleteMany({ where: { userId: user.id } });
+    await deleteImage(user.profile?.avatar as string);
+
+    await db.user.delete({ where: { id: user.id } });
+    return NextResponse.json({ message: "User deleted with success" });
+  } catch (error) {
+    return NextResponse.json({
+      error: true,
+      message: "We had a problem trying to delete the user",
+    });
+  }
+}
+
+async function deleteArtistDrawer(user: User) {
+  if (!user.isArtist) return;
+
+  const songs = await db.songs.findMany({ where: { artistId: user.id } });
+  const songsIds = songs.map((res) => res.id);
+  const likedSongs = await db.likedSongs.findMany({
+    where: {
+      songs: { hasSome: songsIds },
+    },
+  });
+  const likedPromise = likedSongs.map(async (list) => {
+    const filteredList = list.songs.filter((res) => !songsIds.includes(res));
+    await db.likedSongs.update({
+      where: { id: list.id },
+      data: {
+        songs: filteredList,
+      },
+    });
+  });
+  const songsPromise = songs.map(async (song) => {
+    await deleteSong(song.urlSong);
+  });
+
+  await Promise.all(likedPromise);
+  await Promise.all(songsPromise);
+  await db.playCount.deleteMany({
+    where: { songId: { in: songsIds } },
+  });
+
+  await db.playlist.updateMany({
+    where: {
+      songs: { some: { songId: { in: songsIds } } },
+    },
+    data: {
+      songs: {
+        deleteMany: {
+          where: {
+            songId: { in: songsIds },
+          },
+        },
+      },
+    },
+  });
+
+  const albums = await db.album.findMany({ where: { artistId: user.id } });
+  const imgPromise = albums.map(async (album) => {
+    await deleteImage(album.coverPhoto);
+  });
+  await Promise.all(imgPromise);
+  await db.album.deleteMany({ where: { artistId: user.id } });
+  await db.songs.deleteMany({ where: { artistId: user.id } });
+  const followers = await db.followers.findFirst({
+    where: { userId: user.id },
+  });
+  await db.followers.delete({ where: { id: followers?.id } });
+  await deleteImage(user.isArtist.cover);
 }

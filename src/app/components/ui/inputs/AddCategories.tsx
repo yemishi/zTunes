@@ -1,23 +1,22 @@
 import { useRef } from "react";
-import Input from "../components/ui/inputs/Input";
-import Button from "../components/ui/buttons/Button";
+import Input from "./Input";
+import Button from "../buttons/Button";
 
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  children: React.ReactNode;
-}
-
-const ButtonTest: React.FC<ButtonProps> = ({ children, ...props }) => (
-  <Button {...props}>{children}</Button>
-);
 interface InputProps extends React.HTMLAttributes<HTMLInputElement> {
   categories: string[];
   setCategories: React.Dispatch<React.SetStateAction<string[]>>;
+  label?: string;
+  placeHolder?: string;
 }
 
-export default function AddOfficialCategories({
+export default function AddCategories({
   setCategories,
   categories,
+  label,
+  placeHolder,
+  ...props
 }: InputProps) {
+  const { className, ...rest } = props;
   const inputRef = useRef<HTMLInputElement>(null);
 
   const remove = (category: string) =>
@@ -34,15 +33,15 @@ export default function AddOfficialCategories({
   };
 
   return (
-    <div className="flex flex-col gap-4 sm:grid-cols-2 ">
-      <div className="flex gap-4">
+    <div {...props} className="flex flex-col gap-4 sm:grid-cols-2">
+      <div className={`flex gap-4  ${className ? className : ""}`}>
         <Input
           ref={inputRef}
-          label="Category"
-          placeholder="Category"
+          label={label || "Category"}
+          placeholder={placeHolder || "Category"}
           classNameInput="bg-transparent backdrop-brightness-150 border-neutralDark-400"
         />
-        <Button type="button" className="bg-transparent  mt-auto" onClick={add}>
+        <Button type="button" className="bg-transparent mt-auto" onClick={add}>
           Add
         </Button>
       </div>

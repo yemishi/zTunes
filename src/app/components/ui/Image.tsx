@@ -13,6 +13,7 @@ export default function Image({
   priority,
   className,
   src,
+  alt,
   ...props
 }: ImgProps) {
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -31,7 +32,7 @@ export default function Image({
     <NextImage
       {...props}
       src={src}
-      alt={isLoading ? "image loading" : parseAlt(src)}
+      alt={isLoading ? alt || "image loading" : alt || parseAlt(src)}
       priority={priority}
       quality={100}
       onLoad={() => setIsLoading(false)}

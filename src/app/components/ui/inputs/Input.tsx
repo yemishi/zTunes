@@ -1,11 +1,10 @@
 import { InputHTMLAttributes, forwardRef, useState } from "react";
-import { FieldError } from "react-hook-form";
 import { FaEyeSlash } from "react-icons/fa";
 import { IoEyeSharp } from "react-icons/io5";
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   label: string;
-  error?: FieldError | undefined;
+  error?: string | undefined;
   icon?: React.ReactNode;
   info?: string;
   noMessage?: boolean;
@@ -26,6 +25,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
     classNameInput,
     ...rest
   } = props;
+
   const [isPass, setIsPass] = useState<boolean>(true);
 
   const PassIcon = isPass ? FaEyeSlash : IoEyeSharp;
@@ -78,8 +78,8 @@ const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
           </span>
         )}
       </span>
-      {error?.message && !noMessage && (
-        <span className="ml-1 text-sm text-red-500">{error.message}</span>
+      {error && !noMessage && (
+        <span className="ml-1 text-sm text-red-500">{error}</span>
       )}
     </span>
   );

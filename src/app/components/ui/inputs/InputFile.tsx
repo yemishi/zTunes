@@ -3,11 +3,12 @@ import { IoCameraOutline } from "react-icons/io5";
 import { FiMusic } from "react-icons/fi";
 
 interface InputProps extends HTMLAttributes<HTMLInputElement> {
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   iconType: "song" | "cam";
 }
 
 const InputFile = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
-  const { className, iconType, ...rest } = props;
+  const { className, onChange, iconType, ...rest } = props;
   const Icon = iconType === "cam" ? IoCameraOutline : FiMusic;
   const defaultSize =
     className?.includes("h-") ||
@@ -23,7 +24,14 @@ const InputFile = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
         className?.includes("bg-") ? "" : "bg-gray-200"
       } p-3 rounded-full flex items-center justify-center cursor-pointer hover:bg-opacity-95 active:scale-105 duration-150`}
     >
-      <input ref={ref} type="file" className="hidden" id="file" {...rest} />
+      <input
+        ref={ref}
+        type="file"
+        className="hidden"
+        id="file"
+        onChange={onChange}
+        {...rest}
+      />
 
       <Icon className="w-full h-full text-black" />
     </label>

@@ -32,10 +32,10 @@ export default function NavBarMobile() {
         />
       </Link>
 
-      <Link href="/dashboard">
+      <Link href="/account">
         <IoPersonOutline
           className={`w-6 h-6 text-white ${
-            urlMatch("dashboard") ? "opacity-100" : "opacity-50"
+            urlMatch("account") ? "opacity-100" : "opacity-50"
           }`}
         />
       </Link>

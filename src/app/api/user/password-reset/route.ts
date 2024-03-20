@@ -25,7 +25,7 @@ export async function GET(req: NextRequest) {
   } catch (error) {
     return NextResponse.json({
       error: true,
-      message: "Something went wrong",
+      message: "We had a problem tying to get your account",
     });
   }
 }

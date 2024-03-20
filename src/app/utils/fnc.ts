@@ -1,4 +1,5 @@
 import { ErrorType } from "@/types/response";
+import { format, lastDayOfMonth } from "date-fns";
 import { usePathname } from "next/navigation";
 import Vibrant from "node-vibrant";
 
@@ -96,4 +97,13 @@ export const updateUser = async (body: {
       message: "We had a problem trying to update the user",
     };
   }
+};
+
+export const isValidDate = (day: string, month: string, year: string) => {
+  if (Number(year) < 1800 || !day || !month || !year) return false;
+  const limitDay = format(
+    lastDayOfMonth(new Date(Number(year), Number(month))),
+    "d"
+  );
+  return limitDay >= day;
 };

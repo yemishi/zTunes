@@ -1,15 +1,18 @@
+import { toast } from "react-toastify";
 import InputFile from "./InputFile";
 
 interface InputProps extends React.HTMLAttributes<HTMLInputElement> {
-  error: boolean;
+  error?: boolean;
   demoPhoto?: string;
   isLoading?: boolean;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 export default function InputFileImg({
   error,
   demoPhoto,
   isLoading,
+  onChange,
   ...props
 }: InputProps) {
   const { className, onMouseEnter, onMouseLeave, ...rest } = props;
@@ -33,6 +36,12 @@ export default function InputFileImg({
       <InputFile
         className={isLoading ? "animate-pulse pointer-events-none" : ""}
         iconType="cam"
+        onChange={(e) => {
+          if (!e.target) return;
+          if (!e.target.files || !e.target.files[0].type.startsWith("image/"))
+            return toast.error("Invalid image type");
+          onChange ? onChange(e) : null;
+        }}
         {...rest}
       />
     </div>

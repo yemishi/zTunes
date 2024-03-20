@@ -1,5 +1,4 @@
 import { RegisterPropsType, RegisterResponseType } from "./types/registerTypes";
-import { FacebookButton, GoogleButton } from "../ui/buttons/AuthButtons";
 import { useState } from "react";
 import Link from "next/link";
 import DivAnimated from "../ui/DivAnimated";
@@ -43,7 +42,7 @@ export default function EmailField({
         {...register("email")}
         label="Email"
         placeholder="Mohammed@gmail.com"
-        error={error}
+        error={error?.message}
       />
       <Button
         onClick={handleNext}
@@ -55,13 +54,6 @@ export default function EmailField({
       </Button>
 
       <div className="w-full mb-2 h-[1px] bg-white bg-opacity-20" />
-
-      <div className="flex flex-col gap-1">
-        <FacebookButton disabled={isLoading}>
-          Sign up with Facebook
-        </FacebookButton>
-        <GoogleButton>Sign up with Google</GoogleButton>
-      </div>
 
       <div className="w-full h-[1px] bg-white bg-opacity-20" />
 

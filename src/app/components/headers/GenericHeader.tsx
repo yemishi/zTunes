@@ -16,6 +16,7 @@ export default function GenericHeader({
   songs,
   info,
   playlistId,
+  updateUrl,
   ...props
 }: DivProps) {
   const {
@@ -69,7 +70,7 @@ export default function GenericHeader({
     >
       <span className="flex items-center py-4 justify-between w-full">
         <PreviousPage className="p-0" />
-        {isOwner && (
+        {isOwner && playlistId && (
           <EditPlaylist
             playlistId={playlistId as string}
             playlistName={title}
@@ -82,7 +83,7 @@ export default function GenericHeader({
         fieldUpload="coverPhoto"
         initialValue={coverPhoto}
         isOwner={isOwner}
-        uploadUrl="/api/playlist"
+        uploadUrl={updateUrl || "/api/playlist"}
         extraBody={{ id: playlistId }}
       />
 
@@ -92,7 +93,7 @@ export default function GenericHeader({
           initialValue={title}
           fieldType="title"
           changeable={isOwner}
-          patchUrl="/api/playlist"
+          patchUrl={updateUrl || "/api/playlist"}
         />
         {releasedDate && <span className="font-light">{releasedDate}</span>}
       </span>
@@ -132,6 +133,7 @@ interface DivProps extends HTMLAttributes<HTMLDivElement> {
   info: InfoType;
   songs: SongType[];
   playlistId?: string;
+  updateUrl?: string;
 }
 
 type InfoType = {
@@ -140,9 +142,9 @@ type InfoType = {
   author: string;
   coverPhoto: string;
   authorId: string;
-  releasedDate?: string;
+  isOwner: boolean;
   desc?: string;
   isUser?: Boolean;
   isOfficial?: boolean;
-  isOwner: boolean;
+  releasedDate?: string;
 };

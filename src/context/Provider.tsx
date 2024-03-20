@@ -11,6 +11,7 @@ interface PlayerContextProps {
   setPlayer: React.Dispatch<React.SetStateAction<SongType[] | undefined>>;
   currSong: number | undefined;
   setCurrSong: React.Dispatch<React.SetStateAction<number | undefined>>;
+  turnOnPlayer: (songs: SongType[], index: number) => void;
 }
 
 const PlayerContext = createContext<PlayerContextProps | undefined>(undefined);
@@ -33,11 +34,14 @@ export default function Provider({
 }) {
   const [currSong, setCurrSong] = useState<number>();
   const [player, setPlayer] = useState<SongType[]>();
+  const turnOnPlayer = (songs: SongType[], index: number) => {
+    setPlayer(songs), setCurrSong(index);
+  };
   return (
     <SessionProvider session={session}>
       <QueryClientProvider client={queryClient}>
         <PlayerContext.Provider
-          value={{ currSong, setCurrSong, player, setPlayer }}
+          value={{ currSong, setCurrSong, player, setPlayer, turnOnPlayer }}
         >
           {children}
         </PlayerContext.Provider>

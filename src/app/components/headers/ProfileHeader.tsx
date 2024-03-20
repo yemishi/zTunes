@@ -16,20 +16,22 @@ type ProfileInfo = {
   cover: string;
 };
 export default function ProfileHeader({
-  vibrantColor,
   username,
-  profileInfo,
-  followersLength,
+  isArtist,
   isInclude,
+  profileInfo,
+  vibrantColor,
+  followersLength,
 }: {
   username: string;
-  isInclude: boolean;
-  followersLength: number;
   vibrantColor: string;
   profileInfo: ProfileInfo;
+  followersLength: number;
+  isArtist?: boolean;
+  isInclude?: boolean;
 }) {
   const { profileName, profileId, cover } = profileInfo;
-  const [isFollow, setIsFollow] = useState<boolean>(isInclude);
+  const [isFollow, setIsFollow] = useState<boolean>(!!isInclude);
   const [follows, setFollows] = useState<number>(followersLength);
 
   const { push, refresh } = useRouter();
@@ -82,9 +84,10 @@ export default function ProfileHeader({
       <PreviousPage className="p-4" />
       <div className="self-center">
         <EditableImage
-          uploadUrl="/api/user"
+          updateSession={!isArtist}
+          uploadUrl={isArtist ? "/api/artist" : `/api/user`}
           extraBody={{ userId: profileId }}
-          fieldUpload="avatar"
+          fieldUpload={isArtist ? "cover" : "avatar"}
           initialValue={cover}
           isOwner={isOwner}
         />
@@ -92,14 +95,16 @@ export default function ProfileHeader({
 
       <InputText
         min={3}
-        max={15}
+        max={25}
         rows={1}
         changeable={isOwner}
         initialValue={profileName}
         onblur={(currValue: string) => onchange(currValue)}
       />
 
-      <span className="font-montserrat text-gray-300">{follows} fans</span>
+      {follows > 0 && (
+        <span className="font-montserrat text-gray-300">{follows} fans</span>
+      )}
 
       {!isOwner && (
         <div className="flex flex-col gap-2 ">

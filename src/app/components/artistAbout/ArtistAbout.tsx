@@ -3,16 +3,14 @@
 import { useState } from "react";
 
 export default function ArtistAbout({
-  about,
+  summary,
+  cover,
 }: {
-  about: {
-    summary: string;
-    cover: string;
-  };
+  summary: string;
+  cover: string;
 }) {
   const [clamp, setClamp] = useState<boolean>(true);
 
-  const { cover, summary } = about;
   return (
     <div className="w-full flex flex-col gap-2  p-4">
       <h2 className="text-xl font-kanit">About</h2>

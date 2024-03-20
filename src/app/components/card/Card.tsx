@@ -11,7 +11,9 @@ export default function Card({
   artistId,
   title,
   url,
+  alt,
 }: {
+  alt?: string;
   url: string;
   title: string;
   coverPhoto: string;
