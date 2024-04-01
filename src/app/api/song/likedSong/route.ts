@@ -11,14 +11,13 @@ export async function GET(req: NextRequest) {
       where: { userId: user?.id },
     });
 
-    if (songId) return NextResponse.json(likedSongs?.songs.includes(songId));
+    if (songId) return NextResponse.json(!!likedSongs?.songs.includes(songId));
 
     const songs = await db.songs.findMany({
       where: { id: { in: likedSongs?.songs } },
     });
     return NextResponse.json(songs);
   } catch (error) {
-    console.log(error);
     return NextResponse.json({
       error: true,
       message: "We had a problem trying to retrieve your favorite songs.",

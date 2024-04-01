@@ -1,7 +1,7 @@
-import { redefinedPassEmail, resetPassEmail } from "@/app/utils/sendEmail";
 import { db } from "@/lib/db";
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcrypt";
+import { resetPassEmail } from "@/utils/sendEmail";
 
 export async function GET(req: NextRequest) {
   try {
@@ -34,11 +34,10 @@ export async function PATCH(req: NextRequest) {
   try {
     const { password, userId } = await req.json();
     const passHashed = bcrypt.hashSync(password, 10);
-    const user = await db.user.update({
+    await db.user.update({
       where: { id: userId },
       data: { password: passHashed },
     });
-    redefinedPassEmail(user.email, user.username);
 
     return NextResponse.json({
       message: `We're happy to inform you that your password has been changed

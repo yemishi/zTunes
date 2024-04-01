@@ -1,13 +1,18 @@
-import AlbumForm from "@/app/components/form/AlbumForm";
-import DivAnimated from "@/app/components/ui/DivAnimated";
-import Button from "@/app/components/ui/buttons/Button";
-import Input from "@/app/components/ui/inputs/Input";
+import AlbumForm from "@/components/form/AlbumForm";
+import DivAnimated from "@/components/ui/custom/DivAnimated";
+import Button from "@/components/ui/buttons/Button";
+import Input from "@/components/ui/inputs/Input";
+import { useTempOverlay } from "@/context/Provider";
 
 import { useState } from "react";
 
 export default function AddAlbum({ artistId }: { artistId: string }) {
-  const [isNew, setIsNew] = useState<boolean>(false);
   const [title, setTitle] = useState<string>("");
+  const { close, setChildren } = useTempOverlay();
+  const Form = () => (
+    <AlbumForm artistId={artistId} initialTitle={title} onclose={close} />
+  );
+
   return (
     <>
       <DivAnimated
@@ -23,20 +28,12 @@ export default function AddAlbum({ artistId }: { artistId: string }) {
           classNameInput="bg-transparent border-gray-300 border-b-2"
         />
         <Button
-          onClick={() => setIsNew(true)}
+          onClick={() => setChildren(Form)}
           className="ml-auto rounded-lg text-sm text-black"
         >
           New
         </Button>
       </DivAnimated>
-      {isNew && (
-        <AlbumForm
-          onclose={() => setIsNew(false)}
-          title={title}
-          setTitle={setTitle}
-          artistId={artistId}
-        />
-      )}
     </>
   );
 }

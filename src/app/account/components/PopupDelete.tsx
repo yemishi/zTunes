@@ -1,4 +1,4 @@
-import Button from "@/app/components/ui/buttons/Button";
+import Button from "@/components/ui/buttons/Button";
 
 type PropsType = {
   name: string;

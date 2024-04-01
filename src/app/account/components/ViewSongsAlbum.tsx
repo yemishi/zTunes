@@ -3,24 +3,34 @@
 import { usePlayerContext } from "@/context/Provider";
 import { SongType } from "@/types/response";
 import EditSong from "./songManager/EditSong";
-import Input from "@/app/components/ui/inputs/Input";
-import Button from "@/app/components/ui/buttons/Button";
+import Input from "@/components/ui/inputs/Input";
+import Button from "@/components/ui/buttons/Button";
 import { useState } from "react";
 import NewSong from "./songManager/NewSong";
+import useScrollQuery from "@/hooks/useScrollQuery";
 
 export default function ViewSongsAlbum({
-  songs,
   albumId,
   artistId,
+  url,
 }: {
-  songs: SongType[];
   artistId: string;
   albumId: string;
+  url: string;
 }) {
   const { turnOnPlayer, currSong, player } = usePlayerContext();
   const [name, setName] = useState<string>("");
   const [isNew, setIsNew] = useState<boolean>(false);
-
+  const {
+    values: songs,
+    hasNextPage,
+    ref,
+    isLoading,
+    isFetchingNextPage,
+  } = useScrollQuery<SongType>({
+    queryKey: ["Songs"],
+    url,
+  });
   return (
     <div className="flex flex-col gap-3">
       <div
@@ -71,6 +81,8 @@ export default function ViewSongsAlbum({
           setName={setName}
         />
       )}
+      {!isFetchingNextPage && hasNextPage && <div ref={ref} />}
+      {(isFetchingNextPage || isLoading) && <div className="spinner  " />}
     </div>
   );
 }

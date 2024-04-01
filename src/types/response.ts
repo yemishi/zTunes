@@ -19,6 +19,7 @@ interface UserType {
   avatar: string;
   name: string;
   isArtist: boolean;
+  isAdmin: boolean;
   id: string;
   error: false;
 }
@@ -34,6 +35,8 @@ interface BundleType {
   createdAt: Date;
   isOfficial?: boolean;
   error: false;
+  desc?: string;
+  urlsSongs?: string[];
 }
 
 interface FollowersType {
@@ -83,7 +86,7 @@ interface SongType {
   createdAt: Date;
   artistId: string;
   artistName: string;
-  albumTitle: string;
+  albumName: string;
   coverPhoto: string;
   albumId: string;
   name: string;

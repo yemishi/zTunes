@@ -33,7 +33,7 @@ export default function DeleteAlbum({
     <>
       <RiDeleteBin6Line
         onClick={() => setIsDelete(true)}
-        className={`size-7 duration-150  absolute top-4 right-4 `}
+        className={`size-7 duration-150  absolute top-4 right-4 cursor-pointer`}
       />
       {isDelete && (
         <PopupDelete

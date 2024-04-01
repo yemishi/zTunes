@@ -1,8 +1,8 @@
 "use client";
 
-import InputFileImg from "@/app/components/ui/inputs/InputFileImg";
-import Image from "@/app/components/ui/Image";
-import Button from "@/app/components/ui/buttons/Button";
+import InputFileImg from "@/components/ui/inputs/InputFileImg";
+import Image from "@/components/ui/custom/Image";
+import Button from "@/components/ui/buttons/Button";
 import uploadImg from "@/firebase/handleImage";
 import useObject from "@/hooks/useObject";
 

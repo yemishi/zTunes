@@ -17,12 +17,22 @@ export async function GET(req: NextRequest) {
           error: true,
           message: "Album not found.",
         });
+      const urlsSongs = await db.songs
+        .findMany({
+          where: { albumId },
+          select: { urlSong: true },
+        })
+        .then((res) => res.map((song) => song.urlSong));
 
       const artist = await db.user.findUnique({
         where: { id: album?.artistId },
       });
 
-      return NextResponse.json({ ...album, avatar: artist?.profile?.avatar });
+      return NextResponse.json({
+        ...album,
+        avatar: artist?.profile?.avatar,
+        urlsSongs,
+      });
     }
 
     if (artistId) {
@@ -59,7 +69,7 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
-    const { title, releasedDate, coverPhoto, artistId, type } =
+    const { title, releasedDate, coverPhoto, artistId, type, desc } =
       await req.json();
 
     const artist = await db.user.findUnique({
@@ -82,6 +92,7 @@ export async function POST(req: NextRequest) {
         artistName: artist.username,
         releasedDate,
         title,
+        desc,
         coverPhoto,
         type: type || "album",
       },

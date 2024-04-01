@@ -27,14 +27,14 @@ export function CardAcc({
     <Component
       onClick={onClick}
       href={href as string}
-      className="font-poppins text-lg p-3 flex gap-2 items-center w-full"
+      className="font-poppins text-lg md:text-xl p-3 flex gap-2 items-center w-full"
     >
-      <Icon className="size-9" />
+      <Icon className="size-9 md:size-12" />
       <span className="flex flex-col items-start">
         <span>{title}</span>
         {subTitle && (
           <span
-            className={`text-xs  ${
+            className={`text-xs md:text-sm  ${
               subTitleSimple ? "text-gray-300" : "text-orange-300"
             }`}
           >
@@ -43,7 +43,9 @@ export function CardAcc({
         )}
       </span>
       {!noArrow && (
-        <MdKeyboardArrowRight className={`size-9 duration-150 ml-auto ${arrowClass}`} />
+        <MdKeyboardArrowRight
+          className={`size-9 duration-150 ml-auto ${arrowClass}`}
+        />
       )}
     </Component>
   );

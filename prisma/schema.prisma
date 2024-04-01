@@ -68,7 +68,14 @@ model Album {
   artistName   String
   artistId     String   @db.ObjectId
   coverPhoto   String
+  desc         String?
   createdAt    DateTime @default(now())
+}
+
+model SearchHistory {
+  id       String         @id @default(auto()) @map("_id") @db.ObjectId
+  userId   String
+  historic HistoricType[]
 }
 
 model LikedSongs {
@@ -122,4 +129,13 @@ type UsersPlayed {
 type PlaylistSongType {
   songId    String   @db.ObjectId
   createdAt DateTime @default(now())
+}
+
+type HistoricType {
+  refId      String
+  type       String
+  coverPhoto String
+  title      String
+  desc       String?
+  createdAt  DateTime @default(now())
 }

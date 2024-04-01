@@ -1,25 +1,62 @@
 import { db } from "@/lib/db";
+import { dateFormat } from "@/utils/formatting";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
-  const authorName = req.nextUrl.searchParams.get("authorName") as string;
-  const authorId = req.nextUrl.searchParams.get("authorId") as string;
+  const authorName = req.nextUrl.searchParams.get("authorName") || "";
+  const authorId = req.nextUrl.searchParams.get("authorId") || "";
   const username = req.nextUrl.searchParams.get("username") as string;
+  const playlistId = req.nextUrl.searchParams.get("playlistId") as string;
   const limit = Number(req.nextUrl.searchParams.get("limit")) || 10;
   const page = Number(req.nextUrl.searchParams.get("page")) || 0;
 
   try {
     const author = await db.user.findFirst({
-      where: { ...(authorName ? { username: authorName } : { id: authorId }) },
+      where: authorId ? { id: authorId } : { username: authorName },
     });
 
-    if (!author)
+    if (!author && !playlistId)
       return NextResponse.json({ error: true, message: "Author not found" });
 
     const user = await db.user.findFirst({ where: { username } });
+    if (playlistId) {
+      const playlist = await db.playlist.findFirst({
+        where: { id: playlistId },
+      });
+      if (!playlist)
+        return NextResponse.json({
+          error: true,
+          message: "Playlist not found",
+        });
+      const author = await db.user.findFirst({
+        where: { id: playlist.userId },
+      });
+      const songsId = playlist.songs.map((song) => song.songId);
+      const urlsSongs = await db.songs
+        .findMany({
+          where: { id: { in: songsId } },
+          select: { urlSong: true },
+        })
+        .then((res) => res.map((res) => res.urlSong));
+
+      const info = {
+        authorId: author?.id,
+        desc: playlist.desc,
+        title: playlist.title,
+        isOwner: playlist.userId === user?.id,
+        author: author?.username,
+        isUser: !author?.isArtist,
+        coverPhoto: playlist.coverPhoto,
+        avatar: author?.profile?.avatar,
+        isOfficial: playlist.officialCategories,
+        releasedDate: dateFormat(playlist.createdAt),
+        urlsSongs,
+      };
+      return NextResponse.json(info);
+    }
 
     const playlistsData = await db.playlist.findMany({
-      where: { userId: author.id },
+      where: { userId: author?.id },
     });
 
     const filteredPlaylist = playlistsData.filter((playlist) => {
@@ -150,8 +187,9 @@ export async function PATCH(req: NextRequest) {
         songs: toRemove
           ? songs?.filter(
               (song) =>
-                song.createdAt === songSelected.createdAt &&
-                song.songId === songSelected.songId
+                String(song.createdAt) !==
+                  String(new Date(songSelected.createdAt)) &&
+                song.songId !== songSelected.songId
             )
           : songs,
         title: title || playlist?.title,

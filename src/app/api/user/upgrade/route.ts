@@ -34,6 +34,7 @@ export async function PATCH(req: NextRequest) {
     });
     return NextResponse.json({ message: "User upgraded with success" });
   } catch (error) {
+    console.log(error);
     return NextResponse.json({
       error: true,
       message: "We had a problem trying to upgrade your account",

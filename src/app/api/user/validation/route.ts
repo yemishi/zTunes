@@ -1,7 +1,6 @@
 import { db } from "@/lib/db";
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcrypt";
-import { createdUserEmail, updatedUserEmail } from "@/app/utils/sendEmail";
 
 export async function GET(req: NextRequest) {
   const value = req.nextUrl.searchParams.get("value") as string;
@@ -10,8 +9,8 @@ export async function GET(req: NextRequest) {
   try {
     const existingUser = await db.user.findFirst({
       where: {
-        [field]: {
-          contains: value,
+        username: {
+          equals: value,
           mode: field === "username" ? "insensitive" : "default",
         },
         AND: {
@@ -24,11 +23,13 @@ export async function GET(req: NextRequest) {
     if (existingUser) {
       return NextResponse.json({
         error: true,
-        message: `User with this ${field} already created.`,
+        message: `User with this ${field} already existing.`,
       });
     }
 
-    return NextResponse.json({ error: false });
+    return NextResponse.json({
+      message: `This ${field} is available, you can continue.`,
+    });
   } catch (error) {
     return NextResponse.json({
       error: true,
@@ -50,26 +51,32 @@ export async function POST(req: NextRequest) {
         profile: {
           birthDate,
         },
+        isVerified: true,
       },
     });
 
-    await db.followers.create({
-      data: {
-        userId: newUser.id,
-        users: [],
-      },
-    });
-
-    createdUserEmail(newUser.email, newUser.id);
+    await Promise.all([
+      await db.followers.create({
+        data: {
+          userId: newUser.id,
+          users: [],
+        },
+      }),
+      await db.searchHistory.create({
+        data: {
+          userId: newUser.id,
+          historic: [],
+        },
+      }),
+    ]);
 
     return NextResponse.json({
-      error: false,
-      message: `User created successfully, check your email to validate your account!`,
+      message: `User created successfully, you can do sign in now`,
     });
   } catch (error) {
     return NextResponse.json({
       error: true,
-      message: `Something went wrong.`,
+      message: "We had a problem trying to create the user",
     });
   }
 }
@@ -88,17 +95,10 @@ export async function PATCH(req: NextRequest) {
         message: "User already verified",
       });
 
-    const userUpdated = await db.user.update({
-      where: { id: userId },
-      data: {
-        isVerified: true,
-      },
-    });
-    updatedUserEmail(userUpdated.email, userUpdated.username);
     return NextResponse.json({
       message: "User updated with successfully",
     });
   } catch (error) {
-    return NextResponse.json({ message: "something went wrong." });
+    return NextResponse.json({ error: true, message: "something went wrong." });
   }
 }

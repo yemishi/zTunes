@@ -1,8 +1,9 @@
 "use client";
 
-import ProfileCard from "@/app/components/card/ProfileCard";
-import PreviousPage from "@/app/components/ui/buttons/PreviousPage";
+import ProfileCard from "@/components/card/ProfileCard";
+import PreviousPage from "@/components/ui/buttons/PreviousPage";
 import useScrollQuery from "@/hooks/useScrollQuery";
+import UserFollowsLoading from "./loading";
 
 export default function FollowsPage({
   params: { userId },
@@ -14,9 +15,10 @@ export default function FollowsPage({
       queryKey: ["Follows"],
       url: `/api/user?userId=${userId}&getFollows=true`,
     });
+  if (isLoading) return <UserFollowsLoading />;
 
   return (
-    <div className="px-2 pb-32 flex flex-col gap-3 ">
+    <div className="px-2 pb-32 md:ml-64 flex flex-col gap-3 lg:ml-72 2xl:ml-80 min-[2000px]:ml-96">
       <PreviousPage />
       <h1 className="text-2xl font-kanit ml-2">Follows</h1>
       <div className="flex flex-wrap gap-3 justify-evenly">
@@ -25,7 +27,7 @@ export default function FollowsPage({
         })}
       </div>
       {!isFetchingNextPage && hasNextPage && <div ref={ref} />}
-      {isFetchingNextPage && isLoading && <div className="spinner" />}
+      {isFetchingNextPage && <div className="spinner" />}
     </div>
   );
 }

@@ -1,16 +1,16 @@
 "use server";
 
 import Link from "next/link";
-import { BundleType, ArtistType, SongType } from "@/types/response";
+import { BundleType, ArtistType } from "@/types/response";
 import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 
-import Button from "@/app/components/ui/buttons/Button";
-import ArtistAbout from "@/app/components/artistAbout/ArtistAbout";
-import ProfileHeader from "@/app/components/headers/ProfileHeader";
-import BundleOrganizer from "@/app/components/organizer/BundleOrganizer";
-import SongsOrganizer from "@/app/components/organizer/SongsOrganizer";
+import Button from "@/components/ui/buttons/Button";
+import ProfileHeader from "@/components/headers/ProfileHeader";
+import BundleOrganizer from "@/components/organizer/BundleOrganizer";
+import ExpandableText from "@/components/ui/custom/ExpandableText";
+import SongsOrganizer from "@/components/organizer/SongsOrganizer";
 
 async function getData(artistId: string) {
   const artistInfo: ArtistType = await fetch(
@@ -22,12 +22,7 @@ async function getData(artistId: string) {
     `${process.env.URL}/api/album?artistId=${artistId}`
   ).then((res) => res.json());
 
-  const songs: SongType[] = await fetch(
-    `${process.env.URL}/api/song?artistId=${artistId}`
-  ).then((res) => res.json());
-
   return {
-    songs,
     artistInfo,
     albumsBundle,
   };
@@ -41,11 +36,11 @@ async function getFollowers(username: string, artistId: string) {
 }
 
 export default async function Artist({
-  params,
+  params: { artistId },
 }: {
   params: { artistId: string };
 }) {
-  const { albumsBundle, artistInfo, songs } = await getData(params.artistId);
+  const { albumsBundle, artistInfo } = await getData(artistId);
 
   if (artistInfo.error) return redirect("404");
 
@@ -67,12 +62,13 @@ export default async function Artist({
   );
 
   return (
-    <div className="w-full h-full flex flex-col gap-3 pb-28 overflow-y-scroll">
+    <div className="flex flex-col gap-3 pb-32 md:pb-20 md:ml-64 lg:ml-72 2xl:ml-80  min-[2000px]:ml-96">
       <ProfileHeader
         username={session?.user.name as string}
         followersLength={followers.length}
         isInclude={followers.isInclude}
         vibrantColor={vibrantColor || "transparent"}
+        artistAbout={artistInfo.summary}
         profileInfo={{
           profileId: artistInfo.id,
           profileName: artistInfo.name,
@@ -80,7 +76,13 @@ export default async function Artist({
         }}
         isArtist
       />
-      <SongsOrganizer songs={songs} title="Musics" />
+      <SongsOrganizer
+        queryKey={["songs", artistId]}
+        limitLength={5}
+        url={`/api/song?artistId=${artistId}&take=5`}
+        title="Musics"
+      />
+
       <Button
         asChild
         className="bg-white rounded-lg self-start ml-4 text-black"
@@ -101,7 +103,10 @@ export default async function Artist({
         <BundleOrganizer baseUrl="/album" title="Singles" props={singles} />
       )}
 
-      <ArtistAbout summary={artistInfo.summary} cover={artistInfo.cover} />
+      <div className="p-4 md:hidden">
+        <h2 className="text-xl font-kanit">About</h2>
+        <ExpandableText>{artistInfo.summary}</ExpandableText>
+      </div>
     </div>
   );
 }

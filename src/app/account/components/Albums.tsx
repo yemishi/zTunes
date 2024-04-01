@@ -5,11 +5,11 @@ import { CardAcc } from "./CardAcc";
 import { useState } from "react";
 import { AnimatePresence } from "framer-motion";
 
-import Image from "@/app/components/ui/Image";
-import Button from "@/app/components/ui/buttons/Button";
+import Image from "@/components/ui/custom/Image";
+import Button from "@/components/ui/buttons/Button";
 import Link from "next/link";
 import AddAlbum from "./albumManager/AddAlbum";
-import DivAnimated from "@/app/components/ui/DivAnimated";
+import DivAnimated from "@/components/ui/custom/DivAnimated";
 
 export default function Albums({
   props,
@@ -43,11 +43,11 @@ export default function Albums({
                   oneSide
                   className="flex gap-3 items-center p-2 "
                 >
-                  <Image src={coverPhoto} className="size-9" />
-                  <p>{title}</p>
+                  <Image src={coverPhoto} className="size-9 md:size-12" />
+                  <p className="md:text-lg">{title}</p>
                   <Button
                     asChild
-                    className="ml-auto rounded-lg bg-white text-black text-sm"
+                    className="ml-auto rounded-lg bg-white text-black text-sm md:text-base"
                   >
                     <Link href={`/account/album/${id}`}>See</Link>
                   </Button>

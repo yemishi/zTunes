@@ -2,7 +2,7 @@ import { authOptions } from "@/lib/auth";
 import { ErrorType, ManyPlaylistType } from "@/types/response";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
-import Card from "../components/card/Card";
+import Card from "../../components/card/Card";
 
 async function fetchData(username: string) {
   const playlistsData: ManyPlaylistType | ErrorType = await fetch(
@@ -26,8 +26,6 @@ export default async function MyLib() {
     <div className="w-full flex flex-col gap-2">
       <div className="flex flex-wrap w-full gap-4 justify-center ">
         <Card
-          artistId=""
-          artistName=""
           coverPhoto="https://c4.wallpaperflare.com/wallpaper/617/416/921/heart-purple-plexus-wallpaper-preview.jpg"
           title="Liked songs"
           url="/myLib/likedSongs"
@@ -36,15 +34,14 @@ export default async function MyLib() {
 
         {playlists.map((item, index) => {
           const { coverPhoto, id, title, officialCategories } = item;
+
           return (
             <Card
               key={`${id}/${index}`}
-              artistId=""
-              artistName=""
               coverPhoto={coverPhoto}
               title={title}
               url={`/playlist/${id}`}
-              isOfficial={!!officialCategories}
+              isOfficial={!!officialCategories.length}
             />
           );
         })}

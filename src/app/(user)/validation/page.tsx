@@ -1,5 +1,5 @@
-import Button from "@/app/components/ui/buttons/Button";
-import InvalidToken from "@/app/components/user/invalidToken";
+import Button from "@/components/ui/buttons/Button";
+import InvalidToken from "@/components/user/invalidToken";
 import Jwt from "jsonwebtoken";
 import Link from "next/link";
 

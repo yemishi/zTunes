@@ -8,9 +8,14 @@ import {
 } from "next/font/google";
 import "./globals.css";
 import Provider from "@/context/Provider";
-import UnderBar from "./components/underBar/underBar";
+import UnderBar from "../components/underBar/underBar";
 import { ToastContainer } from "react-toastify";
+import { SkeletonTheme } from "react-loading-skeleton";
+
 import "react-toastify/dist/ReactToastify.css";
+import "react-loading-skeleton/dist/skeleton.css";
+import Sidebar from "@/components/sidebar/Sidebar";
+import TempOverlay from "@/components/ui/TempOverlay";
 
 const nunito = Nunito({ subsets: ["latin"] });
 const poppins = Poppins({
@@ -56,14 +61,20 @@ export default function RootLayout({
     >
       <Provider session={session}>
         <body
-          className={`w-full h-full text-white bg-black-700 overflow-x-hidden ${nunito.className}`}
+          className={`w-full h-full text-white  bg-black-700 overflow-x-hidden ${nunito.className}`}
         >
           <ToastContainer
             autoClose={3000}
             theme="dark"
             position="bottom-center"
           />
-          <main className="w-full h-screen">{children}</main>
+          <SkeletonTheme baseColor="#202020" highlightColor="#444">
+            <div className="w-full h-screen">
+              <TempOverlay />
+              <Sidebar />
+              {children}
+            </div>
+          </SkeletonTheme>
           <UnderBar />
         </body>
       </Provider>

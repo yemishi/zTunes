@@ -1,5 +1,5 @@
-import ResetPassForm from "@/app/components/form/ResetPassForm";
-import InvalidToken from "@/app/components/user/invalidToken";
+import ResetPassForm from "@/components/form/ResetPassForm";
+import InvalidToken from "@/components/user/invalidToken";
 import Jwt from "jsonwebtoken";
 
 async function getData(token: string) {
