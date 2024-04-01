@@ -24,7 +24,7 @@ This custom Hook fetches data with pagination and returns all values fetched, ty
 import useScrollQuery from "/hooks";
 
 export default function Component() {
-  const { values, isLoading, isFetchingNextPage, hasNextPage, ref, isError } = useScrollQuery<{ text: string; id: string }>({ url: "/http://apiUrl", queryKey: ["exampleKey"] });
+  const { values, isLoading, isFetchingNextPage, hasNextPage, ref, isError } = useScrollQuery<{ text: string; id: string }>({ url: "/https://apiUrl", queryKey: ["exampleKey"] });
 
   if (isLoading) return <div>loading...</div>;
   if (isError) return <div>Error: Failed to load data</div>; // Error handling
