@@ -1,48 +1,45 @@
-import GenericHeader from "@/app/components/headers/GenericHeader";
-import SongsOrganizer from "@/app/components/organizer/SongsOrganizer";
-import { BundleType, ErrorType, SongType } from "@/types/response";
+import GenericHeader from "@/components/headers/GenericHeader";
+import SongsOrganizer from "@/components/organizer/SongsOrganizer";
+import { BundleType, ErrorType } from "@/types/response";
 import { redirect } from "next/navigation";
 async function fetchData(albumId: string) {
   try {
-    const album: BundleType | ErrorType = await fetch(
-      `${process.env.URL}/api/album?albumId=${albumId}`,
-      { cache: "no-store" }
-    ).then((res) => res.json());
+    const albumInfo: (BundleType & { urlsSongs: string[] }) | ErrorType =
+      await fetch(`${process.env.URL}/api/album?albumId=${albumId}`).then(
+        (res) => res.json()
+      );
 
-    const songs: SongType[] = await fetch(
-      `${process.env.URL}/api/song?albumId=${albumId}`,
-      { cache: "no-store" }
-    ).then((res) => res.json());
-
-    const validSongs: SongType[] = songs.filter((song) => !song.error);
-
-    if (album.error) return redirect("404");
-    return {
-      album,
-      songs: validSongs,
-    };
+    if (albumInfo.error) return redirect("404");
+    return albumInfo;
   } catch (error) {
     return redirect("404");
   }
 }
 
 export default async function Album({
-  params,
+  params: { albumId },
 }: {
   params: { albumId: string };
 }) {
-  const data = await fetchData(params.albumId);
+  const albumInfo = await fetchData(albumId);
 
-  if (!data) return redirect("404");
+  if (!albumInfo) return redirect("404");
 
-  const { album, songs } = data;
-  const { artistId, artistName, coverPhoto, releasedDate, title, avatar } =
-    album;
-  console.log(coverPhoto);
+  const {
+    artistId,
+    artistName,
+    coverPhoto,
+    releasedDate,
+    title,
+    avatar,
+    desc,
+    id,
+    urlsSongs,
+  } = albumInfo;
+
   return (
-    <div className="flex flex-col pb-32">
+    <div className="flex flex-col pb-32 md:pb-20 md:ml-64 lg:ml-72 2xl:ml-80  min-[2000px]:ml-96">
       <GenericHeader
-        songs={songs}
         info={{
           isOwner: false,
           authorId: artistId,
@@ -50,10 +47,15 @@ export default async function Album({
           avatar: avatar as string,
           coverPhoto,
           title,
+          urlsSongs,
+          desc,
           releasedDate,
         }}
       />
-      <SongsOrganizer songs={songs} />
+      <SongsOrganizer
+        queryKey={["Songs", id]}
+        url={`/api/song?albumId=${albumId}`}
+      />
     </div>
   );
 }

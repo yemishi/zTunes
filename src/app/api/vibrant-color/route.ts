@@ -1,4 +1,4 @@
-import { getVibrantColor } from "@/app/utils/fnc";
+import { getVibrantColor } from "@/utils/fnc";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {

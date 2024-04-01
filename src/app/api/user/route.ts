@@ -18,7 +18,7 @@ export async function GET(req: NextRequest) {
       where: username ? { username } : { id: userId },
     });
 
-    if (!user || (user.isArtist && !artistToo))
+    if (!user || (user.username !== username && user.isArtist && !artistToo))
       return NextResponse.json({ error: true, message: "User not found" });
 
     const userInfo = {
@@ -26,10 +26,10 @@ export async function GET(req: NextRequest) {
       name: user.username,
       isArtist: !!user.isArtist,
       avatar: user.profile?.avatar,
+      isAdmin: !!user.isAdmin,
     };
 
     if (!getFollows) return NextResponse.json(userInfo);
-
     const followsData = await db.followers.findMany({
       where: {
         users: { has: user.id },
@@ -83,6 +83,22 @@ export async function PATCH(req: NextRequest) {
       },
     });
 
+    if (user?.isArtist && username) {
+      const updateAlbums = db.album.updateMany({
+        where: { artistId: user.id },
+        data: {
+          artistName: username,
+        },
+      });
+      const updateSongs = db.songs.updateMany({
+        where: { artistId: user.id },
+        data: {
+          artistName: username,
+        },
+      });
+      await Promise.all([updateAlbums, updateSongs]);
+    }
+
     return NextResponse.json({ message: "User updated with success" });
   } catch (error) {
     return NextResponse.json({ error: true, message: "something went wrong." });
@@ -98,6 +114,7 @@ export async function DELETE(req: NextRequest) {
         error: true,
         message: "User not found",
       });
+      console.log(password,user.password)
     const checkPass = await compare(password, user.password as string);
 
     if (!checkPass)
@@ -108,10 +125,17 @@ export async function DELETE(req: NextRequest) {
 
     await deleteArtistDrawer(user);
 
-    const followers = await db.followers.findMany({
-      where: { users: { has: user.id } },
-    });
-
+    const [followers, playlists, searchHistory] = await Promise.all([
+      db.followers.findMany({
+        where: { users: { has: user.id } },
+      }),
+      db.playlist.findMany({
+        where: { userId: user.id },
+      }),
+      db.searchHistory.findFirst({
+        where: { userId: user.id },
+      }),
+    ]);
     const followersPromise = followers.map(async (res) => {
       const filteredList = res.users.filter((id) => id !== user.id);
       await db.followers.update({
@@ -119,23 +143,24 @@ export async function DELETE(req: NextRequest) {
         data: { users: filteredList },
       });
     });
-    await Promise.all(followersPromise);
 
-    const playlists = await db.playlist.findMany({
-      where: { userId: user.id },
-    });
     const playlistPromise = playlists.map(async (res) => {
       await deleteImage(res.coverPhoto);
     });
-    await Promise.all(playlistPromise);
 
-    await db.likedSongs.deleteMany({ where: { userId: user.id } });
-    await db.playlist.deleteMany({ where: { userId: user.id } });
-    await deleteImage(user.profile?.avatar as string);
+    await Promise.all([
+      ...playlistPromise,
+      ...followersPromise,
+      db.likedSongs.deleteMany({ where: { userId: user.id } }),
+      db.playlist.deleteMany({ where: { userId: user.id } }),
+      db.searchHistory.delete({ where: { id: searchHistory?.id } }),
+      db.user.delete({ where: { id: user.id } }),
+      deleteImage(user.profile?.avatar as string),
+    ]);
 
-    await db.user.delete({ where: { id: user.id } });
     return NextResponse.json({ message: "User deleted with success" });
   } catch (error) {
+    console.log(error)
     return NextResponse.json({
       error: true,
       message: "We had a problem trying to delete the user",
@@ -166,13 +191,7 @@ async function deleteArtistDrawer(user: User) {
     await deleteSong(song.urlSong);
   });
 
-  await Promise.all(likedPromise);
-  await Promise.all(songsPromise);
-  await db.playCount.deleteMany({
-    where: { songId: { in: songsIds } },
-  });
-
-  await db.playlist.updateMany({
+  const updatePlaylists = db.playlist.updateMany({
     where: {
       songs: { some: { songId: { in: songsIds } } },
     },
@@ -186,6 +205,15 @@ async function deleteArtistDrawer(user: User) {
       },
     },
   });
+
+  await Promise.all([
+    ...likedPromise,
+    ...songsPromise,
+    db.playCount.deleteMany({
+      where: { songId: { in: songsIds } },
+    }),
+    updatePlaylists,
+  ]);
 
   const albums = await db.album.findMany({ where: { artistId: user.id } });
   const imgPromise = albums.map(async (album) => {

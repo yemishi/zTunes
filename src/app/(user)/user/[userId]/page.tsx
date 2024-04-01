@@ -1,11 +1,12 @@
-import ProfileHeader from "@/app/components/headers/ProfileHeader";
-import BundleOrganizer from "@/app/components/organizer/BundleOrganizer";
-import ProfileOrganizer from "@/app/components/organizer/ProfileOrganizer";
-import { getVibrantColor } from "@/app/utils/fnc";
+import ProfileHeader from "@/components/headers/ProfileHeader";
+import BundleOrganizer from "@/components/organizer/BundleOrganizer";
+import ProfileOrganizer from "@/components/organizer/ProfileOrganizer";
+import { getVibrantColor } from "@/utils/fnc";
 import { authOptions } from "@/lib/auth";
 import { BundleType, FollowersType, UserType } from "@/types/response";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
+import GenericHeaderSkeleton from "@/components/skeletons/GenericHeaderSkeleton";
 
 async function fetchData(userId: string, username: string) {
   try {
@@ -58,9 +59,8 @@ export default async function UserPage({
     profileId: userInfo.id,
     cover: userInfo.avatar,
   };
-
   return (
-    <div className="flex flex-col gap-4 pb-32">
+    <div className="flex flex-col gap-4 pb-32 md:ml-64 lg:ml-72 2xl:ml-80 min-[2000px]:ml-96">
       <ProfileHeader
         username={username}
         profileInfo={profileInfo}
@@ -68,7 +68,6 @@ export default async function UserPage({
         isInclude={followersInfo.isInclude}
         vibrantColor={vibrantColor || "transparent"}
       />
-
       {playlists.length > 0 && (
         <BundleOrganizer
           seeMore={hasMore ? `/user/${userId}/playlists` : undefined}

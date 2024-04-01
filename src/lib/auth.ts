@@ -9,7 +9,6 @@ export type UserToken = {
   name: String;
   email: String;
   picture: String;
-  isAdmin: boolean;
   password?: String;
 };
 
@@ -45,12 +44,13 @@ export const authOptions: NextAuthOptions = {
         const checkPass = await compare(password, existingUser.password);
 
         if (!checkPass) return null;
+
         return {
           id: existingUser.id,
           email: existingUser.email,
           name: existingUser.username,
           image: existingUser.profile?.avatar,
-          isAdmin: existingUser.isAdmin,
+          isAdmin: !!existingUser.isAdmin,
         };
       },
     }),
@@ -58,11 +58,10 @@ export const authOptions: NextAuthOptions = {
 
   callbacks: {
     async jwt({ token, trigger, session }) {
-      if (trigger === "update" && (session.name || session.picture)) {
+      if (trigger === "update" && session) {
         token.name = session.name || token.name;
-        token.picture = session.picture || token.name;
+        token.picture = session.picture || token.picture;
       }
-
       return token;
     },
 
@@ -71,7 +70,6 @@ export const authOptions: NextAuthOptions = {
         email: token.email as string,
         name: token.name as string,
         picture: token.picture as string,
-        isAdmin: !!token.isAdmin,
       };
       return session;
     },

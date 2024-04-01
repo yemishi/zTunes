@@ -1,15 +1,16 @@
 import { authOptions } from "@/lib/auth";
 import { getServerSession } from "next-auth";
-import ArtistsOrganizer from "../components/organizer/ProfileOrganizer";
-import BundleOrganizer from "../components/organizer/BundleOrganizer";
+import ArtistsOrganizer from "../../components/organizer/ProfileOrganizer";
+import BundleOrganizer from "../../components/organizer/BundleOrganizer";
+import { BundleType } from "@/types/response";
 
 async function getData(username: string) {
-  const albumProps = await fetch(`${process.env.URL}/api/album`).then((res) =>
-    res.json()
-  );
-  const artistsProps = await fetch(`${process.env.URL}/api/artist`).then(
-    (res) => res.json()
-  );
+  const albumProps: BundleType[] = await fetch(
+    `${process.env.URL}/api/album?take=10`
+  ).then((res) => res.json());
+  const artistsProps = await fetch(
+    `${process.env.URL}/api/artist?take=10`
+  ).then((res) => res.json());
 
   const recommendedProps = await fetch(
     `${process.env.URL}/api/playlist/recommended?username=${username}`
@@ -27,22 +28,26 @@ export default async function Home() {
   const { albumProps, artistsProps, recommendedProps } = data;
 
   return (
-    <div className="w-full min-h-full flex flex-col  pb-16">
-      <BundleOrganizer
-        title="popular albums"
-        baseUrl="/album"
-        props={albumProps}
-      />
+    <div className="w-full min-h-full flex flex-col pb-32 md:pb-20 md:ml-64 lg:ml-72 2xl:ml-80 min-[2000px]:ml-96">
+      {albumProps.length > 0 && (
+        <BundleOrganizer
+          title="popular albums"
+          baseUrl="/album"
+          props={albumProps}
+        />
+      )}
 
       {!recommendedProps.error && (
         <BundleOrganizer
-          title="Recommended musics"
+          title="You will like"
           baseUrl="/playlist"
           props={recommendedProps}
         />
       )}
 
-      <ArtistsOrganizer title="artists" props={artistsProps} />
+      {artistsProps.length > 0 && (
+        <ArtistsOrganizer title="artists" props={artistsProps} />
+      )}
     </div>
   );
 }

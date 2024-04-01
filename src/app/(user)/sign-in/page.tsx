@@ -1,13 +1,12 @@
 "use server";
 
-import SignInForm from "@/app/components/form/SignInForm";
+import SignInForm from "@/components/form/SignInForm";
 import Link from "next/link";
 
 export default async function page() {
   return (
     <div
-      className="w-full bg-black h-full bg-[url(/musicBg.jpg)] !bg-no-repeat relative !bg-cover !bg-center flex items-center justify-center
-     flex-col"
+      className="formContainer"
     >
       <div className="fixed bg-gradient-to-b from-transparent to-black w-full h-full" />
 

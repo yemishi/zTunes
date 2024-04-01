@@ -1,41 +1,32 @@
 import { db } from "@/lib/db";
-import { Prisma } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
   const albumId = req.nextUrl.searchParams.get("albumId") as string;
   const artistId = req.nextUrl.searchParams.get("artistId") as string;
-  const username = req.nextUrl.searchParams.get("username") as string;
-  const getAll = req.nextUrl.searchParams.get("getAll") as string;
+  const take = Number(req.nextUrl.searchParams.get("take")) || 10;
+  const page = Number(req.nextUrl.searchParams.get("page")) || 0;
   const songId = req.nextUrl.searchParams.get("songId") as string;
-
   try {
-    if (albumId) {
-      const songs = await db.songs.findMany({
-        where: { albumId },
+    if (artistId || albumId) {
+      const [count, songs] = await Promise.all([
+        db.songs.count({ where: albumId ? { albumId } : { artistId } }),
+        db.songs.findMany({
+          where: albumId ? { albumId } : { artistId },
+          take,
+          skip: page * take,
+        }),
+      ]);
+
+      return NextResponse.json({
+        songs,
+        hasMore: count > take * (page || 1),
       });
-      return NextResponse.json(songs);
-    }
-
-    const artist = await db.user.findFirst({ where: { id: artistId } });
-    const user = await db.user.findFirst({
-      where: { username: username || "" },
-    });
-
-    if (artistId) {
-      if (!artist?.isArtist && artist?.id !== user?.id)
-        return NextResponse.json({ error: true, message: "Artist not found" });
-
-      const songs = getAll
-        ? await db.songs.findMany({ where: { artistId } })
-        : await db.songs.findMany({ where: { artistId }, take: 5 });
-      return NextResponse.json(songs);
     }
 
     const song = await db.songs.findUnique({ where: { id: songId } });
     return NextResponse.json(song);
   } catch (error) {
-    console.log(error);
     return NextResponse.json({
       error: true,
       message: "We had a problem trying recover the songs",

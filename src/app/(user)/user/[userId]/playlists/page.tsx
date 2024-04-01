@@ -1,10 +1,11 @@
 "use client";
-import Card from "@/app/components/card/Card";
-import PreviousPage from "@/app/components/ui/buttons/PreviousPage";
+import Card from "@/components/card/Card";
+import PreviousPage from "@/components/ui/buttons/PreviousPage";
 import useScrollQuery from "@/hooks/useScrollQuery";
 import { BundleType } from "@/types/response";
 import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
+import UserPlaylistLoading from "./loading";
 
 export default function PlaylistsUser({
   params: { userId },
@@ -28,8 +29,9 @@ export default function PlaylistsUser({
   });
 
   if (error || isError) return redirect("404");
+  if (isLoading) return <UserPlaylistLoading />;
   return (
-    <div className="px-2 pb-32 flex flex-col gap-3 ">
+    <div className="px-2 pb-32 flex flex-col gap-3 md:ml-64 lg:ml-72 2xl:ml-80 min-[2000px]:ml-96 ">
       <PreviousPage />
 
       <h1 className="text-2xl font-kanit ml-2">Playlists</h1>
@@ -51,7 +53,7 @@ export default function PlaylistsUser({
         })}
       </div>
       {!isFetchingNextPage && hasNextPage && <div ref={ref} />}
-      {isFetchingNextPage && isLoading && <div className="spinner" />}
+      {isFetchingNextPage && <div className="spinner" />}
     </div>
   );
 }

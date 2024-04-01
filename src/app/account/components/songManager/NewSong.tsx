@@ -1,7 +1,7 @@
-import Button from "@/app/components/ui/buttons/Button";
-import AddCategories from "@/app/components/ui/inputs/AddCategories";
-import Input from "@/app/components/ui/inputs/Input";
-import InputFile from "@/app/components/ui/inputs/InputFile";
+import Button from "@/components/ui/buttons/Button";
+import AddCategories from "@/components/ui/inputs/AddCategories";
+import Input from "@/components/ui/inputs/Input";
+import InputFile from "@/components/ui/inputs/InputFile";
 import uploadSong, { deleteSong } from "@/firebase/handleSong";
 
 import { ErrorType } from "@/types/response";
@@ -81,7 +81,7 @@ export default function NewSong({
           placeholder="Song"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          classNameInput="bg-transparent  backdrop-brightness-150 border-neutralDark-400"
+          classNameInput="bg-transparent backdrop-brightness-150 border-neutralDark-400"
         />
 
         <AddCategories

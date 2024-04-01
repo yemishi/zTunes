@@ -8,8 +8,8 @@ import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { deleteSong } from "@/firebase/handleSong";
 
-import Button from "@/app/components/ui/buttons/Button";
-import Input from "@/app/components/ui/inputs/Input";
+import Button from "@/components/ui/buttons/Button";
+import Input from "@/components/ui/inputs/Input";
 import PopupDelete from "../PopupDelete";
 import useObject from "@/hooks/useObject";
 
