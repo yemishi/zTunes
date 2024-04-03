@@ -3,8 +3,8 @@ A music interactive website that allows users to control music playback, create 
 
 ## Table of contents
 - [Technologies Used](#technologies-used)
-- [Custom Hooks](#custom-hooks)
 - [Screenshots](#screenshots)
+- [Custom Hooks](#custom-hooks)
 - [Setup](#setup)
   
 ## Technologies Used 
@@ -14,6 +14,22 @@ A music interactive website that allows users to control music playback, create 
 - Typescript
 - Jest (for unit tests)
 - Zod (for data validation)
+
+## Screenshots
+
+Mobile
+<div style="display:flex;flex-wrap: wrap;gap:2px">
+  <img src="public/screenshots/artistPageMobile.png" alt="Artist Page Mobile" width="300" />
+  <img src="public/screenshots/songView.png" alt="Song View" width="300" />
+  <img src="public/screenshots/albumPageMobile.png" alt="Album Page Mobile" width="300" />
+</div>
+
+
+Desktop
+
+  ![Artist Page Desktop](public/screenshots/artistPageDesktop.png)
+  
+  ![Album Page Desktop](public/screenshots/albumPageDesktop.png)
 
 ## Custom Hooks
 
@@ -120,22 +136,6 @@ export default function Component() {
   );
 }
 ```
-## Screenshots
-
-Mobile
-<div style="display:flex;flex-wrap: wrap;gap:2px">
-  <img src="public/screenshots/artistPageMobile.png" alt="Artist Page Mobile" width="300" />
-  <img src="public/screenshots/songView.png" alt="Song View" width="300" />
-  <img src="public/screenshots/albumPageMobile.png" alt="Album Page Mobile" width="300" />
-</div>
-
-
-Desktop
-
-  ![Artist Page Desktop](public/screenshots/artistPageDesktop.png)
-  
-  ![Album Page Desktop](public/screenshots/albumPageDesktop.png)
-
 ## Setup 
 
 Follow the intrutions bellow to config and run in your local ambient
