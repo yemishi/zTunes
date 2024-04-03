@@ -1,7 +1,7 @@
 "use server";
 
 import GenericHeader from "@/components/headers/GenericHeader";
-import SongsOrganizer from "@/components/organizer/SongsOrganizer";
+import SongsQueryOrganizer from "@/components/organizer/SongsQueryOrganizer";
 
 import { authOptions } from "@/lib/auth";
 import { ErrorType } from "@/types/response";
@@ -45,7 +45,7 @@ export default async function Playlist({
     <div className="flex flex-col pb-32 md:pb-20 md:ml-64 lg:ml-72 2xl:ml-80 min-[2000px]:ml-96">
       <GenericHeader info={info} playlistId={playlistId} />
 
-      <SongsOrganizer
+      <SongsQueryOrganizer
         playlistId={playlistId}
         queryKey={["SongsPlaylist", playlistId]}
         url={`/api/playlist/songs?playlistId=${playlistId}&username=${user?.name}`}

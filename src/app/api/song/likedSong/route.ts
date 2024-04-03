@@ -65,6 +65,7 @@ export async function PATCH(req: NextRequest) {
     });
     return NextResponse.json({ message: "Song added to your library" });
   } catch (error) {
+    console.log(error)
     return NextResponse.json({
       error: true,
       message: "We had a problem trying to change your library.",

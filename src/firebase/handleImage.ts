@@ -28,7 +28,7 @@ export default async function uploadImg(
   } catch (error) {
     return {
       error: true,
-      message: "Something went wrong",
+      message: "We had a problem trying to upload the image",
     };
   }
 }

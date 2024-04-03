@@ -21,7 +21,7 @@ export default function () {
 
 const AlbumInfo = () => (
   <div className="flex gap-1 items-center p-2">
-    <Skeleton className="!size-32 !rounded-lg" />
+    <Skeleton className="!size-32 md:!size-52 !rounded-lg" />
     <div className="flex flex-col gap-2">
       <Skeleton className="!w-52 !h-7" />
       <Skeleton className="!w-48 !h-5" />

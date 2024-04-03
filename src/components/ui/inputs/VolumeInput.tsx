@@ -7,6 +7,7 @@ interface InputType extends React.HTMLAttributes<HTMLInputElement> {
   vertical?: boolean;
   value?: number;
   fixed?: boolean;
+  barClass?: string;
 }
 
 export default function VolumeInput({
@@ -15,6 +16,7 @@ export default function VolumeInput({
   className,
   value,
   fixed,
+  barClass,
   ...props
 }: InputType) {
   const [showInput, setShowInput] = useState<boolean>(false);
@@ -33,7 +35,7 @@ export default function VolumeInput({
           step={0.01}
           value={value}
           vertical={vertical}
-          classContainer="rotate-180"
+          classContainer={`rotate-180 ${barClass ? barClass : ""}`}
           currentProgress={currentProgress}
           {...props}
         />

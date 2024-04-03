@@ -6,7 +6,7 @@ import { urlMatch } from "@/utils/fnc";
 
 export default function NavBarMobile() {
   return (
-    <div className="w-full flex items-center justify-around h-16 bg-gradient-to-b backdrop-brightness-50">
+    <div className="w-full flex items-center justify-around h-16 backdrop-brightness-[20%] backdrop-blur-sm">
       <Link href="/home">
         <PiHouseLight
           className={`w-6 h-6 text-white ${

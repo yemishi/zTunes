@@ -60,7 +60,6 @@ export default function EditableImage({
       method: `${method || "PATCH"}`,
       body: JSON.stringify(body),
     }).then((res) => res.json());
-
     if (update.error) toast.error(update.message);
     await deleteImage(oldUrl);
 

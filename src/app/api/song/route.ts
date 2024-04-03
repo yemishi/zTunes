@@ -13,11 +13,11 @@ export async function GET(req: NextRequest) {
         db.songs.count({ where: albumId ? { albumId } : { artistId } }),
         db.songs.findMany({
           where: albumId ? { albumId } : { artistId },
+          orderBy: { name: "asc" },
           take,
           skip: page * take,
         }),
       ]);
-
       return NextResponse.json({
         songs,
         hasMore: count > take * (page || 1),

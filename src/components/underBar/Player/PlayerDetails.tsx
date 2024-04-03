@@ -4,16 +4,14 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { SongType } from "@/types/response";
 import { useSession } from "next-auth/react";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import Link from "next/link";
 
-import { toast } from "react-toastify";
 import { IoIosArrowDown } from "react-icons/io";
 import { TbDots } from "react-icons/tb";
 import { MdPlayCircleFilled } from "react-icons/md";
 import { PiPauseCircleFill } from "react-icons/pi";
 import { IoPlaySkipBackSharp, IoPlaySkipForward } from "react-icons/io5";
-import { LiaVolumeUpSolid } from "react-icons/lia";
 import { formatDuration } from "@/utils/formatting";
 
 import SongOptions from "../../songOptions/songOptions";
@@ -22,6 +20,7 @@ import Image from "../../ui/custom/Image";
 import ProgressBar from "../../ui/inputs/ProgressBar";
 import ToggleLike from "../../ui/buttons/ToggleLike";
 import { useTempOverlay } from "@/context/Provider";
+import VolumeInput from "@/components/ui/inputs/VolumeInput";
 
 type PropsType = {
   song: SongType;
@@ -55,8 +54,7 @@ export default function PlayerDetails({
   values,
   audioRef,
 }: PropsType) {
-  const { coverPhoto, name, artistId, artistName, id } = song;
-  const [showVolume, setShowVolume] = useState<boolean>(false);
+  const { coverPhoto, name, artistId, artistName, id, albumName } = song;
 
   const [toPlaylist, setToPlaylist] = useState<{
     songSelected: { songId: string; createdAt: Date };
@@ -69,7 +67,6 @@ export default function PlayerDetails({
   const { currentTime, duration, volume, isPlaying } = values;
   const { data: session } = useSession();
   const user = session?.user;
-  const { push } = useRouter();
   const pathname = usePathname();
 
   useEffect(() => {
@@ -99,7 +96,7 @@ export default function PlayerDetails({
             <button onClick={onClose} className="size-12 p-2">
               <IoIosArrowDown className="h-full w-full" />
             </button>
-            <span className="text-lg flex-1 text-center">{name}</span>
+            <span className="text-lg flex-1 text-center">{albumName}</span>
 
             <button
               onClick={() => setChildren(Options)}
@@ -143,25 +140,6 @@ export default function PlayerDetails({
             </div>
           </div>
 
-          <div
-            className="self-end flex items-center"
-            onMouseLeave={() => setShowVolume(false)}
-            onMouseEnter={() => setShowVolume(true)}
-          >
-            {showVolume && (
-              <ProgressBar
-                classContainer="rotate-180"
-                value={volume}
-                onChange={handleVolume}
-                max={1}
-                min={0}
-                step={0.01}
-                currentProgress={volume}
-              />
-            )}
-            <LiaVolumeUpSolid className="size-8 rotate-180" />
-          </div>
-
           <div className="grid grid-cols-3 gap-6 items-center px-4 ">
             <ToggleLike songId={id} />
 
@@ -183,6 +161,14 @@ export default function PlayerDetails({
               </button>
             </div>
           </div>
+          <VolumeInput
+            className="w-full px-3"
+            barClass="w-full"
+            fixed
+            onChange={handleVolume}
+            value={volume}
+            currentProgress={volume}
+          />
 
           {toPlaylist && (
             <AddToPlaylist

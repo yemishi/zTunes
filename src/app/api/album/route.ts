@@ -6,6 +6,8 @@ export async function GET(req: NextRequest) {
   const query = req.nextUrl.searchParams.get("q") as string;
   const artistId = req.nextUrl.searchParams.get("artistId") as string;
   const albumId = req.nextUrl.searchParams.get("albumId") as string;
+  const take = Number(req.nextUrl.searchParams.get("take")) || 10;
+  const page = Number(req.nextUrl.searchParams.get("page")) || 0;
   try {
     if (albumId) {
       const album = await db.album.findUnique({
@@ -21,6 +23,8 @@ export async function GET(req: NextRequest) {
         .findMany({
           where: { albumId },
           select: { urlSong: true },
+          take: take,
+          skip: page * take,
         })
         .then((res) => res.map((song) => song.urlSong));
 
@@ -46,6 +50,8 @@ export async function GET(req: NextRequest) {
 
       const albums = await db.album.findMany({
         where: { artistId },
+        take: take,
+        skip: page * take,
       });
 
       return NextResponse.json(albums);
@@ -57,6 +63,9 @@ export async function GET(req: NextRequest) {
           contains: query || "",
         },
       },
+      orderBy: { coverPhoto: "asc" },
+      take: take,
+      skip: page * take,
     });
     return NextResponse.json(albums);
   } catch (error) {
@@ -190,13 +199,13 @@ async function updateAlbum(
 ) {
   try {
     if (field === "title") {
-      const availableTitle = await db.album.findFirst({
+      const existingTitle = await db.album.findFirst({
         where: { id: { not: albumId }, artistId, title: value },
       });
-      if (availableTitle)
+      if (existingTitle)
         return NextResponse.json({
           error: true,
-          message: "Title not available",
+          message: "Title is not available",
         });
     }
     await db.album.update({

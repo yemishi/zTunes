@@ -23,7 +23,11 @@ export default function AddCategories({
     setCategories(categories.filter((item) => item !== category));
 
   const add = () => {
-    if (inputRef.current && inputRef.current.value && categories.length <= 5) {
+    if (
+      inputRef.current &&
+      inputRef.current.value.trim() &&
+      categories.length <= 5
+    ) {
       setCategories([
         ...categories,
         inputRef.current.value.replaceAll(" ", ""),
