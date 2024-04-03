@@ -5,11 +5,11 @@ import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 
 async function fetchData(username: string) {
-  const data: SongType[] = await fetch(
+  const likedSongs: SongType[] = await fetch(
     `${process.env.URL}/api/song/likedSong?username=${username}`
   ).then((res) => res.json());
 
-  return data;
+  return likedSongs;
 }
 
 export default async function LikedSongs() {
@@ -17,13 +17,7 @@ export default async function LikedSongs() {
   if (!session) redirect("404");
 
   const username = session.user.name;
+  const songs = await fetchData(username);
 
-  return (
-    <div>
-      <SongsOrganizer
-        queryKey={["LikedSongs", username]}
-        url={`/api/song/likedSong?username=${username}`}
-      />
-    </div>
-  );
+  return <div>{songs.length > 0 && <SongsOrganizer songs={songs} />}</div>;
 }

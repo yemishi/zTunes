@@ -2,7 +2,7 @@
 
 import { SongType } from "@/types/response";
 import { RxDotsVertical } from "react-icons/rx";
-import { lazy, useEffect, useState } from "react";
+import { lazy, useState } from "react";
 import { useSession } from "next-auth/react";
 import { usePlayerContext, useTempOverlay } from "@/context/Provider";
 
@@ -10,7 +10,6 @@ import Image from "../ui/custom/Image";
 import Link from "next/link";
 import ToggleLike from "../ui/buttons/ToggleLike";
 import checkDev from "@/utils/isMobile";
-import useScrollQuery from "@/hooks/useScrollQuery";
 import SongSkeleton from "../skeletons/SongSkeleton";
 import { dateFormat } from "@/utils/formatting";
 
@@ -19,42 +18,26 @@ const SongOptions = lazy(() => import("../songOptions/songOptions"));
 const AddToPlaylist = lazy(() => import("../songOptions/addToPlaylist"));
 
 export default function SongsOrganizer({
-  url,
+  songs,
   asOl,
   title,
-  queryKey,
   playlistId,
-  limitLength,
+  refetch,
+  isLoading,
 }: {
-  url: string;
-  queryKey: string[];
+  songs: SongType[];
   asOl?: true;
   title?: string;
+  isLoading?: number;
+  refetch?: () => void;
   playlistId?: string;
-  limitLength?: number;
 }) {
   const { setPlayer, setCurrSong, currSong, player } = usePlayerContext();
-  const [curLength, setCurLength] = useState<number>(0);
   const [toPlaylist, setToPlaylist] = useState<{
     songSelected: { songId: string; createdAt: Date };
     coverPhoto: string;
     title: string;
   } | null>(null);
-  const {
-    values: songs,
-    isLoading,
-    isFetchingNextPage,
-    hasNextPage,
-    ref,
-    refetch,
-  } = useScrollQuery<SongType>({
-    queryKey,
-    url,
-    stop: limitLength !== undefined && curLength >= limitLength,
-  });
-  useEffect(() => {
-    setCurLength(songs.length);
-  }, [songs]);
 
   const { data } = useSession();
   const user = data?.user;
@@ -77,7 +60,7 @@ export default function SongsOrganizer({
   if (isLoading)
     return (
       <>
-        {Array.from({ length: limitLength || 10 }).map((_, index) => (
+        {Array.from({ length: isLoading }).map((_, index) => (
           <SongSkeleton key={index} />
         ))}
       </>
@@ -178,8 +161,6 @@ export default function SongsOrganizer({
           onclose={() => setToPlaylist(null)}
         />
       )}
-      {!isFetchingNextPage && hasNextPage && <div ref={ref} />}
-      {isFetchingNextPage && <SongSkeleton />}
     </div>
   );
 }

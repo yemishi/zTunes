@@ -40,7 +40,7 @@ export default async function Dashboard() {
   const albums = await fetchAlbums(isArtist ? id : null);
   const vibrantColor = await getVibrantColor(avatar);
   return (
-    <div className="flex flex-col gap-4 relative pb-32 md:pb-20 md:ml-64 lg:ml-72 2xl:ml-80  min-[2000px]:ml-96">
+    <div className="flex flex-col gap-4 relative pb-32 md:pb-20 md:ml-64 lg:ml-72 2xl:ml-80 min-[2000px]:ml-96">
       <ProfileHeader
         followersLength={0}
         profileInfo={{ cover: avatar, profileId: id, profileName: name }}

@@ -1,7 +1,7 @@
 "use server";
 
 import Link from "next/link";
-import { BundleType, ArtistType } from "@/types/response";
+import { BundleType, ArtistType, SongType } from "@/types/response";
 import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
@@ -14,16 +14,19 @@ import SongsOrganizer from "@/components/organizer/SongsOrganizer";
 
 async function getData(artistId: string) {
   const artistInfo: ArtistType = await fetch(
-    `${process.env.URL}/api/artist?id=${artistId}`,
-    { cache: "no-store" }
+    `${process.env.URL}/api/artist?id=${artistId}`
   ).then((res) => res.json());
 
   const albumsBundle: BundleType[] = await fetch(
     `${process.env.URL}/api/album?artistId=${artistId}`
   ).then((res) => res.json());
+  const songsData: { songs: SongType[]; hasMore: boolean } = await fetch(
+    `${process.env.URL}/api/song?artistId=${artistId}&take=5`
+  ).then((res) => res.json());
 
   return {
     artistInfo,
+    songsData,
     albumsBundle,
   };
 }
@@ -40,7 +43,11 @@ export default async function Artist({
 }: {
   params: { artistId: string };
 }) {
-  const { albumsBundle, artistInfo } = await getData(artistId);
+  const {
+    albumsBundle,
+    artistInfo,
+    songsData: { hasMore, songs },
+  } = await getData(artistId);
 
   if (artistInfo.error) return redirect("404");
 
@@ -76,20 +83,16 @@ export default async function Artist({
         }}
         isArtist
       />
-      <SongsOrganizer
-        queryKey={["songs", artistId]}
-        limitLength={5}
-        url={`/api/song?artistId=${artistId}&take=5`}
-        title="Musics"
-      />
+      {songs.length > 0 && <SongsOrganizer songs={songs} title="Musics" />}
 
-      <Button
-        asChild
-        className="bg-white rounded-lg self-start ml-4 text-black"
-      >
-        <Link href={`/artist/${artistInfo.id}/musics`}>Show all</Link>
-      </Button>
-
+      {hasMore && (
+        <Button
+          asChild
+          className="bg-white rounded-lg self-start ml-4 text-black"
+        >
+          <Link href={`/artist/${artistInfo.id}/musics`}>Show all</Link>
+        </Button>
+      )}
       <Link
         href={`/artist/${artistInfo.id}/discography`}
         className="self-end mr-4 font-kanit text-lg text-white text-opacity-50 underline underline-offset-[6px] hover:text-opacity-100 duration-100"

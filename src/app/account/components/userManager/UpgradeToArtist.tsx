@@ -11,9 +11,10 @@ import { useRouter } from "next/navigation";
 import { GiMicrophone } from "react-icons/gi";
 import { CardAcc } from "../CardAcc";
 import { toast } from "react-toastify";
+import { useMemo } from "react";
 
 export default function UpgradeToArtist({ userId }: { userId: string }) {
-  const {
+const {
     state: { coverPhoto, isArtist, isLoading, summary },
     updateObject,
   } = useObject<{
@@ -22,8 +23,10 @@ export default function UpgradeToArtist({ userId }: { userId: string }) {
     isLoading: boolean;
     summary: string;
   }>();
-
-  const demoPhoto = coverPhoto && URL.createObjectURL(coverPhoto[0]);
+  const demoPhoto = useMemo(() => {
+    if (coverPhoto) return URL.createObjectURL(coverPhoto[0]);
+    return "";
+  }, [coverPhoto]);
 
   const { refresh } = useRouter();
 

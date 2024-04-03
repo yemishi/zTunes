@@ -17,22 +17,27 @@ export default function Image({
   ...props
 }: ImgProps) {
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const generateAltText = (imageUrl: string): string => {
+    const filename = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
+    const filenameWithoutExtension = filename.split(".").slice(0, -1).join(" ");
 
-  const parseAlt = (imageUrl: String) => {
-    try {
-      const parts = imageUrl.split("/");
-      const fileName = parts[parts.length - 1];
-      const altName = fileName.split("?")[0];
-      return altName;
-    } catch (error) {
-      return "";
-    }
+    const formattedText = filenameWithoutExtension.replace(/[-_]/g, " ");
+    const capitalizedText = formattedText.replace(/\b\w/g, (char) =>
+      char.toUpperCase()
+    );
+
+    return capitalizedText;
   };
+
   return (
     <NextImage
       {...props}
       src={src}
-      alt={isLoading ? alt || "image loading" : alt || parseAlt(src)}
+      alt={
+        typeof window === "undefined"
+          ? "Loading..."
+          : alt || generateAltText(src)
+      }
       priority={priority}
       quality={100}
       height={500}

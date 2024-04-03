@@ -17,7 +17,7 @@ export default function DeleteAcc({ userId }: { userId: string }) {
   return (
     <RiDeleteBin6Line
       onClick={() => setChildren(Form)}
-      className="size-7 absolute top-4 right-4 z-10 cursor-pointer"
+      className="size-7 absolute top-4 right-4 cursor-pointer"
     />
   );
 }

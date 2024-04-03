@@ -1,3 +1,5 @@
+"use client";
+
 import { ErrorType } from "@/types/response";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { redirect } from "next/navigation";
@@ -8,7 +10,6 @@ export default function useScrollQuery<T>({
   url,
   stop,
 }: PropsType<T>) {
-
   const observer = useRef<IntersectionObserver | null>(null);
   const ref = useRef<HTMLDivElement>(null);
   const fetchData = async (page: number) => {

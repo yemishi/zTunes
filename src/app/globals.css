@@ -8,7 +8,6 @@ input::-webkit-inner-spin-button {
   margin: 0;
 }
 
-/* Firefox */
 input[type="number"] {
   -moz-appearance: textfield;
 }
@@ -17,7 +16,11 @@ input[type="number"] {
   @apply px-3 py-2 mt-auto *:bg-black outline-none text-lg md:text-xl duration-200 hover:bg-opacity-55 
    hover:border-opacity-80 focus:border-opacity-100  disabled:animate-pulse disabled:bg-white disabled:bg-opacity-15 text-white rounded-md appearance-none;
 }
-.formContainer {
+.form {
+  @apply mb-7 bg-gradient-to-b from-[#1f1e1a] to-transparent backdrop-blur w-full flex text-center h-full
+  flex-col pt-10 px-8 text-white gap-4 max-w-[450px] min-[450px]:h-[600px] min-[450px]:rounded-lg overflow-clip justify-center md:text-xl md:max-w-[550px];
+}
+.formPage {
   @apply w-full bg-black h-full bg-music !bg-no-repeat relative !bg-cover !bg-center flex items-center justify-center
   flex-col;
 }

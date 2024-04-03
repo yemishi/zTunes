@@ -56,18 +56,19 @@ export async function POST(req: NextRequest) {
     });
 
     await Promise.all([
-      await db.followers.create({
+      db.followers.create({
         data: {
           userId: newUser.id,
           users: [],
         },
       }),
-      await db.searchHistory.create({
+      db.searchHistory.create({
         data: {
           userId: newUser.id,
           historic: [],
         },
       }),
+      db.likedSongs.create({ data: { userId: newUser.id } }),
     ]);
 
     return NextResponse.json({

@@ -1,13 +1,13 @@
 import GenericHeader from "@/components/headers/GenericHeader";
-import SongsOrganizer from "@/components/organizer/SongsOrganizer";
+import SongsQueryOrganizer from "@/components/organizer/SongsQueryOrganizer";
 import { BundleType, ErrorType } from "@/types/response";
 import { redirect } from "next/navigation";
 async function fetchData(albumId: string) {
   try {
     const albumInfo: (BundleType & { urlsSongs: string[] }) | ErrorType =
-      await fetch(`${process.env.URL}/api/album?albumId=${albumId}`).then(
-        (res) => res.json()
-      );
+      await fetch(`${process.env.URL}/api/album?albumId=${albumId}`, {
+        cache: "no-store",
+      }).then((res) => res.json());
 
     if (albumInfo.error) return redirect("404");
     return albumInfo;
@@ -22,9 +22,7 @@ export default async function Album({
   params: { albumId: string };
 }) {
   const albumInfo = await fetchData(albumId);
-
   if (!albumInfo) return redirect("404");
-
   const {
     artistId,
     artistName,
@@ -52,7 +50,8 @@ export default async function Album({
           releasedDate,
         }}
       />
-      <SongsOrganizer
+      <SongsQueryOrganizer
+        asOl
         queryKey={["Songs", id]}
         url={`/api/song?albumId=${albumId}`}
       />

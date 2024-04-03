@@ -99,7 +99,7 @@ export default function SignUpForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="formContainer">
+    <form onSubmit={handleSubmit(onSubmit)} className="form">
       <h1 className="text-3xl font-montserrat font-bold self-start tracking-tighter text-left ">
         Sign up to start
         <br /> listening

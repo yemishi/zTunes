@@ -93,7 +93,7 @@ export default function ProfileHeader({
         isArtist ? "md:min-h-[440px] lg:min-h-[480px]" : "md:min-h-[350px]"
       }`}
     >
-      <PreviousPage className="p-4 z-10" />
+      <PreviousPage className="p-4 md:z-10" />
 
       <div
         className={`flex flex-col items-center mt-auto ${
@@ -123,10 +123,10 @@ export default function ProfileHeader({
         </div>
 
         <div
-          className={`flex flex-col items-center gap-2 md:z-10 md:mt-16 md:items-start md:p-4  `}
+          className={`flex flex-col items-center gap-2 md:z-10 md:mt-16 md:items-start md:p-4 text-center md:text-left`}
         >
           <InputText
-            className="z-10 text-center md:text-left text-3xl md:text-5xl lg:text-6xl font-bold font-montserrat first-letter:uppercase"
+            className="text-center md:text-left text-3xl md:text-5xl lg:text-6xl font-bold font-montserrat first-letter:uppercase"
             min={3}
             max={25}
             rows={isMobile ? 1 : 2}
@@ -137,7 +137,7 @@ export default function ProfileHeader({
 
           <div className="flex flex-col gap-2 md:flex-row md:items-center">
             {follows > 0 && (
-              <span className="font-montserrat text-orange-300 z-10 md:font-semibold md:text-white md:text-lg lg:text-xl">
+              <span className="font-montserrat text-orange-300 md:font-semibold md:text-white md:text-lg lg:text-xl">
                 {follows} Follows
               </span>
             )}
@@ -146,14 +146,14 @@ export default function ProfileHeader({
               (isMobile || !isArtist ? (
                 <Button
                   onClick={() => (username ? fetchFollow() : push("/sign-in"))}
-                  className="bg-transparent py-1 text-base"
+                  className="bg-transparent py-1 text-base md:z-10"
                 >
                   {isFollow ? "unfollow" : "Follow"}
                 </Button>
               ) : (
                 <FaHeart
                   onClick={() => (username ? fetchFollow() : push("/sign-in"))}
-                  className={`size-9 cursor-pointer duration-150 z-10 ${
+                  className={`size-9 cursor-pointer duration-150 z-10  ${
                     isFollow ? "text-amber-500" : "text-white text-opacity-30"
                   }`}
                 />

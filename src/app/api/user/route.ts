@@ -114,7 +114,7 @@ export async function DELETE(req: NextRequest) {
         error: true,
         message: "User not found",
       });
-      console.log(password,user.password)
+
     const checkPass = await compare(password, user.password as string);
 
     if (!checkPass)
@@ -160,7 +160,7 @@ export async function DELETE(req: NextRequest) {
 
     return NextResponse.json({ message: "User deleted with success" });
   } catch (error) {
-    console.log(error)
+    console.log(error);
     return NextResponse.json({
       error: true,
       message: "We had a problem trying to delete the user",

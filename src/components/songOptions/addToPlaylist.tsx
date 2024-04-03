@@ -71,7 +71,8 @@ export default function AddToPlaylist({
 
   const newPlaylist = async () => {
     const body = {
-      coverPhoto,
+      coverPhoto:
+        "https://firebasestorage.googleapis.com/v0/b/ztunes-695af.appspot.com/o/default%2FplaylistDefault.jpg?alt=media&token=c2e0c6a3-8c62-4154-a729-67d335fb1855",
       username,
       title,
       songs: [{ createdAt: new Date(), songId }],
