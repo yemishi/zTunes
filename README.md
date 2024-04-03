@@ -18,7 +18,7 @@ A music interactive website that allows users to control music playback, create 
 ## Custom Hooks
 
 ### [useScrollQuery](https://github.com/yemishi/zTunes/blob/main/src/hooks/useScrollQuery.tsx)
-This custom Hook fetches data with pagination and returns all values fetched, typed with the specified type provided as a generic. It includes properties for useInfiniteQuery and a ref, which serves as the observer. When the ref comes into view, the hook automatically calls for the next page of data. Note: Ensure that the array of data is located at index 1 and includes an item named hasMore with a boolean value in the API response object.
+This custom Hook fetches data with pagination and returns all values fetched, typed with the specified type provided as a generic. It includes properties from useInfiniteQuery and a ref, which serves as the observer. When the ref comes into view, the hook automatically calls for the next page of data. Note: Ensure that the array of data is located at index 1 and includes an item named hasMore with a boolean value in the API response object.
 
 ```tsx
 // Usage example
