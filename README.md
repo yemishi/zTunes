@@ -72,7 +72,7 @@ This custom hook receives a URL of an audio file as props and returns the format
 import useSongDuration from "/hooks"
 
 export default function Component() {
-  const duration = useSongDuration(urlSong);
+  const duration = useSongDuration("urlSong");
   return <div>{duration}</div>;
 }
 ```
