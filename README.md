@@ -85,7 +85,7 @@ This custom hook receives an ID of a song and returns an object with the user's 
 import useLike from "/hooks";
 
 export default function Component() {
-  const { isLoading, toggleLike, isLiked } = useLike();
+  const { isLoading, toggleLike, isLiked } = useLike("songId");
 
 
   return (
