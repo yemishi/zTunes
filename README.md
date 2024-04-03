@@ -122,14 +122,14 @@ export default function Component() {
 ```
 ## Screenshots
 
-### Mobile
+- Mobile
 <div style="display:flex;">
   <img src="public/screenshots/artistPageMobile.png" alt="Artist Page Mobile" width="300">
     <img src="public/screenshots/songView.png" alt="Song View" width="300">
   <img src="public/screenshots/albumPageMobile.png" alt="Album Page Mobile" width="300">
 </div>
 
-### Desktop
+- Desktop
   ![Artist Page Desktop](public/screenshots/artistPageDesktop.png)
   ![Album Page Desktop](public/screenshots/albumPageDesktop.png)
 
