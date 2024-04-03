@@ -123,11 +123,9 @@ export default function Component() {
 ## Screenshots
 
 Mobile
-<div style="display:flex;">
+<div style="display:flex;flex-wrap: wrap;gap:2px">
   <img src="public/screenshots/artistPageMobile.png" alt="Artist Page Mobile" width="300" />
-   
   <img src="public/screenshots/songView.png" alt="Song View" width="300" />
-  
   <img src="public/screenshots/albumPageMobile.png" alt="Album Page Mobile" width="300" />
 </div>
 
