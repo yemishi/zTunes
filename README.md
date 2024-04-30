@@ -149,7 +149,7 @@ git clone https://github.com/yemishi/zTunes.git
 
 ```bash
 cd zTunes
-git clone https://github.com/yemishi/zTunes.git
+npm install
 ```
 ### 3.Copy the example environment file 
 Copy the '.env.example' file to a new file named '.env':
