@@ -8,6 +8,7 @@ async function getData(username: string) {
   const albumProps: BundleType[] = await fetch(
     `${process.env.URL}/api/album?take=10`
   ).then((res) => res.json());
+
   const artistsProps = await fetch(
     `${process.env.URL}/api/artist?take=10`
   ).then((res) => res.json());
@@ -15,6 +16,7 @@ async function getData(username: string) {
   const recommendedProps = await fetch(
     `${process.env.URL}/api/playlist/recommended?username=${username}`
   ).then((res) => res.json());
+
   return {
     albumProps,
     artistsProps,

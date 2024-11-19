@@ -86,9 +86,8 @@ export default function PlayerDetails({
           exit={{ y: "100%" }}
           transition={{ duration: 0.2 }}
           style={{
-            background: `linear-gradient(to bottom,${
-              vibrantColor || "rgb(33 33 33)"
-            } 0% ,#121212 100%)`,
+            background: `linear-gradient(to bottom,${vibrantColor || "rgb(33 33 33)"
+              } 0% ,#121212 100%)`,
           }}
           className={`fixed top-0 left-0 w-full h-full z-40 p-3 gap-6 font-kanit flex flex-col`}
         >
@@ -108,15 +107,18 @@ export default function PlayerDetails({
 
           <div className="flex flex-col flex-1 max-h-[500px] w-full justify-center gap-6 my-10">
             <Image src={coverPhoto} className="self-center  flex-1 w-max" />
-            <div className="w-full  flex flex-col items-center">
-              <span className="text-2xl first-letter:uppercase">{name}</span>
-              <Link
-                onClick={onClose}
-                href={`/artist/${artistId}`}
-                className="text-gray-400 first-letter:uppercase font-light"
-              >
-                {artistName}
-              </Link>
+            <div className="flex w-full relative">
+              <ToggleLike songId={id} className="absolute right-0"/>
+              <div className="max-w-[80%] w-auto mx-auto flex flex-col items-center self-center ">
+                <span className="text-2xl first-letter:uppercase">{name}</span>
+                <Link
+                  onClick={onClose}
+                  href={`/artist/${artistId}`}
+                  className="text-gray-400 first-letter:uppercase font-light"
+                >
+                  {artistName}
+                </Link>
+              </div>
             </div>
           </div>
 
@@ -140,10 +142,7 @@ export default function PlayerDetails({
             </div>
           </div>
 
-          <div className="grid grid-cols-3 gap-6 items-center px-4 ">
-            <ToggleLike songId={id} />
-
-            <div className="flex gap-3">
+          <div className="flex gap-3 mx-auto">
               <button onClick={previous}>
                 <IoPlaySkipBackSharp className="size-7" />
               </button>
@@ -159,7 +158,6 @@ export default function PlayerDetails({
               <button onClick={next}>
                 <IoPlaySkipForward className="size-7 " />
               </button>
-            </div>
           </div>
           <VolumeInput
             className="w-full px-3"

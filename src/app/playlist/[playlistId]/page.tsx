@@ -15,6 +15,7 @@ type ResponseType = {
   coverPhoto: string;
   authorId: string;
   isOwner: boolean;
+  isPublic: boolean
   desc?: string;
   isUser?: Boolean;
   isOfficial?: boolean;
@@ -47,6 +48,7 @@ export default async function Playlist({
 
       <SongsQueryOrganizer
         playlistId={playlistId}
+
         queryKey={["SongsPlaylist", playlistId]}
         url={`/api/playlist/songs?playlistId=${playlistId}&username=${user?.name}`}
       />

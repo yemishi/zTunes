@@ -1,3 +1,4 @@
+"use client"
 import { ErrorType } from "@/types/response";
 import { format, lastDayOfMonth } from "date-fns";
 import { usePathname } from "next/navigation";
@@ -8,24 +9,7 @@ export const urlMatch = (path: string) => {
   return pathName.includes(path);
 };
 
-export const getVibrantColor = async (img: string, lowOpacity?: true) => {
-  try {
-    const palette = await Vibrant.from(img).getPalette();
-    const isLowOpacity = lowOpacity ? 0.6 : 1;
-    return {
-      default: `rgb(${palette.DarkMuted?.rgb.join(",")},${isLowOpacity})`,
-      light: `rgb(${palette.LightVibrant?.rgb.join(",")},${isLowOpacity})`,
-      dark: `rgb(${palette.DarkVibrant?.rgb.join(",")},${
-        lowOpacity ? 0.6 : ""
-      })`,
-      mutedDark: `rgb(${palette.DarkMuted?.rgb.join(",")},${isLowOpacity})`,
-      mutedLight: `rgb(${palette.LightMuted?.rgb.join(",")},${isLowOpacity})`,
-      muted: `rgb(${palette.Muted?.rgb.join(",")},${isLowOpacity})`,
-    };
-  } catch (error) {
-    return null;
-  }
-};
+
 
 export const removeFromPlaylist = async (
   songSelected: {
@@ -52,14 +36,13 @@ export const isAvailable = async (
 ): Promise<
   | ErrorType
   | {
-      error: false;
-      response: boolean;
-    }
+    error: false;
+    response: boolean;
+  }
 > => {
   try {
     const checkIsAvailable: boolean = await fetch(
-      `/api/user/validation?isAvailable=true&value=${value}&field=${
-        field || "username"
+      `/api/user/validation?isAvailable=true&value=${value}&field=${field || "username"
       }`
     ).then((res) => res.json());
 

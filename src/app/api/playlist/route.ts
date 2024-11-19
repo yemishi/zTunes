@@ -46,6 +46,7 @@ export async function GET(req: NextRequest) {
         isOwner: playlist.userId === user?.id,
         author: author?.username,
         isUser: !author?.isArtist,
+        isPublic: playlist.isPublic,
         coverPhoto: playlist.coverPhoto,
         avatar: author?.profile?.avatar,
         isOfficial: playlist.officialCategories,
@@ -177,7 +178,7 @@ export async function PATCH(req: NextRequest) {
           message: "Playlist with this name already exists",
         });
     }
-
+    console.log(isPublic)
     await db.playlist.update({
       where: { id },
       data: {
@@ -186,17 +187,18 @@ export async function PATCH(req: NextRequest) {
         officialCategories,
         songs: toRemove
           ? songs?.filter(
-              (song) =>
-                String(song.createdAt) !==
-                  String(new Date(songSelected.createdAt)) &&
-                song.songId !== songSelected.songId
-            )
+            (song) =>
+              String(song.createdAt) !==
+              String(new Date(songSelected.createdAt)) &&
+              song.songId !== songSelected.songId
+          )
           : songs,
         title: title || playlist?.title,
       },
     });
     return NextResponse.json({ message: "playlist updated with successfully" });
   } catch (error) {
+
     return NextResponse.json({
       error: true,
       message: "we had a problem trying to update the playlist",

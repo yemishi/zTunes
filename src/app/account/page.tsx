@@ -3,7 +3,6 @@ import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 
 import { authOptions } from "@/lib/auth";
-import { getVibrantColor } from "../../utils/fnc";
 
 import ProfileHeader from "../../components/headers/ProfileHeader";
 import Albums from "./components/Albums";
@@ -11,6 +10,7 @@ import DeleteAcc from "./components/userManager/DeleteAcc";
 import UpgradeToArtist from "./components/userManager/UpgradeToArtist";
 import Logout from "../../components/ui/buttons/Logout";
 import UpgradeToAdmin from "./components/userManager/UpgradeToAdmin";
+import getVibrantColor from "@/utils/getVibrantColor";
 
 async function fetchData(username: string) {
   const data: UserType | ErrorType = await fetch(
@@ -39,6 +39,7 @@ export default async function Dashboard() {
 
   const albums = await fetchAlbums(isArtist ? id : null);
   const vibrantColor = await getVibrantColor(avatar);
+
   return (
     <div className="flex flex-col gap-4 relative pb-32 md:pb-20 md:ml-64 lg:ml-72 2xl:ml-80 min-[2000px]:ml-96">
       <ProfileHeader

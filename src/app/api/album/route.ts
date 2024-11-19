@@ -8,6 +8,7 @@ export async function GET(req: NextRequest) {
   const albumId = req.nextUrl.searchParams.get("albumId") as string;
   const take = Number(req.nextUrl.searchParams.get("take")) || 10;
   const page = Number(req.nextUrl.searchParams.get("page")) || 0;
+
   try {
     if (albumId) {
       const album = await db.album.findUnique({
@@ -56,7 +57,6 @@ export async function GET(req: NextRequest) {
 
       return NextResponse.json(albums);
     }
-
     const albums = await db.album.findMany({
       where: {
         title: {
@@ -69,6 +69,7 @@ export async function GET(req: NextRequest) {
     });
     return NextResponse.json(albums);
   } catch (error) {
+    console.log(error)
     return NextResponse.json({
       error: true,
       message: `We had a problem trying to recover the albums`,

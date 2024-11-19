@@ -2,7 +2,6 @@
 
 import { HTMLAttributes, useEffect, useState } from "react";
 import { formatDuration } from "@/utils/formatting";
-import { SongType } from "@/types/response";
 
 import Image from "../ui/custom/Image";
 import Link from "next/link";
@@ -28,6 +27,7 @@ export default function GenericHeader({
     coverPhoto,
     desc,
     releasedDate,
+    isPublic,
     authorId,
     isUser,
     urlsSongs,
@@ -65,9 +65,8 @@ export default function GenericHeader({
       style={{
         background: `linear-gradient(to bottom,${vibrantColor} 10%,transparent 100%)`,
       }}
-      className={`${
-        className ? className : ""
-      } flex flex-col gap-2 h-full items-center w-full p-4 pt-0 pb-10 md:min-h-[350px] md:items-start`}
+      className={`${className ? className : ""
+        } flex flex-col gap-2 h-full items-center w-full p-4 pt-0 pb-10 md:min-h-[350px] md:items-start`}
     >
       <span className="flex items-center py-4 justify-between w-full">
         <PreviousPage className="p-0" />
@@ -75,6 +74,7 @@ export default function GenericHeader({
           <EditPlaylist
             playlistId={playlistId as string}
             playlistName={title}
+            isPublic={isPublic}
           />
         )}
       </span>
@@ -149,6 +149,7 @@ type InfoType = {
   coverPhoto: string;
   authorId: string;
   isOwner: boolean;
+  isPublic: boolean;
   desc?: string;
   isUser?: Boolean;
   isOfficial?: boolean;

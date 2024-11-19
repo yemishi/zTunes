@@ -1,12 +1,11 @@
 import ProfileHeader from "@/components/headers/ProfileHeader";
 import BundleOrganizer from "@/components/organizer/BundleOrganizer";
 import ProfileOrganizer from "@/components/organizer/ProfileOrganizer";
-import { getVibrantColor } from "@/utils/fnc";
 import { authOptions } from "@/lib/auth";
 import { BundleType, FollowersType, UserType } from "@/types/response";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
-import GenericHeaderSkeleton from "@/components/skeletons/GenericHeaderSkeleton";
+import getVibrantColor from "@/utils/getVibrantColor";
 
 async function fetchData(userId: string, username: string) {
   try {
