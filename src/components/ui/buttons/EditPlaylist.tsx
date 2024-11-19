@@ -10,7 +10,7 @@ import { MdPublic, MdPublicOff } from "react-icons/md";
 interface WithoutClickProps<T> extends Omit<React.HTMLProps<T>, "onClick"> {
   playlistId: string;
   playlistName: string;
-  isPublic: boolean
+  isPublic?: boolean
 }
 interface DivProps extends WithoutClickProps<HTMLDivElement> {
   onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;

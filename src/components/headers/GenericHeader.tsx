@@ -149,7 +149,7 @@ type InfoType = {
   coverPhoto: string;
   authorId: string;
   isOwner: boolean;
-  isPublic: boolean;
+  isPublic?: boolean;
   desc?: string;
   isUser?: Boolean;
   isOfficial?: boolean;
