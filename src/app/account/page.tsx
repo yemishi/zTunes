@@ -35,10 +35,11 @@ export default async function Dashboard() {
   if (!session) return redirect("/sign-in");
 
   const { name: username } = session.user;
-  return <div>test</div>
   const { avatar, id, name, isArtist, isAdmin } = await fetchData(username);
+  const albums = await fetchAlbums(isArtist ? id : null);
+  console.log(isArtist, albums)
+  return <div>test</div>
   /*
-    const albums = await fetchAlbums(isArtist ? id : null);
     const vibrantColor = await getVibrantColor(avatar);
   
     return (
