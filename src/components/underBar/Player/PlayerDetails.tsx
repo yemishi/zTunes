@@ -89,9 +89,9 @@ export default function PlayerDetails({
             background: `linear-gradient(to bottom,${vibrantColor || "rgb(33 33 33)"
               } 0% ,#121212 100%)`,
           }}
-          className={`fixed overflow-auto top-0 left-0 w-full h-full z-40 p-3 gap-6 font-kanit flex flex-col`}
+          className={`fixed overflow-auto top-0 left-0 w-full h-full z-40 p-3 gap-3 font-kanit flex flex-col`}
         >
-          <div className="flex justify-between items-center">
+          <div className="flex justify-between items-center ">
             <button onClick={onClose} className="size-12 p-2">
               <IoIosArrowDown className="h-full w-full" />
             </button>
@@ -106,9 +106,9 @@ export default function PlayerDetails({
           </div>
 
           <div className="flex flex-col flex-1 max-h-[500px] w-full justify-center gap-6 my-10">
-            <Image src={coverPhoto} className="self-center flex-1 w-max" />
+            <Image src={coverPhoto} className="self-center !h-[400px] w-full object-cover" />
             <div className="flex w-full relative">
-              <ToggleLike songId={id} className="absolute right-0"/>
+              <ToggleLike songId={id} className="absolute right-0" />
               <div className="max-w-[80%] w-auto mx-auto flex flex-col items-center self-center ">
                 <span className="text-2xl first-letter:uppercase">{name}</span>
                 <Link
@@ -122,27 +122,28 @@ export default function PlayerDetails({
             </div>
           </div>
 
-          <div className="flex flex-col gap-2 px-3">
-            <ProgressBar
-              value={currentTime}
-              onChange={handleProgress}
-              onMouseUp={() =>
-                audioRef.current ? (audioRef.current.muted = false) : null
-              }
-              onMouseDown={() =>
-                audioRef.current ? (audioRef.current.muted = true) : null
-              }
-              max={duration || 0}
-              currentProgress={currentTime / Number(duration)}
-            />
+          <div className="w-full flex flex-col gap-2">
+            <div className="flex flex-col gap-2 px-3">
+              <ProgressBar
+                value={currentTime}
+                onChange={handleProgress}
+                onMouseUp={() =>
+                  audioRef.current ? (audioRef.current.muted = false) : null
+                }
+                onMouseDown={() =>
+                  audioRef.current ? (audioRef.current.muted = true) : null
+                }
+                max={duration || 0}
+                currentProgress={currentTime / Number(duration)}
+              />
 
-            <div className="flex w-full font-poppins justify-between text-xs font-light text-white text-opacity-65">
-              <span>{formatDuration(currentTime || 0, true)}</span>
-              <span>{formatDuration(duration || 0, true)}</span>
+              <div className="flex w-full font-poppins justify-between text-xs font-light text-white text-opacity-65">
+                <span>{formatDuration(currentTime || 0, true)}</span>
+                <span>{formatDuration(duration || 0, true)}</span>
+              </div>
             </div>
-          </div>
 
-          <div className="flex gap-3 mx-auto">
+            <div className="flex gap-3 mx-auto">
               <button onClick={previous}>
                 <IoPlaySkipBackSharp className="size-7" />
               </button>
@@ -158,15 +159,16 @@ export default function PlayerDetails({
               <button onClick={next}>
                 <IoPlaySkipForward className="size-7 " />
               </button>
+            </div>
+            <VolumeInput
+              className="w-full px-3 "
+              barClass="w-full"
+              fixed
+              onChange={handleVolume}
+              value={volume}
+              currentProgress={volume}
+            />
           </div>
-          <VolumeInput
-            className="w-full px-3"
-            barClass="w-full"
-            fixed
-            onChange={handleVolume}
-            value={volume}
-            currentProgress={volume}
-          />
 
           {toPlaylist && (
             <AddToPlaylist
