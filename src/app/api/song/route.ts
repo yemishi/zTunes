@@ -1,5 +1,6 @@
 import { db } from "@/lib/db";
 import { NextRequest, NextResponse } from "next/server";
+import { jsonError, paginate } from "../helpers";
 
 export async function GET(req: NextRequest) {
   const albumId = req.nextUrl.searchParams.get("albumId") as string;
@@ -7,6 +8,7 @@ export async function GET(req: NextRequest) {
   const take = Number(req.nextUrl.searchParams.get("take")) || 10;
   const page = Number(req.nextUrl.searchParams.get("page")) || 0;
   const songId = req.nextUrl.searchParams.get("songId") as string;
+
   try {
     if (artistId || albumId) {
       const [count, songs] = await Promise.all([
@@ -14,8 +16,7 @@ export async function GET(req: NextRequest) {
         db.songs.findMany({
           where: albumId ? { albumId } : { artistId },
           orderBy: { name: "asc" },
-          take,
-          skip: page * take,
+          ...paginate(page, take),
         }),
       ]);
       return NextResponse.json({
@@ -27,10 +28,7 @@ export async function GET(req: NextRequest) {
     const song = await db.songs.findUnique({ where: { id: songId } });
     return NextResponse.json(song);
   } catch (error) {
-    return NextResponse.json({
-      error: true,
-      message: "We had a problem trying recover the songs",
-    });
+    return jsonError("We had a problem trying recover the songs.")
   }
 }
 

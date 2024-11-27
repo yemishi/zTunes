@@ -4,6 +4,7 @@ import { deleteSong } from "@/firebase/handleSong";
 import { db } from "@/lib/db";
 import { User } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
+import { jsonError } from "../helpers";
 
 export async function GET(req: NextRequest) {
   const userId = req.nextUrl.searchParams.get("userId") as string;
@@ -19,7 +20,7 @@ export async function GET(req: NextRequest) {
     });
 
     if (!user || (user.username !== username && user.isArtist && !artistToo))
-      return NextResponse.json({ error: true, message: "User not found" });
+      return jsonError("User not found", 404)
 
     const userInfo = {
       id: user.id,
@@ -57,10 +58,7 @@ export async function GET(req: NextRequest) {
       hasMore: followsData.length > skip + limit,
     });
   } catch (error) {
-    return NextResponse.json({
-      error: true,
-      message: "We had a problem trying to get user info",
-    });
+    return jsonError("We had a problem trying to get user info.")
   }
 }
 
@@ -84,24 +82,18 @@ export async function PATCH(req: NextRequest) {
     });
 
     if (user?.isArtist && username) {
-      const updateAlbums = db.album.updateMany({
+      await db.songs.updateMany({
         where: { artistId: user.id },
         data: {
           artistName: username,
         },
       });
-      const updateSongs = db.songs.updateMany({
-        where: { artistId: user.id },
-        data: {
-          artistName: username,
-        },
-      });
-      await Promise.all([updateAlbums, updateSongs]);
+
     }
 
     return NextResponse.json({ message: "User updated with success" });
   } catch (error) {
-    return NextResponse.json({ error: true, message: "something went wrong." });
+    return jsonError("An error occurred while trying to obtain user information.")
   }
 }
 
@@ -110,18 +102,12 @@ export async function DELETE(req: NextRequest) {
     const { userId, password } = await req.json();
     const user = await db.user.findFirst({ where: { id: userId } });
     if (!user)
-      return NextResponse.json({
-        error: true,
-        message: "User not found",
-      });
+      return jsonError("User not found.", 404)
 
     const checkPass = await compare(password, user.password as string);
 
     if (!checkPass)
-      return NextResponse.json({
-        error: true,
-        message: "Password incorrect",
-      });
+      return jsonError("Password incorrect")
 
     await deleteArtistDrawer(user);
 
@@ -160,11 +146,7 @@ export async function DELETE(req: NextRequest) {
 
     return NextResponse.json({ message: "User deleted with success" });
   } catch (error) {
-    console.log(error);
-    return NextResponse.json({
-      error: true,
-      message: "We had a problem trying to delete the user",
-    });
+    return jsonError("We had a problem trying to delete the user")
   }
 }
 

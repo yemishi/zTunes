@@ -1,39 +1,38 @@
+import ErrorWrapper from "@/components/ErrorWrapper";
 import ProfileHeader from "@/components/headers/ProfileHeader";
 import BundleOrganizer from "@/components/organizer/BundleOrganizer";
 import ProfileOrganizer from "@/components/organizer/ProfileOrganizer";
 import { authOptions } from "@/lib/auth";
-import { BundleType, FollowersType, UserType } from "@/types/response";
 import { getServerSession } from "next-auth";
-import { redirect } from "next/navigation";
-import getVibrantColor from "@/utils/getVibrantColor";
+import { notFound } from "next/navigation";
 
 async function fetchData(userId: string, username: string) {
-  try {
-    const followersInfo: FollowersType = await fetch(
-      `${process.env.URL}/api/followers?username=${username}&artistId=${userId}`
-    ).then((res) => res.json());
-
-    const userData: UserDataType = await fetch(
-      `${process.env.URL}/api/user?userId=${userId}&getFollows=true`
-    ).then((res) => res.json());
-
-    const { followsInfo, userInfo, hasMore: hasMoreFollows } = userData;
-
-    const playlistData: { playlists: BundleType[]; hasMore: boolean } =
-      await fetch(
-        `${process.env.URL}/api/playlist?username=${username}&authorName=${userInfo.name}&limit=5`
-      ).then((res) => res.json());
-
-    return {
-      followersInfo,
-      userInfo,
-      playlistData,
-      followsInfo,
-      hasMoreFollows,
-    };
-  } catch (error) {
-    redirect("404");
+  const userData = await fetch(
+    `${process.env.URL}/api/user?userId=${userId}&getFollows=true`
+  ).then((res) => res.json());
+  if (userData.error) {
+    if (userData.status === 404) return notFound()
+    throw new Error(userData.message);
   }
+
+  const followersInfo = await fetch(
+    `${process.env.URL}/api/followers?username=${username}&artistId=${userId}`
+  ).then((res) => res.json());
+
+  const { followsInfo, userInfo, hasMore: hasMoreFollows } = userData;
+
+  const playlistData =
+    await fetch(
+      `${process.env.URL}/api/playlist?username=${username}&authorName=${userInfo.name}&limit=5`
+    ).then((res) => res.json());
+
+  return {
+    followersInfo,
+    userInfo,
+    playlistData,
+    followsInfo,
+    hasMoreFollows,
+  };
 }
 
 export default async function UserPage({
@@ -49,9 +48,6 @@ export default async function UserPage({
 
   const { hasMore, playlists } = playlistData;
 
-  const vibrantColor = await getVibrantColor(userInfo.avatar).then(
-    (res) => res?.default
-  );
 
   const profileInfo = {
     profileName: userInfo.name,
@@ -65,35 +61,27 @@ export default async function UserPage({
         profileInfo={profileInfo}
         followersLength={followersInfo.length}
         isInclude={followersInfo.isInclude}
-        vibrantColor={vibrantColor || "transparent"}
       />
-      {playlists.length > 0 && (
-        <BundleOrganizer
-          seeMore={hasMore ? `/user/${userId}/playlists` : undefined}
-          baseUrl="/playlist"
-          props={playlists}
-          title="Playlists"
-        />
-      )}
+      <ErrorWrapper error={playlistData.error} message={playlistData.message}>
+        {playlists.length > 0 && (
+          <BundleOrganizer
+            seeMore={hasMore ? `/user/${userId}/playlists` : undefined}
+            baseUrl="/playlist"
+            props={playlists}
+            title="Playlists"
+          />
+        )}
+      </ErrorWrapper>
 
-      {followsInfo.length > 0 && (
-        <ProfileOrganizer
-          seeMore={hasMoreFollows ? `/user/${userId}/follows` : undefined}
-          title="Follows"
-          props={followsInfo}
-        />
-      )}
+      <ErrorWrapper error={followsInfo.error} message={followsInfo.message}>
+        {followsInfo.length > 0 && (
+          <ProfileOrganizer
+            seeMore={hasMoreFollows ? `/user/${userId}/follows` : undefined}
+            title="Follows"
+            props={followsInfo}
+          />
+        )}
+      </ErrorWrapper>
     </div>
   );
 }
-
-type UserDataType = {
-  hasMore: boolean;
-  userInfo: UserType;
-  followsInfo: {
-    id: string;
-    name: string;
-    cover: string;
-    isArtist: boolean;
-  }[];
-};

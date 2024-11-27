@@ -89,7 +89,7 @@ export default function PlayerDetails({
             background: `linear-gradient(to bottom,${vibrantColor || "rgb(33 33 33)"
               } 0% ,#121212 100%)`,
           }}
-          className={`fixed top-0 left-0 w-full h-full z-40 p-3 gap-6 font-kanit flex flex-col`}
+          className={`fixed overflow-auto top-0 left-0 w-full h-full z-40 p-3 gap-6 font-kanit flex flex-col`}
         >
           <div className="flex justify-between items-center">
             <button onClick={onClose} className="size-12 p-2">
@@ -106,7 +106,7 @@ export default function PlayerDetails({
           </div>
 
           <div className="flex flex-col flex-1 max-h-[500px] w-full justify-center gap-6 my-10">
-            <Image src={coverPhoto} className="self-center  flex-1 w-max" />
+            <Image src={coverPhoto} className="self-center flex-1 w-max" />
             <div className="flex w-full relative">
               <ToggleLike songId={id} className="absolute right-0"/>
               <div className="max-w-[80%] w-auto mx-auto flex flex-col items-center self-center ">

@@ -41,7 +41,7 @@ export default function AddToPlaylist({
     fetchData();
   }, [options]);
 
-  const { coverPhoto, songSelected, title } = options;
+  const { songSelected, title } = options;
   const { songId } = songSelected;
 
   const addSong = async (id: string) => {

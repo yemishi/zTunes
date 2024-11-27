@@ -72,7 +72,7 @@ export default function SongOptions({
   return (
     <div
       {...props}
-      className="flex bg-black w bg-opacity-75 md:bg-black-400 md:bg-opacity-75 flex-col md:text-center font-medium text-lg md:text-xl h-full w-full font-kanit 
+      className="flex bg-black fixed top-2/4 -translate-y-2/4  bg-opacity-75 md:bg-black-400 md:bg-opacity-75 flex-col md:text-center font-medium text-lg md:text-xl h-full w-full font-kanit 
       md:max-w-[550px] md:max-h-[700px] md:items-center md:pt-4 md:rounded-lg backdrop-blur-lg  p-4 pt-20"
     >
       <div className="flex md:flex-col md:items-center gap-5 mb-7">

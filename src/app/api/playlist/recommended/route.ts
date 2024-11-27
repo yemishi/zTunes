@@ -1,12 +1,13 @@
 import { db } from "@/lib/db";
 import { NextRequest, NextResponse } from "next/server";
+import { jsonError } from "../../helpers";
 
 export async function GET(req: NextRequest) {
   const username = req.nextUrl.searchParams.get("username") as string;
   try {
     const user = await db.user.findFirst({ where: { username } });
     if (!user) {
-      return NextResponse.json({ error: true, message: "User not found" });
+      return NextResponse.json([]);
     }
 
     const historicPlayed = await db.playCount.findMany({
@@ -16,10 +17,7 @@ export async function GET(req: NextRequest) {
     const categories = historicPlayed.flatMap((song) => song.category);
 
     if (categories.length === 0) {
-      return NextResponse.json({
-        error: true,
-        message: "No categories in the user's history",
-      });
+      return NextResponse.json([]);
     }
 
     const playlists = await db.playlist.findMany({
@@ -28,10 +26,7 @@ export async function GET(req: NextRequest) {
     });
 
     if (!playlists.length)
-      return NextResponse.json({
-        error: true,
-        message: "Without recommendations playlists",
-      });
+      return NextResponse.json([]);
 
     const filteredBundle = playlists.filter((playlist) => {
       return playlist.officialCategories.some((category) =>
@@ -39,7 +34,7 @@ export async function GET(req: NextRequest) {
       );
     });
 
-    const playlistsCharge = filteredBundle.map((playlist) => {
+    const playlistsMapped = filteredBundle.map((playlist) => {
       const { title, id, coverPhoto } = playlist;
       return {
         isOfficial: true,
@@ -49,8 +44,8 @@ export async function GET(req: NextRequest) {
       };
     });
 
-    return NextResponse.json(playlistsCharge);
+    return NextResponse.json(playlistsMapped);
   } catch (error) {
-    return NextResponse.json({ error: true, message: "we had a problem" });
+    return jsonError("we had a problem trying to get some playlists")
   }
 }

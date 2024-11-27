@@ -3,13 +3,18 @@ import Image from "@/components/ui/custom/Image";
 
 import { BundleType } from "@/types/response";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 
 async function fetchData(artistId: string) {
-  const albums: BundleType[] = await fetch(
+  const albums = await fetch(
     `${process.env.URL}/api/album?artistId=${artistId}`
   ).then((res) => res.json());
+  if (albums.error) {
+    if (albums.status === 404) return notFound()
+    throw new Error(albums.message);
 
-  return albums;
+  }
+  return albums as BundleType[];
 }
 
 export default async function Discography({

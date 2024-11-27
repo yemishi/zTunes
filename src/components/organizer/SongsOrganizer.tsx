@@ -122,32 +122,32 @@ export default function SongsOrganizer({
               <Link
                 href={`/album/${albumId}`}
                 onClick={(e) => e.stopPropagation()}
-                className="text-xl opacity-75 hover:underline hover:underline-offset-4 hover:opacity-100 duration-150 w-max"
+                className="text-xl opacity-75 hover:underline hover:underline-offset-4 hover:opacity-100 duration-150 w-max "
               >
                 {albumName}
               </Link>
             )}
-            <span
+            <div
               onClick={(e) => e.stopPropagation()}
-              className={`flex md:grid md:grid-cols-4  gap-2 justify-items-end items-center ml-auto`}
+              className={`flex md:  md:grid-cols-3  gap-2 justify-items-end items-center ml-auto `}
             >
               {!isMobile && (
                 <>
                   {playlistId && (
-                    <span className="mr-3 text-lg opacity-75">
+                    <span className="mr-3 text-lg opacity-75 ">
                       {dateFormat(createdAt)}
                     </span>
                   )}
-
-                  <SongDuration urlSong={urlSong} rerender={songs} />
                   <ToggleLike songId={id} />
+                  <SongDuration urlSong={urlSong} rerender={songs} />
+
                 </>
               )}
               <RxDotsVertical
-                className="h-full w-6 md:w-8 "
+                className="h-full w-6 md:w-8"
                 onClick={(e) => setChildren(Options(song))}
               />
-            </span>
+            </div>
           </div>
         );
       })}

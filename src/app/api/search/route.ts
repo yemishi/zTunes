@@ -25,9 +25,10 @@ export async function GET(req: NextRequest) {
         where: { title: { contains: q, mode: "insensitive" } },
       }),
       db.album.findMany({
-        where: { title: { contains: q, mode: "insensitive" } },
+        where: { title: { contains: q, mode: "insensitive" } }, include: { artist: { select: { username: true } } }
       }),
     ]);
+
     const playlistsFiltered = playlistsData.filter((playlist) => {
       if (!playlist.isPublic && user) return playlist.userId === user.id;
       return playlist.isPublic;
@@ -54,7 +55,7 @@ export async function GET(req: NextRequest) {
         coverPhoto: album.coverPhoto,
         refId: album.id,
         type: "Album",
-        desc: `Album • ${album.artistName}`,
+        desc: `Album • ${album.artist.username}`,
       };
     });
 

@@ -1,20 +1,22 @@
 import { authOptions } from "@/lib/auth";
 import { BundleType, ErrorType } from "@/types/response";
 import { getServerSession } from "next-auth";
-import { redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 
 import GenericHeader from "@/components/headers/GenericHeader";
 import ViewSongsAlbum from "../../components/ViewSongsAlbum";
 import DeleteAlbum from "../../components/albumManager/DeleteAlbum";
 
 async function fetchData(albumId: string, artistName: string) {
-  const albumInfo: (BundleType & { urlsSongs: string[] }) | ErrorType =
+  const albumInfo: (BundleType & { urlsSongs: string[] }) =
     await fetch(`${process.env.URL}/api/album?albumId=${albumId}`).then((res) =>
       res.json()
     );
 
-  if (albumInfo.error || albumInfo.artistName !== artistName)
-    return redirect("404");
+  if (albumInfo.error || albumInfo.artistName !== artistName) {
+    if (albumInfo.status === 404 || albumInfo.artistName !== artistName) return notFound()
+    throw new Error(albumInfo.message);
+  }
 
   return albumInfo;
 }

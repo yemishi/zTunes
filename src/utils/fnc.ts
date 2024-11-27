@@ -2,14 +2,11 @@
 import { ErrorType } from "@/types/response";
 import { format, lastDayOfMonth } from "date-fns";
 import { usePathname } from "next/navigation";
-import Vibrant from "node-vibrant";
 
 export const urlMatch = (path: string) => {
   const pathName = usePathname();
   return pathName.includes(path);
 };
-
-
 
 export const removeFromPlaylist = async (
   songSelected: {

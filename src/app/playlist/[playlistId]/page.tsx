@@ -4,31 +4,18 @@ import GenericHeader from "@/components/headers/GenericHeader";
 import SongsQueryOrganizer from "@/components/organizer/SongsQueryOrganizer";
 
 import { authOptions } from "@/lib/auth";
-import { ErrorType } from "@/types/response";
-import { getServerSession } from "next-auth";
-import { redirect } from "next/navigation";
 
-type ResponseType = {
-  avatar: string;
-  title: string;
-  author: string;
-  coverPhoto: string;
-  authorId: string;
-  isOwner: boolean;
-  isPublic: boolean
-  desc?: string;
-  isUser?: Boolean;
-  isOfficial?: boolean;
-  releasedDate?: string;
-  urlsSongs: string[];
-  error: false;
-};
+import { getServerSession } from "next-auth";
+import { notFound } from "next/navigation";
 
 async function getData(playlistId: string, username: string) {
-  const response: ResponseType | ErrorType = await fetch(
+  const response = await fetch(
     `${process.env.URL}/api/playlist?playlistId=${playlistId}&username=${username}`
   ).then((res) => res.json());
-  if (response.error) return redirect("/404");
+  if (response.error) {
+    if (response.status === 404) return notFound()
+    throw new Error(response.message);
+  }
 
   return response;
 }
@@ -48,7 +35,6 @@ export default async function Playlist({
 
       <SongsQueryOrganizer
         playlistId={playlistId}
-
         queryKey={["SongsPlaylist", playlistId]}
         url={`/api/playlist/songs?playlistId=${playlistId}&username=${user?.name}`}
       />

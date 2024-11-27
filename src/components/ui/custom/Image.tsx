@@ -21,13 +21,11 @@ export default function Image({
     const decoded = decodeURIComponent(imageUrl)
     const filename = decoded.substring(decoded.lastIndexOf("/") + 1);
     const filenameWithoutExtension = filename.split(".").slice(0, -1).join(" ");
-
     const formattedText = filenameWithoutExtension.replace(/[-_]/g, " ");
-    const capitalizedText = formattedText.replace(/\b\w/g, (char) =>
+
+    return formattedText.replace(/\b\w/g, (char) =>
       char.toUpperCase()
     );
-
-    return capitalizedText;
   };
 
   return (
@@ -36,7 +34,7 @@ export default function Image({
       src={src}
       alt={alt || generateAltText(src)}
       priority={priority}
-      quality={100}
+      quality={75}
       height={500}
       width={500}
       onLoad={() => setIsLoading(false)}

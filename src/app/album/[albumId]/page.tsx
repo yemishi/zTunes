@@ -1,19 +1,16 @@
 import GenericHeader from "@/components/headers/GenericHeader";
 import SongsQueryOrganizer from "@/components/organizer/SongsQueryOrganizer";
-import { BundleType, ErrorType } from "@/types/response";
-import { redirect } from "next/navigation";
-async function fetchData(albumId: string) {
-  try {
-    const albumInfo: (BundleType & { urlsSongs: string[] }) | ErrorType =
-      await fetch(`${process.env.URL}/api/album?albumId=${albumId}`, {
-        cache: "no-store",
-      }).then((res) => res.json());
+import { notFound } from "next/navigation";
 
-    if (albumInfo.error) return redirect("404");
-    return albumInfo;
-  } catch (error) {
-    return redirect("404");
+async function fetchData(albumId: string) {
+  const albumInfo =
+    await fetch(`${process.env.URL}/api/album?albumId=${albumId}`).then((res) => res.json());
+
+  if (albumInfo.error) {
+    if (albumInfo.status === 404) return notFound()
+    throw new Error(albumInfo.message);
   }
+  return albumInfo;
 }
 
 export default async function Album({
@@ -22,7 +19,7 @@ export default async function Album({
   params: { albumId: string };
 }) {
   const albumInfo = await fetchData(albumId);
-  if (!albumInfo) return redirect("404");
+
   const {
     artistId,
     artistName,
@@ -36,7 +33,7 @@ export default async function Album({
   } = albumInfo;
 
   return (
-    <div className="flex flex-col pb-32 md:pb-20 md:ml-64 lg:ml-72 2xl:ml-80  min-[2000px]:ml-96">
+    <div className="flex flex-col pb-32 md:pb-20 md:ml-64 lg:ml-72 2xl:ml-80 min-[2000px]:ml-96">
       <GenericHeader
         info={{
           isOwner: false,

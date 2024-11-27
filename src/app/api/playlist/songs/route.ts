@@ -2,6 +2,7 @@ import { db } from "@/lib/db";
 import { dateFormat } from "@/utils/formatting";
 import { Songs } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
+import { jsonError } from "../../helpers";
 
 const organizerSongInfo = async (
   songs: Songs[],
@@ -49,14 +50,8 @@ export async function GET(req: NextRequest) {
       where: { id: playlistId },
       select: { songs: true, isPublic: true, userId: true },
     });
-    if (!playlist)
-      return NextResponse.json({ error: true, message: "playlist not found" });
-
-    if (!playlist.isPublic && playlist.userId !== user?.id)
-      return NextResponse.json({
-        error: true,
-        message: "playlist not found",
-      });
+    if (!playlist || (!playlist.isPublic && playlist.userId !== user?.id))
+      return jsonError("playlist not found.", 404)
 
     const songsId = playlist?.songs.map((obj) => obj.songId);
 
@@ -78,9 +73,6 @@ export async function GET(req: NextRequest) {
       hasMore: playlist.songs.length > take * (page || 1),
     });
   } catch (error) {
-    return NextResponse.json({
-      error: true,
-      message: "We had a problem trying to get the playlist songs",
-    });
+    return jsonError("We had a problem trying to get the playlist songs.")
   }
 }

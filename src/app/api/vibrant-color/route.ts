@@ -13,6 +13,6 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json(vibrantColor);
   } catch (error) {
-    return NextResponse.json({ error: true, message: "error true" });
+    return NextResponse.json("transparent");
   }
 }

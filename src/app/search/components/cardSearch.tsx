@@ -30,7 +30,7 @@ export default function CardSearch({
   };
   const url = baseUrl[type.toLowerCase() as UrlValues]
     ? `${baseUrl[type.toLowerCase() as UrlValues]}/${refId}`
-    : "/serach";
+    : "/search";
 
   const { refresh } = useRouter();
   const [isLoading, setIsLoading] = useState<boolean>(false);

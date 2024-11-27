@@ -1,6 +1,7 @@
 import { db } from "@/lib/db";
 import { dateFormat } from "@/utils/formatting";
 import { NextRequest, NextResponse } from "next/server";
+import { jsonError } from "../helpers";
 
 export async function GET(req: NextRequest) {
   const authorName = req.nextUrl.searchParams.get("authorName") || "";
@@ -16,7 +17,7 @@ export async function GET(req: NextRequest) {
     });
 
     if (!author && !playlistId)
-      return NextResponse.json({ error: true, message: "Author not found" });
+      return jsonError("Author not found.", 404)
 
     const user = await db.user.findFirst({ where: { username } });
     if (playlistId) {
@@ -24,10 +25,7 @@ export async function GET(req: NextRequest) {
         where: { id: playlistId },
       });
       if (!playlist)
-        return NextResponse.json({
-          error: true,
-          message: "Playlist not found",
-        });
+        return jsonError("Playlist not found.", 404)
       const author = await db.user.findFirst({
         where: { id: playlist.userId },
       });
@@ -77,10 +75,7 @@ export async function GET(req: NextRequest) {
       hasMore,
     });
   } catch (error) {
-    return NextResponse.json({
-      error: true,
-      message: "We had a problem trying to get the playlist songs",
-    });
+    return jsonError("We had a problem trying to get the playlist songs.")
   }
 }
 
@@ -98,17 +93,14 @@ export async function POST(req: NextRequest) {
 
     const user = await db.user.findFirst({ where: { username } });
     if (!user)
-      return NextResponse.json({ error: true, message: "user not found" });
+      return jsonError("user not found", 404);
 
     const existingPlaylist = await db.playlist.findFirst({
       where: { title, userId: user.id },
     });
 
     if (existingPlaylist) {
-      return NextResponse.json({
-        error: true,
-        message: "Playlist with this name already exists",
-      });
+      return jsonError("Playlist with this name already exists.")
     }
 
     await db.playlist.create({
@@ -125,10 +117,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ message: "playlist created successfully" });
   } catch (error) {
-    return NextResponse.json({
-      error: true,
-      message: "we had a problem trying to create the playlist",
-    });
+    return jsonError("we had a problem trying to create the playlist.")
   }
 }
 
@@ -149,7 +138,7 @@ export async function PATCH(req: NextRequest) {
     const songs = playlist?.songs;
 
     if (!playlist)
-      return NextResponse.json({ error: true, message: "Playlist not found" });
+      return jsonError("Playlist not found.", 404)
 
     if (songSelected && typeof songSelected === "string") {
       if (!force && songs?.some((song) => song.songId === songSelected))
@@ -173,12 +162,9 @@ export async function PATCH(req: NextRequest) {
         },
       });
       if (existingTitle)
-        return NextResponse.json({
-          error: true,
-          message: "Playlist with this name already exists",
-        });
+        return jsonError("Playlist with this name already exists.")
     }
-    console.log(isPublic)
+
     await db.playlist.update({
       where: { id },
       data: {
@@ -199,10 +185,7 @@ export async function PATCH(req: NextRequest) {
     return NextResponse.json({ message: "playlist updated with successfully" });
   } catch (error) {
 
-    return NextResponse.json({
-      error: true,
-      message: "we had a problem trying to update the playlist",
-    });
+    return jsonError("we had a problem trying to update the playlist.")
   }
 }
 
@@ -212,9 +195,6 @@ export async function DELETE(req: NextRequest) {
     await db.playlist.delete({ where: { id: playlistId } });
     return NextResponse.json({ message: "playlist deleted with success" });
   } catch (error) {
-    return NextResponse.json({
-      error: true,
-      message: "We had a problem trying to delete the playlists",
-    });
+    return jsonError("We had a problem trying to delete the playlists.")
   }
 }
