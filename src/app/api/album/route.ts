@@ -16,16 +16,16 @@ export async function GET(req: NextRequest) {
         where: { id: albumId },
         include: {
           songs: { select: { urlSong: true }, ...paginate(page, take) },
-          artist: { select: { profile: { select: { avatar: true } } } },
+          artist: { select: { profile: { select: { avatar: true } }, username: true } },
         },
       });
       if (!album)
         return jsonError("Album not found.", 404);
-
       return NextResponse.json({
         ...album,
         avatar: album.artist.profile?.avatar,
         urlsSongs: album.songs.map((s) => s.urlSong),
+        artistName: album.artist.username
       });
     }
 
@@ -76,7 +76,7 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    return NextResponse.json({ message: "Album created with success" });
+    return NextResponse.json({ message: "Your album was successfully created." });
   } catch (error) {
     return jsonError('We had a problem trying to create the album')
   }

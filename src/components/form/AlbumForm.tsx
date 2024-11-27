@@ -85,7 +85,7 @@ export default function AlbumForm({
       updateObject("isLoading", false);
       return toast.error(response.message);
     }
-    toast.success(response.message),
+    toast.success(response.message || "Your album was successfully created."),
       refresh(),
       onclose(),
       updateObject("isLoading", false);

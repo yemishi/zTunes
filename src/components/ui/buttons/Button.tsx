@@ -22,10 +22,9 @@ export default function Button({
   return (
     <Component
       {...props}
-      className={`${
-        className ? className : ""
-      } ${defaultBackDrop} ${defaultBg}  px-4 py-2 rounded-full border border-white border-opacity-30 font-kanit hover:backdrop-brightness-150
-      disabled:animate-pulse duration-200  bg-opacity-75 hover:bg-opacity-85 `}
+      className={`${className ? className : ""
+        } ${defaultBackDrop} ${defaultBg}  px-4 py-2 rounded-full border border-white border-opacity-30 font-kanit hover:backdrop-brightness-150
+      disabled:animate-pulse duration-200  bg-opacity-75 hover:bg-opacity-85`}
     />
   );
 }

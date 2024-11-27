@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 
 async function fetchData(albumId: string) {
   const albumInfo =
-    await fetch(`${process.env.URL}/api/album?albumId=${albumId}`).then((res) => res.json());
+    await fetch(`${process.env.URL}/api/album?albumId=${albumId}`, { cache: "no-store" }).then((res) => res.json());
 
   if (albumInfo.error) {
     if (albumInfo.status === 404) return notFound()
@@ -31,7 +31,6 @@ export default async function Album({
     id,
     urlsSongs,
   } = albumInfo;
-
   return (
     <div className="flex flex-col pb-32 md:pb-20 md:ml-64 lg:ml-72 2xl:ml-80 min-[2000px]:ml-96">
       <GenericHeader
