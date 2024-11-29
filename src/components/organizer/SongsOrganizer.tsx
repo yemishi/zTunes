@@ -65,6 +65,7 @@ export default function SongsOrganizer({
         ))}
       </>
     );
+
   return (
     <div className="w-full flex flex-col gap-2">
       {title && <h2 className="font-kanit text-xl ml-4">{title}</h2>}

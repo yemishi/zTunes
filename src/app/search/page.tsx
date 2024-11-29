@@ -2,11 +2,17 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import CardSearch from "./components/cardSearch";
 import HistoricSearch from "./components/HistoricSearch";
+import { SongType } from "@/types/response";
+
+interface SongDataSearch extends SongType {
+  songSelected?: { createAt: string, songId: string }
+}
 
 export type SearchType = {
   refId: string;
   coverPhoto: string;
   type: string;
+  songData?: SongDataSearch;
   desc?: string;
   title: string;
 };

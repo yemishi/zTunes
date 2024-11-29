@@ -34,7 +34,7 @@ export default function AddToPlaylist({
   useEffect(() => {
     const fetchData = async () => {
       const data: { playlists: Playlist[]; hasMore: boolean } = await fetch(
-        `/api/playlist?username=${username}&authorName=${username}&limit=50`
+        `/api/playlist?username=${username}&authorName=${username}&limit=10`
       ).then((res) => res.json());
       setPlaylists(data.playlists);
     };
@@ -45,13 +45,9 @@ export default function AddToPlaylist({
   const { songId } = songSelected;
 
   const addSong = async (id: string) => {
-    const body = {
-      id,
-      songSelected: songId,
-    };
     const data = await fetch(`/api/playlist`, {
       method: "PATCH",
-      body: JSON.stringify(body),
+      body: JSON.stringify({ id, songSelected: songId }),
     }).then((res) => res.json());
     if (!data.error) {
       refresh();

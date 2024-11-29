@@ -135,11 +135,19 @@ export async function PATCH(req: NextRequest) {
     } = await req.json();
 
     const playlist = await db.playlist.findUnique({ where: { id } });
-    const songs = playlist?.songs;
+    const songs = toRemove ? playlist?.songs?.filter(
+      (song) => String(song.createdAt) !==
+        String(new Date(songSelected.createdAt)) &&
+        song.songId !== songSelected.songId
+    ) : playlist?.songs;
+
 
     if (!playlist)
       return jsonError("Playlist not found.", 404)
-
+    const newSong = {
+      createdAt: new Date(),
+      songId: songSelected,
+    }
     if (songSelected && typeof songSelected === "string") {
       if (!force && songs?.some((song) => song.songId === songSelected))
         return NextResponse.json({
@@ -147,10 +155,7 @@ export async function PATCH(req: NextRequest) {
           alreadyIn: true,
           message: "Song already in this playlist",
         });
-      songs?.push({
-        createdAt: new Date(),
-        songId: songSelected,
-      });
+      songs?.push(newSong);
     }
 
     if (title) {
@@ -168,23 +173,15 @@ export async function PATCH(req: NextRequest) {
     await db.playlist.update({
       where: { id },
       data: {
-        coverPhoto: coverPhoto || playlist?.coverPhoto,
-        isPublic,
+        coverPhoto: coverPhoto || playlist.coverPhoto,
+        isPublic: isPublic !== undefined ? isPublic : playlist.isPublic,
         officialCategories,
-        songs: toRemove
-          ? songs?.filter(
-            (song) =>
-              String(song.createdAt) !==
-              String(new Date(songSelected.createdAt)) &&
-              song.songId !== songSelected.songId
-          )
-          : songs,
+        songs,
         title: title || playlist?.title,
       },
     });
-    return NextResponse.json({ message: "playlist updated with successfully" });
+    return NextResponse.json({ newSong: songSelected && !toRemove && newSong, message: "playlist updated with successfully" });
   } catch (error) {
-
     return jsonError("we had a problem trying to update the playlist.")
   }
 }

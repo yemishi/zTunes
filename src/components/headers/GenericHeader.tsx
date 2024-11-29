@@ -17,6 +17,7 @@ export default function GenericHeader({
   info,
   playlistId,
   updateUrl,
+  username,
   ...props
 }: DivProps) {
   const {
@@ -72,6 +73,7 @@ export default function GenericHeader({
         <PreviousPage className="p-0" />
         {isOwner && playlistId && (
           <EditPlaylist
+            username={username as string}
             playlistId={playlistId as string}
             playlistName={title}
             isPublic={isPublic}
@@ -137,7 +139,8 @@ export default function GenericHeader({
 }
 
 interface DivProps extends HTMLAttributes<HTMLDivElement> {
-  info: InfoType;
+  info: InfoType
+  username?: string;
   playlistId?: string;
   updateUrl?: string;
 }

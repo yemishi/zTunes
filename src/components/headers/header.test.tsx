@@ -55,7 +55,7 @@ describe("GenericHeader component", () => {
   };
 
 
-  it("should render correctly", async () => {
+  it("should render correctly @render", async () => {
     const { getByText } = render(<GenericHeader info={info} />);
     await waitFor(() => {
       const title = getByText(info.title);

@@ -3,17 +3,19 @@ import useScrollQuery from "@/hooks/useScrollQuery";
 import SongsOrganizer from "./SongsOrganizer";
 import { SongType } from "@/types/response";
 import SongSkeleton from "../skeletons/SongSkeleton";
+import AddSongToPlaylist from "@/app/playlist/[playlistId]/AddSongToPlaylist";
+import { useTempOverlay } from "@/context/Provider";
+import Button from "../ui/buttons/Button";
 
 export default function SongsQueryOrganizer({
-  queryKey,
-  url,
-  asOl,
-  playlistId,
+  queryKey, url, asOl, playlistId, username, isOwner
 }: {
   asOl?: true;
   queryKey: string[];
   url: string;
   playlistId?: string;
+  username?: string
+  isOwner?: boolean
 }) {
   const {
     values: songs,
@@ -26,9 +28,11 @@ export default function SongsQueryOrganizer({
     queryKey,
     url,
   });
-
+  const { setChildren, close } = useTempOverlay()
+  const addSong = () => setChildren(<AddSongToPlaylist refetch={refetch} onClose={close} playlistId={playlistId as string} username={username as string} />)
   return (
     <div className="flex flex-col">
+      {isOwner && <Button onClick={addSong} className="mr-auto ml-3 my-2 rounded-md">Add song</Button>}
       <SongsOrganizer
         asOl={asOl}
         isLoading={isLoading ? 10 : undefined}

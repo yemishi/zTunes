@@ -1,15 +1,15 @@
 "use client";
 import { FiEdit3 } from "react-icons/fi";
 import { RiDeleteBin6Line } from "react-icons/ri";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion, useAnimate } from "framer-motion";
 import { useState } from "react";
 import DeletePlaylist from "../custom/DeletePlaylist";
 import { MdPublic, MdPublicOff } from "react-icons/md";
 
-
 interface WithoutClickProps<T> extends Omit<React.HTMLProps<T>, "onClick"> {
   playlistId: string;
   playlistName: string;
+  username: string;
   isPublic?: boolean
 }
 interface DivProps extends WithoutClickProps<HTMLDivElement> {
@@ -19,7 +19,7 @@ interface DivProps extends WithoutClickProps<HTMLDivElement> {
 export default function EditPlaylist({
   playlistId,
   playlistName,
-  isPublic: isPlaylistPublic,
+  isPublic: isPlaylistPublic, username,
   ...props
 }: DivProps) {
   const { onClick, className, ...rest } = props;
@@ -35,6 +35,7 @@ export default function EditPlaylist({
     }).then((res) => res.json());
     setIsPublic(!!!isPublic)
   }
+
   const defaultHeight =
     className?.includes("h") || className?.includes("size") ? "" : "h-7";
   return (

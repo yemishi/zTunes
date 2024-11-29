@@ -30,13 +30,14 @@ export default async function Playlist({
   const info = await getData(playlistId, user?.name as string);
 
   return (
-    <div className="flex flex-col pb-32 md:pb-20 md:ml-64 lg:ml-72 2xl:ml-80 min-[2000px]:ml-96">
+    <div className="flex relative flex-col pb-32 md:pb-20 md:ml-64 lg:ml-72 2xl:ml-80 min-[2000px]:ml-96">
       <GenericHeader info={info} playlistId={playlistId} />
-
       <SongsQueryOrganizer
         playlistId={playlistId}
         queryKey={["SongsPlaylist", playlistId]}
         url={`/api/playlist/songs?playlistId=${playlistId}&username=${user?.name}`}
+        username={user?.name}
+        isOwner={info.isOwner}
       />
     </div>
   );
