@@ -118,6 +118,7 @@ export default function NewPlaylistForm({
       className="grid sm:grid-cols-2  font-kanit gap-6 bg-neutralDark-700 p-5 w-full max-w-[768px] md:rounded-md max-h-full overflow-auto"
     >
       <InputFileImg
+        isLoading={isLoading}
         error={!!errors.coverPhoto}
         demoPhoto={demoPhoto}
         onChange={handleFileChange}
@@ -125,6 +126,7 @@ export default function NewPlaylistForm({
 
       <Input
         type="text"
+        disabled={isLoading}
         error={errors.name?.message}
         label="Name"
         {...register("name")}
@@ -173,14 +175,14 @@ export default function NewPlaylistForm({
 
       <span className="grid grid-cols-2 gap-3 md:px-20 md:mt-11 sm:col-span-2">
         <Button
-          isLoading={isLoading}
+          disabled={isLoading}
           type="button"
           onClick={onclose}
           className="bg-white text-black"
         >
           Back
         </Button>
-        <Button isLoading={isLoading} type="submit">
+        <Button disabled={isLoading} type="submit">
           Submit
         </Button>
       </span>
@@ -215,11 +217,10 @@ function Toggle({
 
       <span
         className={`w-14 h-7 rounded-full self-center relative after:absolute after:h-5/6 after:w-6 after:top-2/4 after:-translate-y-2/4 after:bg-white 
-    after:rounded-full duration-200 after:duration-200 cursor-pointer ${
-      state
-        ? "bg-orange-600 bg-opacity-80 after:left-2/4"
-        : "bg-neutralDark-400 after:left-1"
-    }`}
+    after:rounded-full duration-200 after:duration-200 cursor-pointer ${state
+            ? "bg-orange-600 bg-opacity-80 after:left-2/4"
+            : "bg-neutralDark-400 after:left-1"
+          }`}
       />
     </div>
   );

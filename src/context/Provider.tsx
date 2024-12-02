@@ -17,10 +17,10 @@ interface PlayerContextProps {
 const PlayerContext = createContext<PlayerContextProps | undefined>(undefined);
 const TempOverlay = createContext<
   | {
-      children: React.ReactNode;
-      setChildren: React.Dispatch<React.SetStateAction<React.ReactNode>>;
-      close: () => void;
-    }
+    children: React.ReactNode;
+    setChildren: React.Dispatch<React.SetStateAction<React.ReactNode>>;
+    close: () => void;
+  }
   | undefined
 >(undefined);
 
@@ -53,7 +53,6 @@ export default function Provider({
   const [content, setContent] = useState<React.ReactNode>();
 
   const closeOverlay = () => setContent(null);
-
   const turnOnPlayer = (songs: SongType[], index: number) => {
     setPlayer(songs), setCurrSong(index);
   };

@@ -8,6 +8,7 @@ import { useState } from "react";
 import { usePlayerContext } from "@/context/Provider";
 import { FaCheck, FaPlus } from "react-icons/fa";
 import { toast } from "react-toastify";
+import usePlayer from "@/hooks/usePlayer";
 
 type UrlValues = "album" | "artist" | "user" | "playlist";
 
@@ -24,7 +25,7 @@ export default function CardSearch({
 
 
   const { refId, type, title, coverPhoto, desc: descData, songData } = data;
-  const { setPlayer, setCurrSong } = usePlayerContext()
+  const { turnOnPlayer } = usePlayerContext()
   const desc = descData || type;
   const baseUrl = {
     album: "/album",
@@ -39,6 +40,7 @@ export default function CardSearch({
   const { refresh, push } = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [songSelected, setSongSelected] = useState<{ createAt: string, songId: string } | null>(data.songData?.songSelected || null)
+  const { isPlaying } = usePlayer()
   const handleHistoric = async (action?: string) => {
     if (!username) return;
     setIsLoading(true);
@@ -98,7 +100,7 @@ export default function CardSearch({
   const handleOnClick = () => {
     handleHistoric()
     if (songData) {
-      setPlayer([songData]), setCurrSong(0)
+      turnOnPlayer([songData], 0)
       return
     }
     push(goTo)
