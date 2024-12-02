@@ -148,12 +148,6 @@ export default function ProfileHeader({
           />
 
           <div className="flex flex-col gap-2 md:flex-row md:items-center">
-            {follows > 0 && (
-              <span className="font-montserrat text-orange-300 md:font-semibold md:text-white md:text-lg lg:text-xl">
-                {follows} Follows
-              </span>
-            )}
-
             {!isOwner &&
               (isMobile || !isArtist ? (
                 <Button
@@ -169,6 +163,12 @@ export default function ProfileHeader({
                     }`}
                 />
               ))}
+            {follows > 0 && (
+              <span className="font-montserrat text-orange-300 md:font-semibold md:text-white md:text-lg lg:text-xl">
+                {follows} Follows
+              </span>
+            )}
+
           </div>
           {artistAbout && !isMobile && (
             <ExpandableText>{artistAbout}</ExpandableText>

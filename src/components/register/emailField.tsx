@@ -54,19 +54,26 @@ export default function EmailField({
         Next
       </Button>
 
-      <div className="w-full mb-2 h-[1px] bg-white bg-opacity-20" />
 
+      <div className="flex flex-col gap-3"> 
+      <Link
+        href="/"
+        className="tracking-tighter self-center mb-2 text-white hover:text-orange-600 text-lg md:text-xl font-semibold"
+      >
+        Go Home
+      </Link>
       <div className="w-full h-[1px] bg-white bg-opacity-20" />
 
       <span className="font-kanit text-gray-400">
         Already have an account?
         <Link
           href={"/sign-in"}
-          className="text-white underline underline-offset-4 ml-1"
+          className="text-white underline underline-offset-4 ml-1 hover:text-orange-600"
         >
           Log in here.
         </Link>
       </span>
+      </div>
     </DivAnimated>
   );
 }

@@ -9,15 +9,23 @@ export default async function page() {
       <div className="fixed bg-gradient-to-b from-transparent to-black w-full h-full" />
       <SignInForm />
 
-      <span className="text-gray-400 border-t py-3 border-white border-opacity-20 mt-7 fixed bottom-4">
-        Don't have an account
+      <div className="text-gray-400 mt-7 fixed bottom-4 flex flex-col items-center">
         <Link
-          href="/sign-up"
-          className="underline tracking-tighter ml-1 text-white"
+          href="/"
+          className="tracking-tighter self-center mb-2 text-white hover:text-orange-600 text-lg md:text-xl font-semibold"
         >
-          Sign up for zTunes
+          Go Home
         </Link>
-      </span>
+        <span className="border-t py-1 border-white border-opacity-20 w-full" />
+        <span className="md:text-lg">
+          Don't have an account
+          <Link
+            href="/sign-up"
+            className="underline tracking-tighter ml-1 text-white hover:text-orange-600"
+          >
+            Sign up for zTunes
+          </Link></span>
+      </div>
     </div>
   );
 }

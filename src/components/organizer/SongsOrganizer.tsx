@@ -70,7 +70,7 @@ export default function SongsOrganizer({
     <div className="w-full flex flex-col gap-2">
       {title && <h2 className="font-kanit text-xl ml-4">{title}</h2>}
 
-      {songs.map((song, index) => {
+      {songs.sort((a, b) => a.name.trim().localeCompare(b.name.trim())).map((song, index) => {
         const {
           artistId,
           artistName,

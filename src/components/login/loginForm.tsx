@@ -99,7 +99,7 @@ export default function LoginForm({ close }: { close: () => void }) {
 
       <button
         onClick={close}
-        className="underline font-kanit tracking-tighter underline-offset-4 mt-auto"
+        className="underline font-kanit tracking-tighter underline-offset-4 mt-auto hover:text-orange-600"
       >
         Forgot your password?
       </button>

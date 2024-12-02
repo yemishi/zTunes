@@ -2,7 +2,6 @@
 
 import { ErrorType } from "@/types/response";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { redirect } from "next/navigation";
 import { useEffect, useMemo, useRef } from "react";
 
 export default function useScrollQuery<T>({
@@ -17,7 +16,9 @@ export default function useScrollQuery<T>({
     const data: { hasMore: boolean; error: false } | ErrorType = await fetch(
       `${url}${mark}page=${page - 1}`
     ).then((res) => res.json());
-    if (data.error) redirect("404");
+
+    if (data.error) throw new Error(data.message);
+
     return data as T;
   };
 
@@ -28,7 +29,7 @@ export default function useScrollQuery<T>({
       const oldPage = lastPage as { hasMore: boolean };
       return oldPage.hasMore && !stop ? allPages.length + 1 : undefined;
     },
-    initialPageParam: 1,
+    initialPageParam: 1
   });
 
   const values = useMemo(() => {

@@ -21,7 +21,7 @@ export async function GET(req: NextRequest) {
       ]);
       return NextResponse.json({
         songs,
-        hasMore: count > take * (page || 1),
+        hasMore: count > take * (page + 1),
       });
     }
 

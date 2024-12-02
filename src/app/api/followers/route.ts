@@ -11,8 +11,7 @@ export async function GET(req: NextRequest) {
     if (!artistId) return jsonError("Missing required query parameters")
     const followers = await db.followers.findFirst({
       where: { userId: artistId }
-    });
-
+    })
     return NextResponse.json({
       length: followers?.users.length,
       isInclude: followers?.users.includes(user?.id as string),

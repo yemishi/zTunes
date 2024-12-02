@@ -19,18 +19,18 @@ async function fetchData(userId: string, username: string) {
     `${process.env.URL}/api/followers?username=${username}&artistId=${userId}`
   ).then((res) => res.json());
 
-  const { followsInfo, userInfo, hasMore: hasMoreFollows } = userData;
-
+  const { followers, userInfo, following, hasMore: hasMoreFollows } = userData;
   const playlistData =
     await fetch(
       `${process.env.URL}/api/playlist?username=${username}&authorName=${userInfo.name}&limit=5`
     ).then((res) => res.json());
 
   return {
+    followers,
+    following,
     followersInfo,
     userInfo,
     playlistData,
-    followsInfo,
     hasMoreFollows,
   };
 }
@@ -43,7 +43,7 @@ export default async function UserPage({
   const session = await getServerSession(authOptions);
   const username = session?.user.name as string;
 
-  const { followersInfo, userInfo, followsInfo, playlistData, hasMoreFollows } =
+  const { followers, following, followersInfo, userInfo, playlistData, hasMoreFollows } =
     await fetchData(userId, username);
 
   const { hasMore, playlists } = playlistData;
@@ -54,12 +54,13 @@ export default async function UserPage({
     profileId: userInfo.id,
     cover: userInfo.avatar,
   };
+  console.log(followersInfo)
   return (
     <div className="flex flex-col gap-4 pb-32 md:ml-64 lg:ml-72 2xl:ml-80 min-[2000px]:ml-96">
       <ProfileHeader
         username={username}
         profileInfo={profileInfo}
-        followersLength={followersInfo.length}
+        followersLength={followers.length}
         isInclude={followersInfo.isInclude}
       />
       <ErrorWrapper error={playlistData.error} message={playlistData.message}>
@@ -68,20 +69,26 @@ export default async function UserPage({
             seeMore={hasMore ? `/user/${userId}/playlists` : undefined}
             baseUrl="/playlist"
             props={playlists}
-            title="Playlists"
+            title="Public Playlists"
           />
         )}
       </ErrorWrapper>
 
-      <ErrorWrapper error={followsInfo.error} message={followsInfo.message}>
-        {followsInfo.length > 0 && (
-          <ProfileOrganizer
-            seeMore={hasMoreFollows ? `/user/${userId}/follows` : undefined}
-            title="Follows"
-            props={followsInfo}
-          />
-        )}
-      </ErrorWrapper>
+      {following.length > 0 && (
+        <ProfileOrganizer
+          seeMore={hasMoreFollows ? `/user/${userId}/follows` : undefined}
+          title="Following"
+          props={following}
+        />
+      )}
+
+      {followers.length > 0 && (
+        <ProfileOrganizer
+          seeMore={hasMoreFollows ? `/user/${userId}/follows` : undefined}
+          title="Followers"
+          props={followers}
+        />
+      )}
     </div>
   );
 }

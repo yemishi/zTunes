@@ -16,7 +16,6 @@ async function getData(playlistId: string, username: string) {
     if (response.status === 404) return notFound()
     throw new Error(response.message);
   }
-
   return response;
 }
 
@@ -28,7 +27,6 @@ export default async function Playlist({
   const session = await getServerSession(authOptions);
   const user = session?.user;
   const info = await getData(playlistId, user?.name as string);
-
   return (
     <div className="flex relative flex-col pb-32 md:pb-20 md:ml-64 lg:ml-72 2xl:ml-80 min-[2000px]:ml-96">
       <GenericHeader info={info} playlistId={playlistId} />

@@ -6,61 +6,83 @@ import { User } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 import { jsonError } from "../helpers";
 
+
 export async function GET(req: NextRequest) {
   const userId = req.nextUrl.searchParams.get("userId") as string;
   const username = req.nextUrl.searchParams.get("username") as string;
-  const artistToo = req.nextUrl.searchParams.get("artistToo") as string;
-  const limit = Number(req.nextUrl.searchParams.get("limit")) || 10;
-  const page = Number(req.nextUrl.searchParams.get("page")) || 0;
-  const getFollows = req.nextUrl.searchParams.get("getFollows") as string;
+  const artistToo = req.nextUrl.searchParams.get("artistToo") === "true";
+  const getFollows = req.nextUrl.searchParams.get("getFollows") === "true";
 
   try {
     const user = await db.user.findFirst({
       where: username ? { username } : { id: userId },
     });
 
-    if (!user || (user.username !== username && user.isArtist && !artistToo))
-      return jsonError("User not found", 404)
+    if (!user || (user.username !== username && user.isArtist && !artistToo)) {
+      return jsonError("User not found", 404);
+    }
 
     const userInfo = {
       id: user.id,
       name: user.username,
       isArtist: !!user.isArtist,
-      avatar: user.profile?.avatar,
+      avatar: user.profile?.avatar || null,
       isAdmin: !!user.isAdmin,
     };
 
-    if (!getFollows) return NextResponse.json(userInfo);
-    const followsData = await db.followers.findMany({
-      where: {
-        users: { has: user.id },
-      },
-    });
-    const skip = page * limit;
+    if (!getFollows) {
+      return NextResponse.json(userInfo);
+    }
 
-    const followsResponse = await db.user.findMany({
-      where: { id: { in: followsData.map((ele) => ele.userId) } },
-    });
-    const followsSliced = followsResponse.slice(skip, skip + limit);
+    const [following, followersData] = await Promise.all([
+      db.user.findMany({
+        where: { Followers: { some: { users: { has: user.id } } } },
+        select: {
+          id: true,
+          username: true,
+          isArtist: true,
+          profile: { select: { avatar: true } },
+        },
+      }),
 
-    const followsInfo = followsSliced.map((user) => {
-      return {
-        id: user.id,
-        name: user.username,
-        cover: user.profile?.avatar,
-        isArtist: !!user.isArtist,
-      };
+      db.followers.findFirst({
+        where: { userId: user.id },
+        select: { users: true },
+      }),
+    ]);
+
+    const followersInfo = followersData?.users
+      ? await db.user.findMany({
+        where: { id: { in: followersData.users } },
+        select: {
+          id: true,
+          username: true,
+          isArtist: true,
+          profile: { select: { avatar: true } },
+        },
+      })
+      : [];
+
+    const formatUser = (user: any) => ({
+      id: user.id,
+      name: user.username,
+      cover: user.profile?.avatar || null,
+      isArtist: !!user.isArtist,
     });
+
+    const formattedFollowing = following.map(formatUser);
+    const formattedFollowers = followersInfo.map(formatUser);
 
     return NextResponse.json({
-      followsInfo,
       userInfo,
-      hasMore: followsData.length > skip + limit,
+      following: formattedFollowing,
+      followers: formattedFollowers,
     });
   } catch (error) {
-    return jsonError("We had a problem trying to get user info.")
+    return jsonError("We had a problem trying to get user info.");
   }
 }
+
 
 export async function PATCH(req: NextRequest) {
   try {

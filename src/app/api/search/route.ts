@@ -43,7 +43,7 @@ export async function GET(req: NextRequest) {
           desc: `Music • ${song.albumName}`,
         };
       });
-      return NextResponse.json({ songs: songsMapped, hasMore: count > take * (page || 1) })
+      return NextResponse.json({ songs: songsMapped, hasMore: count > take * (page + 1) })
 
     }
     const [users, songs, playlistsData, albums] = await Promise.all([

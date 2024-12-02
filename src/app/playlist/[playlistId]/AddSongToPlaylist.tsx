@@ -1,6 +1,8 @@
 "use client"
 import CardSearch from "@/app/search/components/cardSearch"
 import { SearchType } from "@/app/search/page"
+import ErrorWrapper from "@/components/ErrorWrapper"
+import Button from "@/components/ui/buttons/Button"
 import useScrollQuery from "@/hooks/useScrollQuery"
 import { useState } from "react"
 import { IoArrowBackCircleOutline } from "react-icons/io5";
@@ -9,7 +11,10 @@ import Skeleton from "react-loading-skeleton"
 
 export default function AddSongToPlaylist({ username, playlistId, onClose, refetch }: { username: string, playlistId: string, onClose: () => void, refetch: () => void }) {
     const [search, setSearch] = useState("")
-    const { values, isFetchingNextPage, hasNextPage, ref, isLoading } = useScrollQuery<SearchType>({ queryKey: ["search-songs", search], url: `/api/search?onlySongs=true&q=${search}&username=${username}&playlistId=${playlistId}` })
+    const { values, isFetchingNextPage, hasNextPage, ref, isLoading, isError, error, fetchNextPage } = useScrollQuery<SearchType>({
+        queryKey: ["search-songs", search],
+        url: `/api/search?onlySongs=true&q=${search}&username=${username}&playlistId=${playlistId}`
+    })
 
     return <div className="w-[380px] h-[550px] md:h-[900px] md:w-[450px] flex flex-col gap-2 rounded-lg overflow-auto bg-black-450">
         <span className="w-full p-3 bg-black-600 z-10 flex justify-between md:text-lg sticky top-0 ">
@@ -34,9 +39,12 @@ export default function AddSongToPlaylist({ username, playlistId, onClose, refet
                 username={username}
             />
         })}
+        {isError && <ErrorWrapper error={!!error} message={error.message} />}
         {isLoading && Array.from({ length: 5 }).map((e, i) => <SongSearchSkeleton key={`${e}_${i}`} />)}
-        {!isFetchingNextPage && hasNextPage && <div ref={ref} />}
-        {isFetchingNextPage && <SongSearchSkeleton />}
+        {!isError && <>
+            {!isFetchingNextPage && hasNextPage && <Button onClick={() => fetchNextPage()} className="self-center mt-auto mb-4 rounded-md bg-white font-semibold text-black-300">More</Button>}
+            {isFetchingNextPage && <SongSearchSkeleton />}
+        </>}
     </div>
 }
 

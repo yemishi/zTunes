@@ -96,10 +96,12 @@ export default function CardSearch({
       ? "grayscale animate-pulse pointer-events-none"
       : "";
   const handleOnClick = () => {
+    handleHistoric()
     if (songData) {
       setPlayer([songData]), setCurrSong(0)
+      return
     }
-    handleHistoric()
+    push(goTo)
   }
   return (
     <div
@@ -122,16 +124,12 @@ export default function CardSearch({
        size-7 md:size-8 ml-auto mr-3 border-2 opacity-75 rounded-full flex items-center justify-center`}>
         {songSelected ? <FaCheck /> : <FaPlus />}
       </button>}
-      {
-        isHistoric && (
-          <button
-            onClick={removeFromHistory}
-            className="ml-auto self-center font-kanit text-xl md:text-2xl"
-          >
-            X
-          </button>
-        )
-      }
+      {isHistoric && <button
+        onClick={removeFromHistory}
+        className="ml-auto self-center font-kanit text-xl md:text-2xl"
+      >
+        X
+      </button>}
     </div >
   );
 }
