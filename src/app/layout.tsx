@@ -59,6 +59,9 @@ export default function RootLayout({
       lang="en"
       className={`overflow-hidden ${poppins.variable} ${kanit.variable} ${playFair.variable} ${montserrat.variable}`}
     >
+      <head>
+        <link rel="shortcut icon" href="#" />
+      </head>
       <Provider session={session}>
         <body
           className={`w-full h-full text-white  bg-black-700 overflow-x-hidden ${nunito.className}`}
