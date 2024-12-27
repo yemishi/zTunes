@@ -51,8 +51,8 @@ export default function ProfileHeader({
   useEffect(() => {
     const fetchVibrantColor = async () => {
       if (isMobile || !isArtist) {
-        const vibrantColor = await getVibrantColor(cover)
-        setVibrantColor(vibrantColor);
+        getVibrantColor(cover).then((res) => setVibrantColor(res))
+
       }
     }; fetchVibrantColor();
   }, [cover, isArtist, isMobile]);

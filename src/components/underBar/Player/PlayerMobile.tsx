@@ -30,11 +30,7 @@ export default function PlayerMobile() {
   const { artistName, coverPhoto, name, urlSong } = song;
 
   useEffect(() => {
-    const fetchData = async () => {
-      const vibrantColor = await getVibrantColor(coverPhoto)
-      setVibrantColor(vibrantColor);
-    };
-    fetchData();
+    getVibrantColor(coverPhoto).then((res) => setVibrantColor(res))
   }, [song]);
 
   return (

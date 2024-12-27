@@ -51,11 +51,7 @@ export default function GenericHeader({
         setDuration(formattedDuration);
       })
       .catch(() => setDuration("0s"));
-    const fetchVibrantColor = async () => {
-      const response = await getVibrantColor(coverPhoto)
-      setVibrantColor(response)
-    }
-    fetchVibrantColor();
+    getVibrantColor(coverPhoto).then((res) => setVibrantColor(res))
   }, []);
 
   return (
