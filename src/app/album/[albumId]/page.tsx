@@ -1,5 +1,6 @@
 import GenericHeader from "@/components/headers/GenericHeader";
 import SongsQueryOrganizer from "@/components/organizer/SongsQueryOrganizer";
+
 import { notFound } from "next/navigation";
 
 async function fetchData(albumId: string) {
@@ -20,6 +21,9 @@ export default async function Album({
 }) {
   const albumInfo = await fetchData(albumId);
 
+
+
+
   const {
     artistId,
     artistName,
@@ -31,6 +35,7 @@ export default async function Album({
     id,
     urlsSongs,
   } = albumInfo;
+
   return (
     <div className="flex flex-col pb-32 md:pb-20 md:ml-64 lg:ml-72 2xl:ml-80 min-[2000px]:ml-96">
       <GenericHeader

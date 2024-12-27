@@ -23,6 +23,7 @@ const getArtists = async () => await fetch(
 export default async function Home() {
   const session = await getServerSession(authOptions);
   const [albums, artists, playlists] = await Promise.all([getAlbums(), getArtists(), getPlaylists(session?.user?.name as string)])
+
   return (
     <div className="w-full min-h-full flex flex-col pb-32 md:pb-20 md:ml-64 lg:ml-72 2xl:ml-80 min-[2000px]:ml-96">
       <ErrorWrapper error={albums.error} message={albums.message} className="ml-4 mt-4 self-center md:self-start" >

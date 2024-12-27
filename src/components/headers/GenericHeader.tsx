@@ -12,6 +12,7 @@ import EditableImage from "../ui/custom/EditableImage";
 import EditPlaylist from "../ui/buttons/EditPlaylist";
 import ExpandableText from "../ui/custom/ExpandableText";
 import { getSongDuration } from "@/utils/fnc";
+import getVibrantColor from "@/utils/getVibrantColor";
 
 export default function GenericHeader({
   info,
@@ -50,13 +51,10 @@ export default function GenericHeader({
         setDuration(formattedDuration);
       })
       .catch(() => setDuration("0s"));
-
     const fetchVibrantColor = async () => {
-      const vibrantColor = await fetch(
-        `/api/vibrant-color?imgUrl=${encodeURI(coverPhoto)}`
-      ).then((res) => res.json());
-      setVibrantColor(vibrantColor);
-    };
+      const response = await getVibrantColor(coverPhoto)
+      setVibrantColor(response)
+    }
     fetchVibrantColor();
   }, []);
 

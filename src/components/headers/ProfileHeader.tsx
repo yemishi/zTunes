@@ -15,6 +15,7 @@ import { toast } from "react-toastify";
 import checkDev from "@/utils/isMobile";
 import { FaHeart } from "react-icons/fa6";
 import ExpandableText from "../ui/custom/ExpandableText";
+import getVibrantColor from "@/utils/getVibrantColor";
 
 type ProfileInfo = {
   profileName: string;
@@ -50,7 +51,7 @@ export default function ProfileHeader({
   useEffect(() => {
     const fetchVibrantColor = async () => {
       if (isMobile || !isArtist) {
-        const vibrantColor = await fetch(`/api/vibrant-color?imgUrl=${encodeURI(cover)}`).then((res) => res.json());
+        const vibrantColor = await getVibrantColor(cover)
         setVibrantColor(vibrantColor);
       }
     }; fetchVibrantColor();
