@@ -1,12 +1,7 @@
 import type { Metadata } from "next";
-import {
-  Poppins,
-  Playfair_Display,
-  Kanit,
-  Nunito,
-  Montserrat,
-} from "next/font/google";
 import "./globals.css";
+
+import { Poppins, Playfair_Display, Kanit, Nunito, Montserrat } from "next/font/google";
 import Provider from "@/context/Provider";
 import UnderBar from "../components/underBar/underBar";
 import { ToastContainer } from "react-toastify";
@@ -57,20 +52,14 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`overflow-hidden ${poppins.variable} ${kanit.variable} ${playFair.variable} ${montserrat.variable}`}
+      className={`overflow-hidden  ${poppins.variable} ${kanit.variable} ${playFair.variable} ${montserrat.variable}`}
     >
       <head>
         <link rel="shortcut icon" href="#" />
       </head>
       <Provider session={session}>
-        <body
-          className={`w-full h-full text-white  bg-black-700 overflow-x-hidden ${nunito.className}`}
-        >
-          <ToastContainer
-            autoClose={3000}
-            theme="dark"
-            position="bottom-center"
-          />
+        <body className={`w-full h-full text-white  bg-black-700 overflow-x-hidden ${nunito.className}`}>
+          <ToastContainer autoClose={3000} theme="dark" position="bottom-center" />
           <SkeletonTheme baseColor="#202020" highlightColor="#444">
             <div className="w-full h-screen">
               <TempOverlay />
