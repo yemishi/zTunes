@@ -32,10 +32,10 @@ async function getData(token: string) {
   }
 }
 export default async function page(context: {
-  searchParams: { token: string };
+  searchParams: Promise<{ token: string }>;
 }) {
   const { info, message, title, error } = await getData(
-    context.searchParams.token
+    (await context.searchParams).token
   );
   if (error) return <InvalidToken />;
 

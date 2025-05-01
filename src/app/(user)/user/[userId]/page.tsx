@@ -35,11 +35,17 @@ async function fetchData(userId: string, username: string) {
   };
 }
 
-export default async function UserPage({
-  params: { userId },
-}: {
-  params: { userId: string };
-}) {
+export default async function UserPage(
+  props0: {
+    params: Promise<{ userId: string }>;
+  }
+) {
+  const params = await props0.params;
+
+  const {
+    userId
+  } = params;
+
   const session = await getServerSession(authOptions);
   const username = session?.user.name as string;
 

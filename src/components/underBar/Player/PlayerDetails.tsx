@@ -40,7 +40,7 @@ type PropsType = {
   next: () => void;
   previous: () => void;
   onClose: () => void;
-  audioRef: React.RefObject<HTMLAudioElement>;
+  audioRef: React.RefObject<HTMLAudioElement | null>;
 };
 
 export default function PlayerDetails({

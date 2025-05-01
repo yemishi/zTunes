@@ -37,11 +37,17 @@ async function getHistoric(username: string) {
   return data;
 }
 
-export default async function Search({
-  searchParams: { q },
-}: {
-  searchParams: { q: string };
-}) {
+export default async function Search(
+  props: {
+    searchParams: Promise<{ q: string }>;
+  }
+) {
+  const searchParams = await props.searchParams;
+
+  const {
+    q
+  } = searchParams;
+
   const session = await getServerSession(authOptions);
   const username = session?.user.name as string;
 

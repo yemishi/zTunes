@@ -1,13 +1,20 @@
-"use client";
+"use client";;
+import { use } from "react";
 
 import SongsQueryOrganizer from "@/components/organizer/SongsQueryOrganizer";
 import PreviousPage from "@/components/ui/buttons/PreviousPage";
 
-export default function Musics({
-  params: { artistId },
-}: {
-  params: { artistId: string };
-}) {
+export default function Musics(
+  props: {
+    params: Promise<{ artistId: string }>;
+  }
+) {
+  const params = use(props.params);
+
+  const {
+    artistId
+  } = params;
+
   return (
     <div className="flex flex-col gap-3 pb-32 md:pb-20 lg:ml-72 2xl:ml-80 min-[2000px]:ml-96">
       <div className="flex flex-col p-2 pb-5">

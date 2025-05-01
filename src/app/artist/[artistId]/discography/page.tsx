@@ -17,11 +17,17 @@ async function fetchData(artistId: string) {
   return albums as BundleType[];
 }
 
-export default async function Discography({
-  params: { artistId },
-}: {
-  params: { artistId: string };
-}) {
+export default async function Discography(
+  props: {
+    params: Promise<{ artistId: string }>;
+  }
+) {
+  const params = await props.params;
+
+  const {
+    artistId
+  } = params;
+
   const albums = await fetchData(artistId);
 
   return (

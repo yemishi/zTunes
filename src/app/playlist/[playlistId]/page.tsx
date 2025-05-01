@@ -19,11 +19,17 @@ async function getData(playlistId: string, username: string) {
   return response;
 }
 
-export default async function Playlist({
-  params: { playlistId },
-}: {
-  params: { playlistId: string };
-}) {
+export default async function Playlist(
+  props: {
+    params: Promise<{ playlistId: string }>;
+  }
+) {
+  const params = await props.params;
+
+  const {
+    playlistId
+  } = params;
+
   const session = await getServerSession(authOptions);
   const user = session?.user;
   const info = await getData(playlistId, user?.name as string);

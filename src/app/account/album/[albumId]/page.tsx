@@ -21,11 +21,17 @@ async function fetchData(albumId: string, artistName: string) {
   return albumInfo;
 }
 
-export default async function ArtistPage({
-  params: { albumId },
-}: {
-  params: { albumId: string };
-}) {
+export default async function ArtistPage(
+  props: {
+    params: Promise<{ albumId: string }>;
+  }
+) {
+  const params = await props.params;
+
+  const {
+    albumId
+  } = params;
+
   const session = await getServerSession(authOptions);
   const {
     artistId,

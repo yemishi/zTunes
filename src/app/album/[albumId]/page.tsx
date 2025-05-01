@@ -14,11 +14,17 @@ async function fetchData(albumId: string) {
   return albumInfo;
 }
 
-export default async function Album({
-  params: { albumId },
-}: {
-  params: { albumId: string };
-}) {
+export default async function Album(
+  props: {
+    params: Promise<{ albumId: string }>;
+  }
+) {
+  const params = await props.params;
+
+  const {
+    albumId
+  } = params;
+
   const albumInfo = await fetchData(albumId);
 
 
