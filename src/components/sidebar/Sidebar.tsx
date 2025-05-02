@@ -1,5 +1,5 @@
 "use client";
-import { urlMatch } from "@/utils/fnc";
+import { urlMatch } from "@/utils/helpers";
 import { BiLibrary } from "react-icons/bi";
 import { PiHouseLight, PiMagnifyingGlassLight } from "react-icons/pi";
 import { Suspense, lazy } from "react";
@@ -11,11 +11,7 @@ const SessionPanel = lazy(() => import("./SessionPanel"));
 const LibInfo = lazy(() => import("./LibInfo"));
 export default function Sidebar() {
   const hidden = () =>
-    urlMatch("sign-in") ||
-    urlMatch("sign-up") ||
-    urlMatch("validation") ||
-    urlMatch("password-reset") ||
-    isMobile();
+    urlMatch("login") || urlMatch("sign-up") || urlMatch("validation") || urlMatch("password-reset") || isMobile();
   if (hidden()) return;
 
   return (
