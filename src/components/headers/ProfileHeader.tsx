@@ -10,7 +10,7 @@ import EditableImage from "../ui/custom/EditableImage";
 import InputText from "../ui/inputs/InputText";
 
 import { useSession } from "next-auth/react";
-import { isAvailable, updateUser } from "@/utils/fnc";
+import { isAvailable, updateUser } from "@/utils/helpers";
 import { toast } from "react-toastify";
 import checkDev from "@/utils/isMobile";
 import { FaHeart } from "react-icons/fa6";
