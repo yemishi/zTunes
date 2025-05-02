@@ -1,6 +1,6 @@
 "use client";
 
-import { getSongDuration } from "@/utils/fnc";
+import { getSongDuration } from "@/utils/helpers";
 import { formatDuration } from "@/utils/formatting";
 import { useEffect, useState } from "react";
 
