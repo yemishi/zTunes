@@ -11,7 +11,7 @@ import InputText from "../ui/inputs/InputText";
 import EditableImage from "../ui/custom/EditableImage";
 import EditPlaylist from "../ui/buttons/EditPlaylist";
 import ExpandableText from "../ui/custom/ExpandableText";
-import { getSongDuration } from "@/utils/fnc";
+import { getSongDuration } from "@/utils/helpers";
 import getVibrantColor from "@/utils/getVibrantColor";
 
 export default function GenericHeader({
