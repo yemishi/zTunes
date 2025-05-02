@@ -11,6 +11,7 @@ import "react-toastify/dist/ReactToastify.css";
 import "react-loading-skeleton/dist/skeleton.css";
 import Sidebar from "@/components/sidebar/Sidebar";
 import TempOverlay from "@/components/ui/TempOverlay";
+import { Session } from "next-auth";
 
 const nunito = Nunito({ subsets: ["latin"] });
 const poppins = Poppins({
@@ -39,7 +40,7 @@ const kanit = Kanit({
 
 export const metadata: Metadata = {
   title: "zTunes",
-  description: "A music website",
+  description: "Discover, stream, and vibe to music your way on zTunes.",
 };
 
 export default function RootLayout({
@@ -47,13 +48,10 @@ export default function RootLayout({
   session,
 }: Readonly<{
   children: React.ReactNode;
-  session: never;
+  session: Session | null;
 }>) {
   return (
-    <html
-      lang="en"
-      className={`overflow-hidden  ${poppins.variable} ${kanit.variable} ${playFair.variable} ${montserrat.variable}`}
-    >
+    <html lang="en" className={`${poppins.variable} ${kanit.variable} ${playFair.variable} ${montserrat.variable}`}>
       <head>
         <link rel="shortcut icon" href="#" />
       </head>
