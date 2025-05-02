@@ -8,7 +8,7 @@ import { BsFillPersonPlusFill } from "react-icons/bs";
 import { MdPlaylistAdd } from "react-icons/md";
 import { CgPlayListRemove } from "react-icons/cg";
 import { toast } from "react-toastify";
-import { removeFromPlaylist } from "@/utils/fnc";
+import { removeFromPlaylist } from "@/utils/helpers";
 
 import Image from "../ui/custom/Image";
 import Link from "next/link";
