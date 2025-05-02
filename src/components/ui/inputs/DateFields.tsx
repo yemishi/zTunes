@@ -19,39 +19,22 @@ interface PropsType extends HTMLAttributes<HTMLElement> {
       day: string;
       month: string;
       year: string;
-      [key: string]: any;
     }>
   >;
   isLoading?: boolean;
 }
 
-export default function DateFields({
-  errors,
-  values,
-  isLoading,
-  setValues,
-  ...props
-}: PropsType) {
+export default function DateFields({ errors, values, isLoading, setValues, ...props }: PropsType) {
   const { day, month, year } = values;
   const { className } = props;
-  const handleInput = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
+  const handleInput = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setValues({
       ...values,
-      [name]:
-        name === "day"
-          ? handleLimitDay(value)
-          : name === "year"
-          ? handleLimitYear(value)
-          : value,
+      [name]: name === "day" ? handleLimitDay(value) : name === "year" ? handleLimitYear(value) : value,
     });
   };
-  const lastDay = format(
-    lastDayOfMonth(new Date(Number(year), Number(month))),
-    "d"
-  );
+  const lastDay = format(lastDayOfMonth(new Date(Number(year), Number(month))), "d");
 
   const handleLimitDay = (value: string) => {
     if (Number(value) >= Number(lastDay)) {
