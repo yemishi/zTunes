@@ -1,71 +1,30 @@
-import { RegisterPropsType } from "./types/registerTypes";
-import Button from "../ui/buttons/Button";
+import { RegisterInputsType, RegisterPropsType } from "./types/registerTypes";
 import Input from "../ui/inputs/Input";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { IoAlertCircleOutline } from "react-icons/io5";
 import DivAnimated from "../ui/custom/DivAnimated";
 import DateFields from "../ui/inputs/DateFields";
-import { isValidDate } from "@/utils/fnc";
-import { ErrorType } from "@/types/response";
+import { FieldError, FieldErrors, UseFormRegister } from "react-hook-form";
 
-export default function PersonalInfoField({
-  error,
-  onNext,
-  register,
-  setError,
-  trigger,
-  setValue,
-  errors,
-  value,
-}: RegisterPropsType) {
-  const [birthDate, setBirthDate] = useState<{
-    day: string;
-    month: string;
-    year: string;
-  }>({
-    day: "",
-    month: "",
-    year: "",
-  });
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+interface Props {
+  error: FieldError | undefined;
+  register: UseFormRegister<RegisterInputsType>;
+  errors?: FieldErrors<RegisterInputsType>;
+  birthDate: { day: string; month: string; year: string };
+  setBirthDate: Dispatch<
+    SetStateAction<{
+      day: string;
+      month: string;
+      year: string;
+    }>
+  >;
+}
 
-  const handleNext = async (
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  ) => {
-    e.preventDefault();
-    const checkDate = isValidDate(
-      birthDate.day,
-      birthDate.month,
-      birthDate.year
-    );
-    if (!checkDate) {
-      return setError("bDay", { message: "The day field needs to be valid." });
-    }
-    if (setValue) {
-      setValue("bYear", birthDate.year);
-      setValue("bDay", birthDate.day);
-      setValue("bMonth", birthDate.month);
-    }
-    const checkValues = await trigger(["bDay", "bMonth", "bYear", "name"]);
-    if (!checkValues) return;
-
-    setIsLoading(true);
-    const { error, message }: ErrorType = await (
-      await fetch(`/api/user/validation?value=${value}&field=username`)
-    ).json();
-    if (error) {
-      setIsLoading(false);
-      return setError("name", { message: message });
-    }
-    setIsLoading(false);
-    onNext();
-  };
-
+export default function PersonalInfoField({ error, register, errors, setBirthDate, birthDate }: Props) {
   return (
     <DivAnimated key="personalField" className="flex flex-col gap-6">
       <Input
         autoFocus
-        disabled={isLoading}
         {...register("name")}
         error={error?.message}
         label="Name"
@@ -81,9 +40,7 @@ export default function PersonalInfoField({
             Date of birth
           </label>
 
-          <p className="text-gray-400 text-sm">
-            This is necessary for a personalized experience
-          </p>
+          <p className="text-gray-400 text-sm">This is necessary for a personalized experience</p>
         </span>
 
         <DateFields
@@ -117,54 +74,6 @@ export default function PersonalInfoField({
           )}
         </div>
       </div>
-
-      <Button
-        disabled={isLoading}
-        onClick={handleNext}
-        type="submit"
-        className="text-black"
-      >
-        Next
-      </Button>
     </DivAnimated>
   );
 }
-
-/*   <span className="grid grid-cols-[1fr_2fr_1.5fr] gap-3 ">
-          <Input
-            disabled={isLoading}
-            noMessage
-            label=""
-            id="bday"
-            placeholder="dd"
-            type="number"
-            autoComplete="bday-day"
-            inputMode="numeric"
-            error={errors?.bDay}
-            value={birthDate.bday}
-            name="bday"
-            onChange={handleInput}
-          />
-
-          <SelectMonth
-            onChange={handleInput}
-            disabled={isLoading}
-            error={errors?.bMonth && true}
-            id="month"
-            name="month"
-          />
-
-          <Input
-            disabled={isLoading}
-            noMessage
-            label=""
-            placeholder="yyyy"
-            inputMode="numeric"
-            type="number"
-            value={birthDate.bdayYear}
-            error={errors?.bYear}
-            onChange={handleInput}
-            autoComplete="bday-year"
-            name="bdayYear"
-          />
-        </span> */
