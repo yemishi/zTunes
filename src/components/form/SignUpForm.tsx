@@ -14,6 +14,8 @@ const ConfirmInfo = lazy(() => import("../register/confirmInfo"));
 
 import { RegisterInputsType } from "../register/types/registerTypes";
 import { ErrorType } from "@/types/response";
+import Button from "../ui/buttons/Button";
+import { isValidDate } from "@/utils/helpers";
 
 export default function SignUpForm() {
   const [step, setStep] = useState<number>(0);
@@ -21,13 +23,20 @@ export default function SignUpForm() {
     message: string;
     error: boolean;
   }>();
+  const [birthDate, setBirthDate] = useState<{
+    day: string;
+    month: string;
+    year: string;
+  }>({
+    day: "",
+    month: "",
+    year: "",
+  });
 
+  // todo: replace react-hook-forms and zod to custom useForm
   const FormSchema = z
     .object({
-      email: z
-        .string()
-        .min(1, "This field has to be filled.")
-        .email("This is not a valid email"),
+      email: z.string().min(1, "This field has to be filled.").email("This is not a valid email"),
       name: z
         .string()
         .min(3, "This field must have at least 3 letters")
@@ -73,67 +82,109 @@ export default function SignUpForm() {
     const birthDate = `${bDay}/${bMonth}/${bYear}`;
     return { birthDate, email, name, password };
   };
-
-  const onSubmit: SubmitHandler<RegisterInputsType> = async (values) => {
-    FormSchema.parse(values);
-    const { birthDate, email, name, password } = formatBirthDate(values);
-    const body = {
-      username: name,
-      password,
-      birthDate,
-      email,
-    };
-
-    const response: ErrorType = await fetch("/api/user/validation", {
-      method: "POST",
-      body: JSON.stringify(body),
-    }).then((res) => res.json());
-    setResponse(response);
-  };
-
   const description = {
     0: "",
     1: "Create a password",
     2: "Tell us about yourself",
     3: "Check your information",
+  }[step];
+
+  const onSubmit: SubmitHandler<RegisterInputsType> = async (values) => {
+    const passed = await validateStep();
+    if (!passed) return;
+
+    try {
+      FormSchema.parse(values);
+
+      const { birthDate, email, name, password } = formatBirthDate(values);
+      const body = {
+        username: name,
+        password,
+        birthDate,
+        email,
+      };
+
+      const response: ErrorType = await fetch("/api/user/validation", {
+        method: "POST",
+        body: JSON.stringify(body),
+      }).then((res) => res.json());
+
+      setResponse(response);
+    } catch (error) {
+      console.error("Submit error:", error);
+    }
+  };
+  const validateStep = async (): Promise<boolean> => {
+    if (step === 1) {
+      const isEmailValid = await trigger("email");
+      if (!isEmailValid) return false;
+
+      const email = watch("email");
+      const { error, message }: ErrorType = await fetch(`/api/user/validation?value=${email}&field=email`).then((res) =>
+        res.json()
+      );
+      if (error) {
+        setError("email", { message });
+        return false;
+      }
+      setStep(2);
+    }
+
+    if (step === 2) {
+      const isPasswordValid = await trigger("password");
+      if (!isPasswordValid) return false;
+      setStep(3);
+    }
+
+    if (step === 3) {
+      const isDateValid = isValidDate(birthDate.day, birthDate.month, birthDate.year);
+      if (!isDateValid) {
+        setError("bDay", { message: "The day field needs to be valid." });
+        return false;
+      }
+
+      setValue?.("bYear", birthDate.year);
+      setValue?.("bDay", birthDate.day);
+      setValue?.("bMonth", birthDate.month);
+
+      const isFormValid = await trigger(["bDay", "bMonth", "bYear", "name"]);
+      if (!isFormValid) return false;
+
+      const username = watch("name");
+      const { error, message }: ErrorType = await fetch(`/api/user/validation?value=${username}&field=username`).then(
+        (res) => res.json()
+      );
+
+      if (error) {
+        setError("name", { message });
+        return false;
+      }
+      return true;
+    }
+
+    return false;
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="form">
-      <h1 className="text-3xl font-montserrat font-bold self-start tracking-tighter text-left ">
-        Sign up to start
-        <br /> listening
-      </h1>
-
+    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-2 h-full overflow-clip">
       {step !== 0 && (
         <div className="flex flex-col gap-3">
-          <span className="w-full  bg-gray-400 bg-opacity-30">
-            <div
-              style={{ width: `${33.33 * step}%` }}
-              className="duration-500 h-[2px] bg-orange-500 rounded-full"
-            />
-          </span>
-
           <div className="self-start text-left flex gap-2 items-center">
-            <span
-              onClick={() => setStep(step - 1)}
-              className="font-poppins text-4xl text-gray-400"
-            >
+            <span onClick={() => setStep(step - 1)} className="font-poppins text-4xl text-gray-400">
               &lt;
             </span>
 
             <span className="flex flex-col font-kanit">
               <p className="text-gray-400">{`Step ${step} of 3`}</p>
-              <p className="font-medium">{description[step as 1 | 2 | 3]}</p>
+              <p className="font-medium">{description}</p>
             </span>
           </div>
         </div>
       )}
 
       <AnimatePresence mode="wait" initial={false}>
-        {!step && (
+        {step === 0 && (
           <EmailField
-            key="emailField"
             setError={setError}
             error={errors.email}
             register={register}
@@ -145,7 +196,6 @@ export default function SignUpForm() {
 
         {step === 1 && (
           <PassField
-            key="passField"
             setError={setError}
             error={errors.password}
             register={register}
@@ -157,14 +207,11 @@ export default function SignUpForm() {
         {step === 2 && (
           <PersonalInfoField
             key="personalField"
-            onNext={() => setStep(3)}
-            setError={setError}
+            register={register}
             error={errors.name}
             errors={errors}
-            register={register}
-            trigger={trigger}
-            setValue={setValue}
-            value={watch("name")}
+            setBirthDate={setBirthDate}
+            birthDate={birthDate}
           />
         )}
         {step === 3 && (
@@ -176,6 +223,10 @@ export default function SignUpForm() {
           />
         )}
       </AnimatePresence>
+
+      <Button type="submit" className="text-black mt-auto mx-auto mb-7">
+        Next
+      </Button>
     </form>
   );
 }
