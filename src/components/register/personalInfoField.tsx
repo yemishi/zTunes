@@ -1,34 +1,31 @@
-import { RegisterInputsType, RegisterPropsType } from "./types/registerTypes";
 import Input from "../ui/inputs/Input";
-import { Dispatch, SetStateAction, useState } from "react";
 import { IoAlertCircleOutline } from "react-icons/io5";
-import DivAnimated from "../ui/custom/DivAnimated";
 import DateFields from "../ui/inputs/DateFields";
-import { FieldError, FieldErrors, UseFormRegister } from "react-hook-form";
+import { ChangeEventHandler } from "react";
 
 interface Props {
-  error: FieldError | undefined;
-  register: UseFormRegister<RegisterInputsType>;
-  errors?: FieldErrors<RegisterInputsType>;
-  birthDate: { day: string; month: string; year: string };
-  setBirthDate: Dispatch<
-    SetStateAction<{
-      day: string;
-      month: string;
-      year: string;
-    }>
-  >;
+  setValue: (fieldName: string, value: string) => void;
+  birthDate: {
+    bDay: string;
+    bMonth: string;
+    bYear: string;
+  };
+  nameOnChange: ChangeEventHandler<HTMLInputElement>;
+  nameValue?: string;
+  errors?: Record<string, string | null>;
 }
 
-export default function PersonalInfoField({ error, register, errors, setBirthDate, birthDate }: Props) {
+export default function PersonalInfoField({ nameOnChange, nameValue, errors, setValue, birthDate }: Props) {
   return (
-    <DivAnimated key="personalField" className="flex flex-col gap-6">
+    <div className="flex flex-col gap-6">
       <Input
         autoFocus
-        {...register("name")}
-        error={error?.message}
+        onChange={nameOnChange}
         label="Name"
+        value={nameValue}
+        name="name"
         placeholder="Mohammed"
+        error={errors?.name || ""}
         autoComplete="display_name"
         type="text"
         info="This name will appear on your profile"
@@ -43,37 +40,29 @@ export default function PersonalInfoField({ error, register, errors, setBirthDat
           <p className="text-gray-400 text-sm">This is necessary for a personalized experience</p>
         </span>
 
-        <DateFields
-          setValues={setBirthDate}
-          values={birthDate}
-          errors={{
-            day: errors?.bDay as string | undefined,
-            month: errors?.bMonth as string | undefined,
-            year: errors?.bYear as string | undefined,
-          }}
-        />
+        <DateFields setValue={setValue} values={birthDate} errors={errors} />
 
         <div className="text-red-500 self-star text-left mt-2 text-sm">
           {errors?.bDay && (
             <span className="flex gap-1 items-center">
               <IoAlertCircleOutline className="w-4 h-4" />
-              <p>{errors?.bDay?.message}</p>
+              <p>{errors?.bDay}</p>
             </span>
           )}
           {errors?.bMonth && (
             <span className="flex gap-1 items-center">
               <IoAlertCircleOutline className="w-4 h-4" />
-              <p>{errors?.bMonth?.message}</p>
+              <p>{errors?.bMonth}</p>
             </span>
           )}
           {errors?.bYear && (
             <span className="flex gap-1 items-center">
               <IoAlertCircleOutline className="w-4 h-4" />
-              <p>{errors?.bYear?.message}</p>
+              <p>{errors?.bYear}</p>
             </span>
           )}
         </div>
       </div>
-    </DivAnimated>
+    </div>
   );
 }
