@@ -5,7 +5,7 @@ import { IoEyeSharp } from "react-icons/io5";
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   label: string;
-  error?: string | undefined;
+  error?: string;
   icon?: React.ReactNode;
   info?: string;
   noMessage?: boolean;
