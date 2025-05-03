@@ -6,7 +6,7 @@ import Input from "../ui/inputs/Input";
 import DateFields from "../ui/inputs/DateFields";
 import Button from "../ui/buttons/Button";
 
-import { isValidDate } from "@/utils/fnc";
+import { isValidDate } from "@/utils/helpers";
 import { ErrorType } from "@/types/response";
 import { useMemo, useState } from "react";
 import { toast } from "react-toastify";
@@ -85,7 +85,7 @@ export default function AlbumForm({
       updateObject("isLoading", false);
       return toast.error(response.message);
     }
-    toast.success(response.message),
+    toast.success(response.message || "Your album was successfully created."),
       refresh(),
       onclose(),
       updateObject("isLoading", false);

@@ -38,8 +38,8 @@ export default function EditableImage({
 
   const defaultSize =
     className?.includes("h-") ||
-    className?.includes("size") ||
-    className?.includes("w-")
+      className?.includes("size") ||
+      className?.includes("w-")
       ? ""
       : "size-44";
   const defaultRadius = className?.includes("rounded") ? "" : "rounded-full";
@@ -60,7 +60,7 @@ export default function EditableImage({
       method: `${method || "PATCH"}`,
       body: JSON.stringify(body),
     }).then((res) => res.json());
-    if (update.error) toast.error(update.message);
+    if (update.error) return toast.error(update.message);
     await deleteImage(oldUrl);
 
     refresh(), setIsLoading(false);
@@ -68,17 +68,15 @@ export default function EditableImage({
 
   return (
     <div
-      className={`relative overflow-hidden shadow-lg ${defaultSize} ${defaultRadius} ${
-        className ? className : ""
-      }`}
+      className={`relative overflow-hidden shadow-lg ${defaultSize} ${defaultRadius} ${className ? className : ""
+        }`}
       {...rest}
     >
       <Image
         onMouseEnter={() => setIsEdit(true)}
         src={coverPhoto}
-        className={`${
-          className ? className : ""
-        } h-full w-full object-cover object-center shadow-md ${defaultRadius}`}
+        className={`${className ? className : ""
+          } h-full w-full object-cover object-center shadow-md ${defaultRadius}`}
       />
       {((isEdit && isOwner) || isLoading) && (
         <InputFileImg

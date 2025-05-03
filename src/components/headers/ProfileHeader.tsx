@@ -1,86 +1,106 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Button from "../ui/buttons/Button";
 import { useRouter } from "next/navigation";
 
+import clsx from "clsx";
 import PreviousPage from "../ui/buttons/PreviousPage";
 import EditableImage from "../ui/custom/EditableImage";
 import InputText from "../ui/inputs/InputText";
 
 import { useSession } from "next-auth/react";
-import { isAvailable, updateUser } from "@/utils/fnc";
+import { isAvailable, updateUser } from "@/utils/helpers";
 import { toast } from "react-toastify";
 import checkDev from "@/utils/isMobile";
 import { FaHeart } from "react-icons/fa6";
 import ExpandableText from "../ui/custom/ExpandableText";
+import getVibrantColor from "@/utils/getVibrantColor";
 
 type ProfileInfo = {
   profileName: string;
   profileId: string;
   cover: string;
 };
+
+interface ProfileHeaderProps {
+  username: string;
+  profileInfo: ProfileInfo;
+  followersLength: number;
+  isArtist?: boolean;
+  isInclude?: boolean;
+  artistAbout?: string;
+}
+
 export default function ProfileHeader({
   username,
   isArtist,
   artistAbout,
   isInclude,
   profileInfo,
-  vibrantColor,
   followersLength,
-}: {
-  username: string;
-  vibrantColor: string;
-  profileInfo: ProfileInfo;
-  followersLength: number;
-  isArtist?: boolean;
-  isInclude?: boolean;
-  artistAbout?: string;
-}) {
+}: ProfileHeaderProps) {
   const { profileName, profileId, cover } = profileInfo;
   const [isFollow, setIsFollow] = useState<boolean>(!!isInclude);
   const [follows, setFollows] = useState<number>(followersLength);
+  const [vibrantColor, setVibrantColor] = useState("transparent")
   const { push, refresh } = useRouter();
   const { update } = useSession();
+  const isMobile = checkDev();
+
+  useEffect(() => {
+    const fetchVibrantColor = async () => {
+      if (isMobile || !isArtist) {
+        getVibrantColor(cover).then((res) => setVibrantColor(res))
+
+      }
+    }; fetchVibrantColor();
+  }, [cover, isArtist, isMobile]);
 
   const fetchFollow = async () => {
-    setIsFollow(!isFollow);
-    const body = {
-      username,
-      artistId: profileId,
-    };
+    const newFollowState = !isFollow;
+    setIsFollow(newFollowState);
+    setFollows((prev) => (newFollowState ? prev + 1 : prev - 1));
+
+    const body = { username, artistId: profileId, };
+
     await fetch(`/api/followers`, {
       method: "PATCH",
       body: JSON.stringify(body),
-    });
-
-    const data = await fetch(
-      `/api/followers?artistId=${profileId}&username=${username}`
-    ).then((res) => res.json());
-    setFollows(data.length);
+    }).catch(() => {
+      setIsFollow(!newFollowState);
+      setFollows((prev) => (newFollowState ? prev - 1 : prev + 1));
+    })
   };
-  const isOwner = username === profileName;
-  const isMobile = checkDev();
 
-  const onchange = async (currValue: string) => {
+  const isOwner = username === profileName;
+
+  const onchange = useCallback(async (currValue: string) => {
     if (currValue === username) return;
     const available = await isAvailable(currValue);
-
-    if (available.error) return toast.error(available.message);
-
-    if (available.response) return toast.error("Name not unavailable");
-
-    const body = {
-      userId: profileId,
-      username: currValue,
-    };
+    if (available.error) { toast.error(available.message); return; }
+    if (available.response) { toast.error("Name not available"); return; }
+    const body = { userId: profileId, username: currValue };
     const updateName = await updateUser(body);
-
-    if (updateName.error) return toast.error(updateName.message);
-
-    await update({ name: currValue });
+    if (updateName.error) {
+      toast.error(updateName.message)
+      return;
+    }
+    await update({ name: currValue })
     refresh();
-  };
+  },
+    [username, profileId, refresh, update]);
+
+  const containerClasses = clsx(
+    "w-full relative flex flex-col items-center gap-3 md:items-start !bg-cover !bg-center",
+    isArtist ? "md:min-h-[440px] lg:min-h-[480px]" : "md:min-h-[350px]"
+  );
+
+  const profileImgClass = clsx(
+    "size-44 rounded-full",
+    isArtist && "md:rounded-none md:w-full md:h-full md:brightness-75"
+  );
+
   return (
     <div
       style={{
@@ -89,16 +109,13 @@ export default function ProfileHeader({
             ? `linear-gradient(to bottom,${vibrantColor} 0% ,transparent 100%)`
             : "",
       }}
-      className={`w-full relative flex flex-col items-center gap-3 md:items-start !bg-cover !bg-center ${
-        isArtist ? "md:min-h-[440px] lg:min-h-[480px]" : "md:min-h-[350px]"
-      }`}
+      className={containerClasses}
     >
       <PreviousPage className="p-4 md:z-10" />
 
       <div
-        className={`flex flex-col items-center mt-auto ${
-          isArtist ? "" : "md:p-4 md:flex-row"
-        }`}
+        className={`flex flex-col items-center mt-auto ${isArtist ? "" : "md:p-4 md:flex-row"
+          }`}
       >
         <div
           className={
@@ -108,11 +125,7 @@ export default function ProfileHeader({
           }
         >
           <EditableImage
-            className={`size-44 rounded-full ${
-              isArtist
-                ? "md:rounded-none md:w-full md:h-full md:brightness-75"
-                : ""
-            }`}
+            className={profileImgClass}
             updateSession={!isArtist}
             uploadUrl={isArtist ? "/api/artist" : `/api/user`}
             extraBody={{ userId: profileId }}
@@ -136,12 +149,6 @@ export default function ProfileHeader({
           />
 
           <div className="flex flex-col gap-2 md:flex-row md:items-center">
-            {follows > 0 && (
-              <span className="font-montserrat text-orange-300 md:font-semibold md:text-white md:text-lg lg:text-xl">
-                {follows} Follows
-              </span>
-            )}
-
             {!isOwner &&
               (isMobile || !isArtist ? (
                 <Button
@@ -153,11 +160,16 @@ export default function ProfileHeader({
               ) : (
                 <FaHeart
                   onClick={() => (username ? fetchFollow() : push("/sign-in"))}
-                  className={`size-9 cursor-pointer duration-150 z-10  ${
-                    isFollow ? "text-amber-500" : "text-white text-opacity-30"
-                  }`}
+                  className={`size-9 cursor-pointer duration-150 z-10  ${isFollow ? "text-amber-500" : "text-white text-opacity-30"
+                    }`}
                 />
               ))}
+            {follows > 0 && (
+              <span className="font-montserrat text-orange-300 md:font-semibold md:text-white md:text-lg lg:text-xl">
+                {follows} Follows
+              </span>
+            )}
+
           </div>
           {artistAbout && !isMobile && (
             <ExpandableText>{artistAbout}</ExpandableText>

@@ -18,34 +18,28 @@ export default function Image({
 }: ImgProps) {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const generateAltText = (imageUrl: string): string => {
-    const filename = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
+    const decoded = decodeURIComponent(imageUrl)
+    const filename = decoded.substring(decoded.lastIndexOf("/") + 1);
     const filenameWithoutExtension = filename.split(".").slice(0, -1).join(" ");
-
     const formattedText = filenameWithoutExtension.replace(/[-_]/g, " ");
-    const capitalizedText = formattedText.replace(/\b\w/g, (char) =>
+
+    return formattedText.replace(/\b\w/g, (char) =>
       char.toUpperCase()
     );
-
-    return capitalizedText;
   };
 
   return (
     <NextImage
       {...props}
       src={src}
-      alt={
-        typeof window === "undefined"
-          ? "Loading..."
-          : alt || generateAltText(src)
-      }
+      alt={alt || generateAltText(src)}
       priority={priority}
-      quality={100}
+      quality={75}
       height={500}
       width={500}
       onLoad={() => setIsLoading(false)}
-      className={`${className ? className : ""} ${
-        isLoading ? "brightness-50" : ""
-      }  duration-100`}
+      className={`${className ? className : ""} ${isLoading ? "brightness-50" : ""
+        }  duration-100`}
     />
   );
 }

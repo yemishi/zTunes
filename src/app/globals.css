@@ -1,6 +1,40 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@theme {
+  --font-poppins: var(--font-poppins);
+  --font-play-fair: var(--font-playFair);
+  --font-kanit: var(--font-kanit);
+  --font-montserrat: var(--font-montserrat);
+
+  --color-neutral-dark-400: #3b3630;
+  --color-neutral-dark-500: #2e2a25;
+  --color-neutral-dark-600: #25221e;
+  --color-neutral-dark-650: #231f1b;
+  --color-neutral-dark-700: #1f1c19;
+  --color-neutral-dark-800: #181512;
+  --color-neutral-dark-900: #0e0d0b;
+
+  --color-black-300: #2f2f2f;
+  --color-black-400: #212121;
+  --color-black-450: #1c1c1c;
+  --color-black-500: #161616;
+  --color-black-550: #141414;
+  --color-black-600: #121212;
+  --color-black-700: #101010;
+  --color-black-800: #0a0a0a;
+  --color-black-900: #000000;
+  --color-black: #000000;
+}
+
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentcolor);
+  }
+}
 
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
@@ -13,16 +47,12 @@ input[type="number"] {
 }
 
 .inputForm {
-  @apply px-3 py-2 mt-auto *:bg-black outline-none text-lg md:text-xl duration-200 hover:bg-opacity-55 
-   hover:border-opacity-80 focus:border-opacity-100  disabled:animate-pulse disabled:bg-white disabled:bg-opacity-15 text-white rounded-md appearance-none;
+  @apply px-3 py-2 mt-auto *:bg-black outline-hidden text-lg md:text-xl duration-200 hover:bg-black/55 disabled:animate-pulse disabled:bg-white text-white
+   rounded-md appearance-none;
 }
 .form {
-  @apply mb-7 bg-gradient-to-b from-[#1f1e1a] to-transparent backdrop-blur w-full flex text-center h-full
+  @apply mb-7 bg-linear-to-b from-[#1f1e1a] to-transparent backdrop-blur-sm w-full flex text-center h-full
   flex-col pt-10 px-8 text-white gap-4 max-w-[450px] min-[450px]:h-[600px] min-[450px]:rounded-lg overflow-clip justify-center md:text-xl md:max-w-[550px];
-}
-.formPage {
-  @apply w-full bg-black h-full bg-music !bg-no-repeat relative !bg-cover !bg-center flex items-center justify-center
-  flex-col;
 }
 
 input:-webkit-autofill,
@@ -55,8 +85,4 @@ input.rangeOrange[type="range"]::-webkit-slider-thumb {
 input[type="range"]:hover::-webkit-slider-thumb {
   width: 12px;
   height: 12px;
-}
-
-.bg-music {
-  background-image: url("/musicBg.jpg");
 }

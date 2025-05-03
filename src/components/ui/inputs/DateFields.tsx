@@ -3,55 +3,27 @@ import Input from "./Input";
 import SelectMonth from "./SelectMonth";
 import { lastDayOfMonth, format } from "date-fns";
 
-interface PropsType extends HTMLAttributes<HTMLElement> {
-  errors?: {
-    day?: string | undefined;
-    month?: string | undefined;
-    year?: string | undefined;
-  };
+interface PropsType extends HTMLAttributes<HTMLDivElement> {
+  setValue: (fieldName: string, value: string) => void;
+  errors?: Record<string, string | null>;
   values: {
-    day: string;
-    month: string;
-    year: string;
+    bDay: string;
+    bMonth: string;
+    bYear: string;
   };
-  setValues: React.Dispatch<
-    React.SetStateAction<{
-      day: string;
-      month: string;
-      year: string;
-      [key: string]: any;
-    }>
-  >;
   isLoading?: boolean;
 }
 
-export default function DateFields({
-  errors,
-  values,
-  isLoading,
-  setValues,
-  ...props
-}: PropsType) {
-  const { day, month, year } = values;
+export default function DateFields({ errors, values, isLoading, setValue, ...props }: PropsType) {
+  const { bDay, bMonth, bYear } = values;
   const { className } = props;
-  const handleInput = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
+
+  const handleInput = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setValues({
-      ...values,
-      [name]:
-        name === "day"
-          ? handleLimitDay(value)
-          : name === "year"
-          ? handleLimitYear(value)
-          : value,
-    });
+    setValue(name, name === "day" ? handleLimitDay(value) : name === "bYear" ? handleLimitYear(value) : value);
   };
-  const lastDay = format(
-    lastDayOfMonth(new Date(Number(year), Number(month))),
-    "d"
-  );
+
+  const lastDay = format(lastDayOfMonth(new Date(Number(bYear), Number(bMonth))), "d");
 
   const handleLimitDay = (value: string) => {
     if (Number(value) >= Number(lastDay)) {
@@ -70,7 +42,6 @@ export default function DateFields({
   return (
     <div className="grid grid-cols-[1fr_2fr_1.5fr] gap-3">
       <Input
-        className={className ? className : ""}
         disabled={isLoading}
         noMessage
         required
@@ -78,11 +49,11 @@ export default function DateFields({
         id="day"
         placeholder="dd"
         type="number"
-        autoComplete="day"
+        autoComplete="bDay"
         inputMode="numeric"
-        error={errors?.day}
-        value={day}
-        name="day"
+        error={errors?.bDay || ""}
+        value={bDay}
+        name="bDay"
         onChange={handleInput}
       />
 
@@ -90,9 +61,9 @@ export default function DateFields({
         className={className ? className : ""}
         onChange={handleInput}
         disabled={isLoading}
-        error={errors?.month}
-        id="month"
-        name="month"
+        error={errors?.bDay || ""}
+        id="bMonth"
+        name="bMonth"
         required
       />
 
@@ -103,13 +74,13 @@ export default function DateFields({
         noMessage
         label=""
         placeholder="yyyy"
+        name="bYear"
         inputMode="numeric"
         type="number"
-        value={year}
-        error={errors?.year}
+        value={bYear}
+        error={errors?.bDay || ""}
         onChange={handleInput}
-        autoComplete="year"
-        name="year"
+        autoComplete="bYear"
       />
     </div>
   );

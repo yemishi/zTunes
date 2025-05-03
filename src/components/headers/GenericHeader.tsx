@@ -2,7 +2,6 @@
 
 import { HTMLAttributes, useEffect, useState } from "react";
 import { formatDuration } from "@/utils/formatting";
-import { SongType } from "@/types/response";
 
 import Image from "../ui/custom/Image";
 import Link from "next/link";
@@ -12,12 +11,14 @@ import InputText from "../ui/inputs/InputText";
 import EditableImage from "../ui/custom/EditableImage";
 import EditPlaylist from "../ui/buttons/EditPlaylist";
 import ExpandableText from "../ui/custom/ExpandableText";
-import { getSongDuration } from "@/utils/fnc";
+import { getSongDuration } from "@/utils/helpers";
+import getVibrantColor from "@/utils/getVibrantColor";
 
 export default function GenericHeader({
   info,
   playlistId,
   updateUrl,
+  username,
   ...props
 }: DivProps) {
   const {
@@ -28,6 +29,7 @@ export default function GenericHeader({
     coverPhoto,
     desc,
     releasedDate,
+    isPublic,
     authorId,
     isUser,
     urlsSongs,
@@ -49,14 +51,7 @@ export default function GenericHeader({
         setDuration(formattedDuration);
       })
       .catch(() => setDuration("0s"));
-
-    const fetchVibrantColor = async () => {
-      const vibrantColor = await fetch(
-        `/api/vibrant-color?imgUrl=${encodeURI(coverPhoto)}`
-      ).then((res) => res.json());
-      setVibrantColor(vibrantColor);
-    };
-    fetchVibrantColor();
+    getVibrantColor(coverPhoto).then((res) => setVibrantColor(res))
   }, []);
 
   return (
@@ -65,16 +60,17 @@ export default function GenericHeader({
       style={{
         background: `linear-gradient(to bottom,${vibrantColor} 10%,transparent 100%)`,
       }}
-      className={`${
-        className ? className : ""
-      } flex flex-col gap-2 h-full items-center w-full p-4 pt-0 pb-10 md:min-h-[350px] md:items-start`}
+      className={`${className ? className : ""
+        } flex flex-col gap-2 h-full items-center w-full p-4 pt-0 pb-10 md:min-h-[350px] md:items-start`}
     >
       <span className="flex items-center py-4 justify-between w-full">
         <PreviousPage className="p-0" />
         {isOwner && playlistId && (
           <EditPlaylist
+            username={username as string}
             playlistId={playlistId as string}
             playlistName={title}
+            isPublic={isPublic}
           />
         )}
       </span>
@@ -137,7 +133,8 @@ export default function GenericHeader({
 }
 
 interface DivProps extends HTMLAttributes<HTMLDivElement> {
-  info: InfoType;
+  info: InfoType
+  username?: string;
   playlistId?: string;
   updateUrl?: string;
 }
@@ -149,6 +146,7 @@ type InfoType = {
   coverPhoto: string;
   authorId: string;
   isOwner: boolean;
+  isPublic?: boolean;
   desc?: string;
   isUser?: Boolean;
   isOfficial?: boolean;

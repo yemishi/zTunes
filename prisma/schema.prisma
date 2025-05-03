@@ -19,6 +19,9 @@ model User {
   createdAt  DateTime     @default(now())
   Account    Account[]
   updatedAt  DateTime     @updatedAt
+  Album      Album[]
+  LikedSongs LikedSongs[]
+  Followers  Followers[]
 
   @@map("User")
 }
@@ -31,6 +34,7 @@ model Songs {
   artistName String
   coverPhoto String
   category   String[]
+  album      Album    @relation(fields: [albumId], references: [id])
   albumName  String
   albumId    String   @db.ObjectId
 }
@@ -65,11 +69,12 @@ model Album {
   title        String
   type         String   @default("album")
   releasedDate String
-  artistName   String
   artistId     String   @db.ObjectId
+  artist       User     @relation(fields: [artistId], references: [id])
   coverPhoto   String
   desc         String?
   createdAt    DateTime @default(now())
+  songs        Songs[]
 }
 
 model SearchHistory {
@@ -81,6 +86,7 @@ model SearchHistory {
 model LikedSongs {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   userId    String
+  user      User     @relation(fields: [userId], references: [id])
   songs     String[]
   createdAt DateTime @default(now())
 }
@@ -88,6 +94,7 @@ model LikedSongs {
 model Followers {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   userId    String   @db.ObjectId
+  user      User     @relation(fields: [userId], references: [id])
   users     String[]
   createdAt DateTime @default(now())
 }

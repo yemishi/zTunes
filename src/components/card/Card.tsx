@@ -31,7 +31,7 @@ export default function Card({
         <Image
           alt={alt}
           src={coverPhoto}
-          className="w-full h-40 rounded-xl md:h-52 md:rounded-lg"
+          className="w-full h-40 rounded-xl md:h-52 md:rounded-lg object-cover"
         />
         <span className="font-poppins first-letter:uppercase truncate ml-1">
           {title}

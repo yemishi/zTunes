@@ -11,7 +11,7 @@ export type {
 };
 
 interface ErrorType {
-  error: true;
+  error: boolean;
   message: string;
 }
 
@@ -33,8 +33,10 @@ interface BundleType {
   artistId: string;
   coverPhoto: string;
   createdAt: Date;
+  error: boolean;
+  message: string;
+  status: number;
   isOfficial?: boolean;
-  error: false;
   desc?: string;
   urlsSongs?: string[];
 }

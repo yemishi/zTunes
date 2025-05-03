@@ -1,4 +1,5 @@
-"use client";
+"use client";;
+import { use } from "react";
 import Card from "@/components/card/Card";
 import PreviousPage from "@/components/ui/buttons/PreviousPage";
 import useScrollQuery from "@/hooks/useScrollQuery";
@@ -7,11 +8,17 @@ import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
 import UserPlaylistLoading from "./loading";
 
-export default function PlaylistsUser({
-  params: { userId },
-}: {
-  params: { userId: string };
-}) {
+export default function PlaylistsUser(
+  props: {
+    params: Promise<{ userId: string }>;
+  }
+) {
+  const params = use(props.params);
+
+  const {
+    userId
+  } = params;
+
   const { data: session } = useSession();
   const username = session?.user.name;
 

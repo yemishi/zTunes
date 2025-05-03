@@ -28,6 +28,7 @@ export default function VolumeInput({
       onMouseLeave={() => (!fixed ? setShowInput(false) : null)}
       onMouseEnter={() => (!fixed ? setShowInput(true) : null)}
     >
+      <Icon className="size-8" />
       {(showInput || fixed) && (
         <ProgressBar
           max={1}
@@ -35,12 +36,11 @@ export default function VolumeInput({
           step={0.01}
           value={value}
           vertical={vertical}
-          classContainer={`rotate-180 ${barClass ? barClass : ""}`}
+          classContainer={`${barClass ? barClass : ""}`}
           currentProgress={currentProgress}
           {...props}
         />
       )}
-      <Icon className="size-8 rotate-180" />
     </div>
   );
 }

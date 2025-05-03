@@ -16,6 +16,7 @@ export default function BundleOrganizer({
   baseUrl: string;
   seeMore?: string;
 }) {
+
   return (
     <div className="text-white p-4 flex flex-col font-kanit gap-3">
       <span className="flex items-center">

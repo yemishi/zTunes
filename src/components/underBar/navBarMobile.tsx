@@ -2,7 +2,7 @@ import Link from "next/link";
 import { BiLibrary } from "react-icons/bi";
 import { IoPersonOutline } from "react-icons/io5";
 import { PiHouseLight, PiMagnifyingGlassLight } from "react-icons/pi";
-import { urlMatch } from "@/utils/fnc";
+import { urlMatch } from "@/utils/helpers";
 
 export default function NavBarMobile() {
   return (

@@ -38,6 +38,8 @@ describe("BundleOrganizer Component", () => {
       title: "test title",
       type: "album",
       error: false,
+      message: "",
+      status: 200
     },
   ];
 

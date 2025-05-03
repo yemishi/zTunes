@@ -5,16 +5,12 @@ import NavBarMobile from "./navBarMobile";
 import PlayerMobile from "./Player/PlayerMobile";
 import { usePlayerContext } from "@/context/Provider";
 import { IoIosPlay } from "react-icons/io";
-import { urlMatch } from "@/utils/fnc";
+import { urlMatch } from "@/utils/helpers";
 import checkDev from "@/utils/isMobile";
 import PlayerDesktop from "./Player/PlayerDesktop";
 
 export default function UnderBar() {
-  const hidden = () =>
-    urlMatch("sign-in") ||
-    urlMatch("sign-up") ||
-    urlMatch("validation") ||
-    urlMatch("password-reset");
+  const hidden = () => urlMatch("login") || urlMatch("validation") || urlMatch("password-reset");
 
   if (hidden()) return;
   const isMobile = checkDev();

@@ -4,65 +4,85 @@ import { deleteSong } from "@/firebase/handleSong";
 import { db } from "@/lib/db";
 import { User } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
+import { jsonError } from "../helpers";
+
 
 export async function GET(req: NextRequest) {
   const userId = req.nextUrl.searchParams.get("userId") as string;
   const username = req.nextUrl.searchParams.get("username") as string;
-  const artistToo = req.nextUrl.searchParams.get("artistToo") as string;
-  const limit = Number(req.nextUrl.searchParams.get("limit")) || 10;
-  const page = Number(req.nextUrl.searchParams.get("page")) || 0;
-  const getFollows = req.nextUrl.searchParams.get("getFollows") as string;
+  const artistToo = req.nextUrl.searchParams.get("artistToo") === "true";
+  const getFollows = req.nextUrl.searchParams.get("getFollows") === "true";
 
   try {
     const user = await db.user.findFirst({
       where: username ? { username } : { id: userId },
     });
 
-    if (!user || (user.username !== username && user.isArtist && !artistToo))
-      return NextResponse.json({ error: true, message: "User not found" });
+    if (!user || (user.username !== username && user.isArtist && !artistToo)) {
+      return jsonError("User not found", 404);
+    }
 
     const userInfo = {
       id: user.id,
       name: user.username,
       isArtist: !!user.isArtist,
-      avatar: user.profile?.avatar,
+      avatar: user.profile?.avatar || null,
       isAdmin: !!user.isAdmin,
     };
 
-    if (!getFollows) return NextResponse.json(userInfo);
-    const followsData = await db.followers.findMany({
-      where: {
-        users: { has: user.id },
-      },
-    });
-    const skip = page * limit;
+    if (!getFollows) {
+      return NextResponse.json(userInfo);
+    }
 
-    const followsResponse = await db.user.findMany({
-      where: { id: { in: followsData.map((ele) => ele.userId) } },
-    });
-    const followsSliced = followsResponse.slice(skip, skip + limit);
+    const [following, followersData] = await Promise.all([
+      db.user.findMany({
+        where: { Followers: { some: { users: { has: user.id } } } },
+        select: {
+          id: true,
+          username: true,
+          isArtist: true,
+          profile: { select: { avatar: true } },
+        },
+      }),
 
-    const followsInfo = followsSliced.map((user) => {
-      return {
-        id: user.id,
-        name: user.username,
-        cover: user.profile?.avatar,
-        isArtist: !!user.isArtist,
-      };
+      db.followers.findFirst({
+        where: { userId: user.id },
+        select: { users: true },
+      }),
+    ]);
+
+    const followersInfo = followersData?.users
+      ? await db.user.findMany({
+        where: { id: { in: followersData.users } },
+        select: {
+          id: true,
+          username: true,
+          isArtist: true,
+          profile: { select: { avatar: true } },
+        },
+      })
+      : [];
+
+    const formatUser = (user: any) => ({
+      id: user.id,
+      name: user.username,
+      cover: user.profile?.avatar || null,
+      isArtist: !!user.isArtist,
     });
+
+    const formattedFollowing = following.map(formatUser);
+    const formattedFollowers = followersInfo.map(formatUser);
 
     return NextResponse.json({
-      followsInfo,
       userInfo,
-      hasMore: followsData.length > skip + limit,
+      following: formattedFollowing,
+      followers: formattedFollowers,
     });
   } catch (error) {
-    return NextResponse.json({
-      error: true,
-      message: "We had a problem trying to get user info",
-    });
+    return jsonError("We had a problem trying to get user info.");
   }
 }
+
 
 export async function PATCH(req: NextRequest) {
   try {
@@ -84,24 +104,18 @@ export async function PATCH(req: NextRequest) {
     });
 
     if (user?.isArtist && username) {
-      const updateAlbums = db.album.updateMany({
+      await db.songs.updateMany({
         where: { artistId: user.id },
         data: {
           artistName: username,
         },
       });
-      const updateSongs = db.songs.updateMany({
-        where: { artistId: user.id },
-        data: {
-          artistName: username,
-        },
-      });
-      await Promise.all([updateAlbums, updateSongs]);
+
     }
 
     return NextResponse.json({ message: "User updated with success" });
   } catch (error) {
-    return NextResponse.json({ error: true, message: "something went wrong." });
+    return jsonError("An error occurred while trying to obtain user information.")
   }
 }
 
@@ -110,18 +124,12 @@ export async function DELETE(req: NextRequest) {
     const { userId, password } = await req.json();
     const user = await db.user.findFirst({ where: { id: userId } });
     if (!user)
-      return NextResponse.json({
-        error: true,
-        message: "User not found",
-      });
+      return jsonError("User not found.", 404)
 
     const checkPass = await compare(password, user.password as string);
 
     if (!checkPass)
-      return NextResponse.json({
-        error: true,
-        message: "Password incorrect",
-      });
+      return jsonError("Password incorrect")
 
     await deleteArtistDrawer(user);
 
@@ -160,11 +168,7 @@ export async function DELETE(req: NextRequest) {
 
     return NextResponse.json({ message: "User deleted with success" });
   } catch (error) {
-    console.log(error);
-    return NextResponse.json({
-      error: true,
-      message: "We had a problem trying to delete the user",
-    });
+    return jsonError("We had a problem trying to delete the user")
   }
 }
 

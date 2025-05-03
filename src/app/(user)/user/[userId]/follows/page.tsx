@@ -1,15 +1,22 @@
-"use client";
+"use client";;
+import { use } from "react";
 
 import ProfileCard from "@/components/card/ProfileCard";
 import PreviousPage from "@/components/ui/buttons/PreviousPage";
 import useScrollQuery from "@/hooks/useScrollQuery";
 import UserFollowsLoading from "./loading";
 
-export default function FollowsPage({
-  params: { userId },
-}: {
-  params: { userId: string };
-}) {
+export default function FollowsPage(
+  props0: {
+    params: Promise<{ userId: string }>;
+  }
+) {
+  const params = use(props0.params);
+
+  const {
+    userId
+  } = params;
+
   const { values, isFetchingNextPage, hasNextPage, isLoading, ref } =
     useScrollQuery<FollowsType>({
       queryKey: ["Follows"],

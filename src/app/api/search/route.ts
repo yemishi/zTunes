@@ -1,18 +1,50 @@
 import { db } from "@/lib/db";
 import { NextRequest, NextResponse } from "next/server";
+import { paginate } from "../helpers";
 
 export async function GET(req: NextRequest) {
   const q = req.nextUrl.searchParams.get("q") as string;
   const username = req.nextUrl.searchParams.get("username") as string;
   const getHistory = req.nextUrl.searchParams.get("getHistory") as string;
+  const onlySongs = req.nextUrl.searchParams.get("onlySongs") as string
+  const playlistId = req.nextUrl.searchParams.get("playlistId") as string
+  const take = Number(req.nextUrl.searchParams.get("take")) || 5
+  const page = Number(req.nextUrl.searchParams.get("page")) || 0
   try {
-    const user = await db.user.findFirst({ where: { username } });
-
+    const user = username ? await db.user.findFirst({ where: { username } }) : null;
     if (getHistory) {
+
       const searchHistory = await db.searchHistory.findFirst({
         where: { userId: user?.id },
       });
       return NextResponse.json(searchHistory?.historic);
+    }
+
+    if (onlySongs) {
+      const [count, songs, playlist] = await Promise.all([
+        db.songs.count({
+          where: { name: { contains: q, mode: "insensitive" } },
+        }),
+        db.songs.findMany({
+          where: { name: { contains: q, mode: "insensitive" } }, ...paginate(page, take)
+        }),
+        playlistId ? db.playlist.findFirst({ where: { id: playlistId } }) : null
+      ])
+      const songsMapped = songs.map((song) => {
+        const inPlaylist = playlist?.songs.find(({ songId }) => {
+          return songId === song.id
+        })
+        return {
+          title: song.name,
+          songData: { ...song, songSelected: inPlaylist && inPlaylist },
+          coverPhoto: song.coverPhoto,
+          refId: song.albumId,
+          type: "Album",
+          desc: `Music • ${song.albumName}`,
+        };
+      });
+      return NextResponse.json({ songs: songsMapped, hasMore: count > take * (page + 1) })
+
     }
     const [users, songs, playlistsData, albums] = await Promise.all([
       db.user.findMany({
@@ -25,9 +57,10 @@ export async function GET(req: NextRequest) {
         where: { title: { contains: q, mode: "insensitive" } },
       }),
       db.album.findMany({
-        where: { title: { contains: q, mode: "insensitive" } },
+        where: { title: { contains: q, mode: "insensitive" } }, include: { artist: { select: { username: true } } }
       }),
     ]);
+
     const playlistsFiltered = playlistsData.filter((playlist) => {
       if (!playlist.isPublic && user) return playlist.userId === user.id;
       return playlist.isPublic;
@@ -54,13 +87,14 @@ export async function GET(req: NextRequest) {
         coverPhoto: album.coverPhoto,
         refId: album.id,
         type: "Album",
-        desc: `Album • ${album.artistName}`,
+        desc: `Album • ${album.artist.username}`,
       };
     });
 
     const songsMapped = songs.map((song) => {
       return {
         title: song.name,
+        songData: song,
         coverPhoto: song.coverPhoto,
         refId: song.albumId,
         type: "Album",
@@ -74,6 +108,7 @@ export async function GET(req: NextRequest) {
       ...songsMapped,
     ]);
   } catch (error) {
+    console.log(error)
     return NextResponse.json({
       error: true,
       message: "We had a problem trying to get the search info",

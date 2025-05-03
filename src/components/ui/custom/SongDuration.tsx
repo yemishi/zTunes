@@ -10,7 +10,7 @@ export default function SongDuration({
 }) {
   const Duration = useCallback(() => {
     const duration = useSongDuration(urlSong);
-    return <span className="text-lg opacity-75">{duration}</span>;
+    return <span className="text-lg opacity-75 w-28">{duration}</span>;
   }, [rerender]);
   return <Duration />;
 }

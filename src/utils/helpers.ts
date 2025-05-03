@@ -1,33 +1,13 @@
 import { ErrorType } from "@/types/response";
 import { format, lastDayOfMonth } from "date-fns";
 import { usePathname } from "next/navigation";
-import Vibrant from "node-vibrant";
 
-export const urlMatch = (path: string) => {
+const urlMatch = (path: string) => {
   const pathName = usePathname();
   return pathName.includes(path);
 };
 
-export const getVibrantColor = async (img: string, lowOpacity?: true) => {
-  try {
-    const palette = await Vibrant.from(img).getPalette();
-    const isLowOpacity = lowOpacity ? 0.6 : 1;
-    return {
-      default: `rgb(${palette.DarkMuted?.rgb.join(",")},${isLowOpacity})`,
-      light: `rgb(${palette.LightVibrant?.rgb.join(",")},${isLowOpacity})`,
-      dark: `rgb(${palette.DarkVibrant?.rgb.join(",")},${
-        lowOpacity ? 0.6 : ""
-      })`,
-      mutedDark: `rgb(${palette.DarkMuted?.rgb.join(",")},${isLowOpacity})`,
-      mutedLight: `rgb(${palette.LightMuted?.rgb.join(",")},${isLowOpacity})`,
-      muted: `rgb(${palette.Muted?.rgb.join(",")},${isLowOpacity})`,
-    };
-  } catch (error) {
-    return null;
-  }
-};
-
-export const removeFromPlaylist = async (
+const removeFromPlaylist = async (
   songSelected: {
     songId: any;
     createdAt: Date | undefined;
@@ -46,7 +26,7 @@ export const removeFromPlaylist = async (
   return data;
 };
 
-export const isAvailable = async (
+const isAvailable = async (
   value: string,
   field?: string
 ): Promise<
@@ -58,9 +38,7 @@ export const isAvailable = async (
 > => {
   try {
     const checkIsAvailable: boolean = await fetch(
-      `/api/user/validation?isAvailable=true&value=${value}&field=${
-        field || "username"
-      }`
+      `/api/user/validation?isAvailable=true&value=${value}&field=${field || "username"}`
     ).then((res) => res.json());
 
     return {
@@ -75,11 +53,7 @@ export const isAvailable = async (
   }
 };
 
-export const updateUser = async (body: {
-  userId: string;
-  avatar?: string;
-  username?: string;
-}): Promise<ErrorType> => {
+const updateUser = async (body: { userId: string; avatar?: string; username?: string }): Promise<ErrorType> => {
   try {
     const update: ErrorType = await fetch(`/api/user`, {
       method: "PATCH",
@@ -94,16 +68,13 @@ export const updateUser = async (body: {
   }
 };
 
-export const isValidDate = (day: string, month: string, year: string) => {
+const isValidDate = (day: string, month: string, year: string) => {
   if (Number(year) < 1800 || !day || !month || !year) return false;
-  const limitDay = format(
-    lastDayOfMonth(new Date(Number(year), Number(month))),
-    "d"
-  );
+  const limitDay = format(lastDayOfMonth(new Date(Number(year), Number(month))), "d");
   return limitDay >= day;
 };
 
-export const getSongDuration = async (urlSong: string) => {
+const getSongDuration = async (urlSong: string) => {
   if (typeof window !== "undefined") {
     return new Promise((resolve) => {
       const audio = new Audio(urlSong);
@@ -116,3 +87,21 @@ export const getSongDuration = async (urlSong: string) => {
   }
   return 0;
 };
+
+const cleanClasses = (className = "", fallback = "") => {
+  const current = className.split(/\s+/);
+  const fallbackClasses = fallback.split(/\s+/);
+
+  const getPrefix = (cls: string) => cls.split("-")[0];
+
+  const existingPrefixes = new Set(current.map(getPrefix));
+
+  const filteredFallback = fallbackClasses.filter((cls) => {
+    const prefix = getPrefix(cls);
+    return !existingPrefixes.has(prefix);
+  });
+
+  return [...current, ...filteredFallback].join(" ").trim();
+};
+
+export { cleanClasses, isValidDate, getSongDuration, updateUser, isAvailable, removeFromPlaylist, urlMatch };

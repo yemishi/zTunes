@@ -30,7 +30,7 @@ export default function SearchInput() {
         onClick={() => {
           setSearch(""), push("/search");
         }}
-        className="font-montserrat text-2xl mx-4"
+        className="font-montserrat text-2xl mx-4 cursor-pointer"
       >
         X
       </span>

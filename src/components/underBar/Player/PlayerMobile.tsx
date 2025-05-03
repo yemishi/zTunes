@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Image from "../../ui/custom/Image";
 import PlayerDetails from "./PlayerDetails";
 import usePlayer from "../../../hooks/usePlayer";
+import getVibrantColor from "@/utils/getVibrantColor";
 
 export default function PlayerMobile() {
   const [vibrantColor, setVibrantColor] = useState<string>();
@@ -29,13 +30,7 @@ export default function PlayerMobile() {
   const { artistName, coverPhoto, name, urlSong } = song;
 
   useEffect(() => {
-    const fetchData = async () => {
-      const data = await fetch(
-        `/api/vibrant-color?imgUrl=${encodeURI(coverPhoto)}`
-      ).then((res) => res.json());
-      setVibrantColor(data);
-    };
-    fetchData();
+    getVibrantColor(coverPhoto).then((res) => setVibrantColor(res))
   }, [song]);
 
   return (

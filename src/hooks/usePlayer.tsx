@@ -45,7 +45,7 @@ export default function usePlayer() {
 
   useEffect(() => {
     togglePlayer("play");
-  }, [currSong]);
+  }, [currSong, player]);
 
   const onend = async () => {
     if (!currSong || !player) return;
@@ -98,9 +98,8 @@ export default function usePlayer() {
       <div className="flex items-center gap-3 md:gap-3 p-2">
         <IoPlaySkipBackSharp
           onClick={previous}
-          className={`size-4 md:size-6 ${
-            Number(currSong) - 1 >= 0 ? "cursor-pointer" : "opacity-50"
-          }`}
+          className={`size-4 md:size-6 ${Number(currSong) - 1 >= 0 ? "cursor-pointer" : "opacity-50"
+            }`}
         />
 
         <CurrIcon
@@ -110,11 +109,10 @@ export default function usePlayer() {
 
         <IoPlaySkipForward
           onClick={next}
-          className={`size-4 md:size-6 ${
-            player && Number(currSong) + 1 <= player.length - 1
-              ? "cursor-pointer"
-              : "opacity-50"
-          }`}
+          className={`size-4 md:size-6 ${player && Number(currSong) + 1 <= player.length - 1
+            ? "cursor-pointer"
+            : "opacity-50"
+            }`}
         />
       </div>
     );

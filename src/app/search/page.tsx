@@ -2,11 +2,17 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import CardSearch from "./components/cardSearch";
 import HistoricSearch from "./components/HistoricSearch";
+import { SongType } from "@/types/response";
+
+interface SongDataSearch extends SongType {
+  songSelected?: { createAt: string, songId: string }
+}
 
 export type SearchType = {
   refId: string;
   coverPhoto: string;
   type: string;
+  songData?: SongDataSearch;
   desc?: string;
   title: string;
 };
@@ -31,11 +37,17 @@ async function getHistoric(username: string) {
   return data;
 }
 
-export default async function Search({
-  searchParams: { q },
-}: {
-  searchParams: { q: string };
-}) {
+export default async function Search(
+  props: {
+    searchParams: Promise<{ q: string }>;
+  }
+) {
+  const searchParams = await props.searchParams;
+
+  const {
+    q
+  } = searchParams;
+
   const session = await getServerSession(authOptions);
   const username = session?.user.name as string;
 

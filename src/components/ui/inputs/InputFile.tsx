@@ -12,22 +12,22 @@ const InputFile = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
   const Icon = iconType === "cam" ? IoCameraOutline : FiMusic;
   const defaultSize =
     className?.includes("h-") ||
-    className?.includes("w-") ||
-    className?.includes("size-")
+      className?.includes("w-") ||
+      className?.includes("size-")
       ? ""
       : "size-12";
   return (
     <label
       htmlFor="file"
       className={`${className ? className : ""}
-      ${defaultSize} ${
-        className?.includes("bg-") ? "" : "bg-gray-200"
-      } p-3 rounded-full flex items-center justify-center cursor-pointer hover:bg-opacity-95 active:scale-105 duration-150`}
+      ${defaultSize} ${className?.includes("bg-") ? "" : "bg-gray-200"
+        } p-3 rounded-full flex items-center justify-center cursor-pointer hover:bg-opacity-95 active:scale-105 duration-150`}
     >
       <input
         ref={ref}
         type="file"
         className="hidden"
+        data-testid="inputFile"
         id="file"
         onChange={onChange}
         {...rest}

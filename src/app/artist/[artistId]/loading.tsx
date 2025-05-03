@@ -1,6 +1,6 @@
 import SongOptionsSkeleton from "@/components/skeletons/SongSkeleton";
 import BundleStackSkeleton from "@/components/skeletons/bundle/BundleStackSkeleton";
-import ProfileBundleSkeleton from "@/components/skeletons/bundle/ProfileBundleSkeleton";
+
 import PreviousPage from "@/components/ui/buttons/PreviousPage";
 import Skeleton from "react-loading-skeleton";
 
@@ -13,7 +13,6 @@ export default function () {
         <SongOptionsSkeleton key={index} />
       ))}
       <BundleStackSkeleton count={10} />
-      <ProfileBundleSkeleton count={10} />
       <Skeleton className="!w-20 !h-5 md:!h-8 !rounded-xl" />
       <Skeleton className="md:hidden !h-11 !w-80 !ml-4 " />
     </div>

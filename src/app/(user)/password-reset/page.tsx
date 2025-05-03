@@ -24,11 +24,11 @@ async function getData(token: string) {
 }
 
 export default async function page(context: {
-  searchParams: {
+  searchParams: Promise<{
     token: string;
-  };
+  }>;
 }) {
-  const { error, id } = await getData(context.searchParams.token);
+  const { error, id } = await getData((await context.searchParams).token);
   if (error) return <InvalidToken />;
   return (
     <div

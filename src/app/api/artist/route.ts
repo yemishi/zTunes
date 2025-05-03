@@ -1,5 +1,6 @@
 import { db } from "@/lib/db";
 import { NextRequest, NextResponse } from "next/server";
+import { jsonError } from "../helpers";
 
 export async function GET(req: NextRequest) {
   const id = req.nextUrl.searchParams.get("id") as string;
@@ -15,7 +16,7 @@ export async function GET(req: NextRequest) {
         },
       });
       if (!artistResponse || !artistResponse.isArtist)
-        return NextResponse.json({ error: true, message: "Artist not found" });
+        return jsonError("Artist not found.", 404)
 
       const artist = {
         id: artistResponse.id,
@@ -48,10 +49,7 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json(organizeArtists || []);
   } catch (error) {
-    return NextResponse.json({
-      error: true,
-      message: "We had a problem retrieving artist information",
-    });
+    return jsonError("We had a problem retrieving artist information.")
   }
 }
 
@@ -61,7 +59,7 @@ export async function PATCH(req: NextRequest) {
     const user = await db.user.findFirst({ where: { id: userId } });
 
     if (!user || !user.isArtist)
-      return NextResponse.json({ error: true, message: "artist not found" });
+      return jsonError("artist not found.", 404)
 
     await db.user.update({
       where: { id: user?.id },
@@ -75,8 +73,6 @@ export async function PATCH(req: NextRequest) {
 
     return NextResponse.json({ message: "Artist updated with successfully" });
   } catch (error) {
-    return NextResponse.json({
-      message: "We had a problem trying to updated artist information",
-    });
+    return jsonError("We had a problem trying to updated artist information.")
   }
 }

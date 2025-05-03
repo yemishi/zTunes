@@ -1,5 +1,6 @@
 import { DivMotionProps } from "@/types/uiTypes";
 import { motion } from "framer-motion";
+import { useMemo } from "react";
 
 export default function DivAnimated({
   onAnimationStart,
@@ -12,34 +13,26 @@ export default function DivAnimated({
   oneSide,
   ...props
 }: DivMotionProps) {
-  const variant = {
-    initial: { x: "100%", opacity: 0 },
-    animate: { x: 0, opacity: 1 },
-    exit: { x: oneSide ? "100%" : "-100%", opacity: 0 },
-  };
-
-  const variantReverse = {
-    initial: { x: "-100%", opacity: 0 },
-    animate: { x: 0, opacity: 1 },
-    exit: { x: oneSide ? "-100%" : "100%", opacity: 0 },
-  };
-
-  return (
-    <>
-      {!hidden && (
-        <motion.div
-          initial="initial"
-          animate="animate"
-          exit="exit"
-          variants={reverse ? variantReverse : variant}
-          transition={{
-            type: "just",
-          }}
-          {...props}
-        >
-          {children}
-        </motion.div>
-      )}
-    </>
-  );
+  const variants = useMemo(() => {
+    const isReversed = reverse ? -1 : 1;
+    return {
+      initial: { x: `${100 * isReversed}%`, opacity: 0 },
+      animate: { x: 0, opacity: 1 },
+      exit: { x: `${(oneSide ? 100 : -100) * isReversed}%`, opacity: 0 },
+    };
+  }, [reverse, oneSide]);
+  return !hidden ? (
+    <motion.div
+      initial="initial"
+      animate="animate"
+      exit="exit"
+      variants={variants}
+      transition={{ type: "just" }}
+      {...props}
+    >
+      {children}
+    </motion.div>
+  ) : null;
 }
+
+DivAnimated.displayName = "DivAnimated";
