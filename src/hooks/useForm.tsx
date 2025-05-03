@@ -15,14 +15,14 @@ export type FormFields = Record<string, FormField>;
 
 export default function useForm<T>(initialValues: FormFields) {
   const [fields, setFields] = useState(initialValues);
-  const [errors, setErrors] = useState<Partial<Record<keyof FormFields, string | null>>>({});
+  const [errors, setErrors] = useState<Record<keyof FormFields, string | null>>({});
   const values = useMemo(() => {
     return Object.fromEntries(Object.entries(fields).map(([key, field]) => [key, field.value])) as {
       [K in keyof typeof fields]: (typeof fields)[K]["value"];
     } as T;
   }, [fields]);
 
-  const handleError = (field: string, msg: string | null) => setErrors((e) => ({ ...e, [field]: msg }));
+  const setError = (field: string, msg: string | null) => setErrors((e) => ({ ...e, [field]: msg }));
 
   const validateField = (name: string, value: string | number | string[]): string | null => {
     const field = fields[name];
@@ -85,7 +85,7 @@ export default function useForm<T>(initialValues: FormFields) {
       setFields((e) => ({ ...e, [fieldName]: { ...field, value } }));
       if (errors[fieldName]) {
         const error = validateField(fieldName, value);
-        handleError(fieldName, error);
+        setError(fieldName, error);
       }
     }
   };
@@ -96,5 +96,16 @@ export default function useForm<T>(initialValues: FormFields) {
 
   const fieldsKey = useMemo(() => Object.keys(fields), [fields]);
 
-  return { fieldsKey, rawValues: fields, values, errors, onChange, validateAll, resetForm, setValue, validate };
+  return {
+    fieldsKey,
+    rawValues: fields,
+    values,
+    errors,
+    onChange,
+    validateAll,
+    resetForm,
+    setValue,
+    validate,
+    setError,
+  };
 }
