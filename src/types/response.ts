@@ -11,7 +11,7 @@ export type {
 };
 
 interface ErrorType {
-  error: true;
+  error: boolean;
   message: string;
 }
 
