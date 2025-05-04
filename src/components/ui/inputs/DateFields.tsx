@@ -5,12 +5,12 @@ import { lastDayOfMonth, format } from "date-fns";
 
 interface PropsType extends HTMLAttributes<HTMLDivElement> {
   setValue: (fieldName: string, value: string) => void;
-  errors?: Record<string, string | null>;
   values: {
     bDay: string;
     bMonth: string;
     bYear: string;
   };
+  errors: Record<string, string | null>;
   isLoading?: boolean;
 }
 
