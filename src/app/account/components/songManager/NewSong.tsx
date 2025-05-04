@@ -16,13 +16,7 @@ type PropsType = {
   setName: React.Dispatch<React.SetStateAction<string>>;
   close: () => void;
 };
-export default function NewSong({
-  artistId,
-  close,
-  name,
-  albumId,
-  setName,
-}: PropsType) {
+export default function NewSong({ artistId, close, name, albumId, setName }: PropsType) {
   const [categories, setCategories] = useState<string[]>([]);
 
   const [fileSong, setFileSong] = useState<FileList>();
@@ -50,7 +44,7 @@ export default function NewSong({
     }).then((res) => res.json());
 
     if (response.error) {
-      await deleteSong(urlSong.url);
+      await deleteSong(urlSong.url!);
       toast.error(response.message);
       return setIsLoading(false);
     }
@@ -60,11 +54,9 @@ export default function NewSong({
   };
 
   const onChangeFile = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files === fileSong || !e.target.files || !e.target.files[0])
-      return;
+    if (e.target.files === fileSong || !e.target.files || !e.target.files[0]) return;
 
-    if (!e.target.files[0].type.startsWith("audio/"))
-      return toast.error("Insert a correctly audio file");
+    if (!e.target.files[0].type.startsWith("audio/")) return toast.error("Insert a correctly audio file");
     setFileSong(e.target.files);
   };
   return (
@@ -96,25 +88,12 @@ export default function NewSong({
           iconType="song"
           onChange={onChangeFile}
         />
-        {fileSong && fileSong[0] && (
-          <span className="text-orange-300 text-center">
-            {fileSong[0].name}
-          </span>
-        )}
+        {fileSong && fileSong[0] && <span className="text-orange-300 text-center">{fileSong[0].name}</span>}
         <span className="grid grid-cols-2 gap-3 ">
-          <Button
-            type="button"
-            disabled={isLoading}
-            onClick={close}
-            className="rounded-lg bg-white text-black"
-          >
+          <Button type="button" disabled={isLoading} onClick={close} className="rounded-lg bg-white text-black">
             Cancel
           </Button>
-          <Button
-            disabled={isLoading}
-            type="submit"
-            className="rounded-lg bg-green-600"
-          >
+          <Button disabled={isLoading} type="submit" className="rounded-lg bg-green-600">
             Confirm
           </Button>
         </span>

@@ -74,7 +74,7 @@ export default function useForm<T>(initialValues: FormFields) {
   };
 
   const onChange = (
-    { target: { name, value } }: React.ChangeEvent<HTMLInputElement>,
+    { target: { name, value } }: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
     customValue?: string | number
   ) => {
     setValue(name, customValue ?? value);

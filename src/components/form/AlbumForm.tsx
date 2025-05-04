@@ -1,5 +1,4 @@
 import uploadImg, { deleteImage } from "@/firebase/handleImage";
-import useObject from "@/hooks/useObject";
 import Image from "../ui/custom/Image";
 import InputFileImg from "../ui/inputs/InputFileImg";
 import Input from "../ui/inputs/Input";
@@ -8,64 +7,53 @@ import Button from "../ui/buttons/Button";
 
 import { isValidDate } from "@/utils/helpers";
 import { ErrorType } from "@/types/response";
-import { useMemo, useState } from "react";
+import { FormEvent, useMemo, useState } from "react";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
+import useForm from "@/hooks/useForm";
 
-export default function AlbumForm({
-  initialTitle,
-  onclose,
-  artistId,
-}: {
-  initialTitle: string;
+interface Props {
+  title: string;
   onclose: () => void;
   artistId: string;
-}) {
+}
+export default function AlbumForm({ artistId, onclose, title: dataTitle }: Props) {
+  const fields = {
+    title: { value: dataTitle, min: 1 },
+    desc: { value: "", min: 1 },
+    type: { value: "", min: 1 },
+    day: { value: "", min: 1 },
+    month: { value: "", min: 1 },
+    year: { value: "", min: 1 },
+  };
+  type FieldValues = { [K in keyof typeof fields]: (typeof fields)[K]["value"] };
+
   const {
-    state: { coverPhoto, isLoading, type, desc, title },
-    updateObject,
-  } = useObject<{
-    isLoading: boolean;
-    coverPhoto: FileList | undefined;
-    title: string;
-    desc: string;
-    type: "album" | "single";
-  }>({
-    title: initialTitle,
-    coverPhoto: undefined,
-    desc: "",
-    isLoading: false,
-    type: "album",
-  });
+    onChange,
+    setValue,
+    errors,
+    values: { desc, title, type, day, month, year },
+  } = useForm<FieldValues>(fields);
 
-  const [releasedDate, setReleasedDate] = useState<{
-    day: string;
-    month: string;
-    year: string;
-  }>({ day: "", month: "", year: "" });
+  const [coverPhoto, setCoverPhoto] = useState<FileList>();
+  const [isLoading, setIsLoading] = useState(false);
 
-  const demoPhoto = useMemo(() => {
-    if (coverPhoto) return URL.createObjectURL(coverPhoto[0]);
-    return "";
-  }, [coverPhoto]);
+  const demoPhoto = useMemo(() => (coverPhoto ? URL.createObjectURL(coverPhoto[0]) : ""), [coverPhoto]);
+
   const activeType = (value: "single" | "album") =>
     type === value
       ? "border p-2 rounded-lg pointer-events-none"
       : "text-white p-2 rounded-lg text-opacity-50 border border-white border-opacity-50 cursor-pointer";
   const { refresh } = useRouter();
 
-  const onSubmit = async (e: any) => {
+  const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!isValidDate(releasedDate.day, releasedDate.month, releasedDate.year))
-      return toast.error("Choose a valid date");
-    if (!coverPhoto) return toast.error("Cover photo is required");
+    if (!isValidDate(day, month, year) || !coverPhoto) return;
 
-    updateObject("isLoading", true);
+    setIsLoading(true);
 
-    const { day, month, year } = releasedDate;
     const urlImg = await uploadImg(coverPhoto);
-    if (urlImg.error)
-      return toast.error(urlImg.message), updateObject("isLoading", false);
+    if (urlImg.error) return toast.error(urlImg.message), setIsLoading(false);
 
     const body = {
       title,
@@ -81,14 +69,11 @@ export default function AlbumForm({
       body: JSON.stringify(body),
     }).then((res) => res.json());
     if (response.error) {
-      await deleteImage(urlImg.url);
-      updateObject("isLoading", false);
-      return toast.error(response.message);
+      await deleteImage(urlImg.url!);
+      setIsLoading(true);
+      return;
     }
-    toast.success(response.message || "Your album was successfully created."),
-      refresh(),
-      onclose(),
-      updateObject("isLoading", false);
+    toast.success(response.message || "Your album was successfully created."), refresh(), onclose(), setIsLoading(true);
   };
 
   return (
@@ -99,18 +84,12 @@ export default function AlbumForm({
       >
         <div className="flex flex-col w-full gap-2 md:gap-4 md:grid md:grid-cols-2">
           <div className="relative w-full h-52 md:h-64">
-            {demoPhoto && (
-              <Image
-                src={demoPhoto}
-                className="h-full w-full object-cover -z-10 rounded-lg"
-              />
-            )}
+            {demoPhoto && <Image src={demoPhoto} className="h-full w-full object-cover -z-10 rounded-lg" />}
             <InputFileImg
               isLoading={isLoading}
               className="absolute w-full h-full top-0 backdrop-brightness-75"
               onChange={(e) => {
-                if (e.target.files && e.target.files[0])
-                  updateObject("coverPhoto", e.target.files);
+                if (e.target.files && e.target.files[0]) setCoverPhoto(e.target.files);
               }}
             />
           </div>
@@ -120,7 +99,8 @@ export default function AlbumForm({
               Description
             </label>
             <textarea
-              onChange={(e) => updateObject("desc", e.target.value)}
+              onChange={onChange}
+              name="desc"
               className="inputForm bg-transparent h-full backdrop-brightness-150 border border-neutralDark-400"
               placeholder="Description of album"
               id="textarea"
@@ -130,16 +110,10 @@ export default function AlbumForm({
         </div>
 
         <div className="grid grid-cols-2 text-center gap-3">
-          <span
-            onClick={() => updateObject("type", "album")}
-            className={activeType("album")}
-          >
+          <span onClick={() => setValue("type", "album")} className={activeType("album")}>
             Album
           </span>
-          <span
-            onClick={() => updateObject("type", "single")}
-            className={activeType("single")}
-          >
+          <span onClick={() => setValue("type", "single")} className={activeType("single")}>
             Single
           </span>
         </div>
@@ -151,7 +125,8 @@ export default function AlbumForm({
           placeholder="Album title"
           required
           value={title}
-          onChange={(e) => updateObject("title", e.target.value)}
+          name="title"
+          onChange={onChange}
         />
 
         <div>
@@ -159,18 +134,14 @@ export default function AlbumForm({
           <DateFields
             className="bg-transparent backdrop-brightness-150 border-neutralDark-400 "
             isLoading={isLoading}
-            values={releasedDate}
-            setValues={setReleasedDate}
+            values={{ bDay: day, bMonth: month, bYear: year }}
+            setValue={setValue}
+            errors={errors}
           />
         </div>
 
         <span className="grid grid-cols-2 gap-2 mt-7">
-          <Button
-            isLoading={isLoading}
-            type="button"
-            onClick={onclose}
-            className="bg-white text-black"
-          >
+          <Button isLoading={isLoading} type="button" onClick={onclose} className="bg-white text-black">
             Cancel
           </Button>
           <Button isLoading={isLoading}>Submit</Button>
