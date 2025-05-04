@@ -14,7 +14,7 @@ import { toast } from "react-toastify";
 import { useMemo } from "react";
 
 export default function UpgradeToArtist({ userId }: { userId: string }) {
-const {
+  const {
     state: { coverPhoto, isArtist, isLoading, summary },
     updateObject,
   } = useObject<{
@@ -46,8 +46,7 @@ const {
       method: "PATCH",
       body: JSON.stringify(body),
     }).then((res) => res.json());
-    if (response.error)
-      return toast.error(response.message), updateObject("isLoading", false);
+    if (response.error) return toast.error(response.message), updateObject("isLoading", false);
     return refresh(), toast.success(response.message);
   };
   return (
@@ -65,18 +64,12 @@ const {
             className="flex flex-col items-center gap-4 bg-neutralDark-700 p-5 w-full max-w-[500px] md:rounded-md font-kanit"
           >
             <div className="relative w-full max-w-64 h-52">
-              {demoPhoto && (
-                <Image
-                  src={demoPhoto}
-                  className="h-full w-full object-cover -z-10 rounded-lg"
-                />
-              )}
+              {demoPhoto && <Image src={demoPhoto} className="h-full w-full object-cover -z-10 rounded-lg" />}
               <InputFileImg
                 isLoading={isLoading}
                 className="absolute w-full h-full top-0 backdrop-brightness-75 "
                 onChange={(e) => {
-                  if (e.target.files && e.target.files[0])
-                    updateObject("coverPhoto", e.target.files);
+                  if (e.target.files && e.target.files[0]) updateObject("coverPhoto", e.target.files);
                 }}
               />
             </div>
