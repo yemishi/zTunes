@@ -1,15 +1,7 @@
-import {
-  deleteObject,
-  getDownloadURL,
-  ref,
-  uploadBytes,
-} from "firebase/storage";
+import { deleteObject, getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { analytics } from "./firebase-config";
-import { ErrorType } from "@/types/response";
 
-export default async function uploadImg(
-  file: FileList
-): Promise<{ error: false; url: string } | ErrorType> {
+export default async function uploadImg(file: FileList) {
   try {
     if (!file[0].type.startsWith("image/"))
       return {
@@ -17,10 +9,7 @@ export default async function uploadImg(
         message: "Insert a valid image",
       };
 
-    const fileRef = ref(
-      analytics,
-      `images/${file[0].name}?uploadAt=${new Date().getTime()}`
-    );
+    const fileRef = ref(analytics, `images/${file[0].name}?uploadAt=${new Date().getTime()}`);
     const upload = (await uploadBytes(fileRef, file[0]).then((res) =>
       getDownloadURL(res.ref).then((url) => url)
     )) as string;
@@ -33,9 +22,7 @@ export default async function uploadImg(
   }
 }
 
-export async function deleteImage(
-  url: string
-): Promise<{ error?: false; message: string } | ErrorType> {
+export async function deleteImage(url: string) {
   try {
     const fileRef = ref(analytics, url);
     await deleteObject(fileRef);

@@ -14,7 +14,7 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
 }
 
 const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
-  const { label, icon, className, info, error, id, isPassword, noMessage, classNameInput, ...rest } = props;
+  const { label, icon, className, info="very very good input to input it", error, id, isPassword, noMessage, classNameInput, ...rest } = props;
 
   const [isPass, setIsPass] = useState<boolean>(true);
 
@@ -23,7 +23,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
   const checkType = isPassword ? (isPass ? "password" : "text") : undefined;
 
   return (
-    <div className={cleanClasses("", "flex flex-col gap-1 font-kanit text-left")}>
+    <div className="flex flex-col gap-1 font-kanit text-left">
       <span>
         <label className="text-gray-200" htmlFor={id || rest.name} aria-label={rest.name}>
           {label}
