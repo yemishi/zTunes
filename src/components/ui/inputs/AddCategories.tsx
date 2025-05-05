@@ -9,29 +9,15 @@ interface InputProps extends React.HTMLAttributes<HTMLInputElement> {
   placeHolder?: string;
 }
 
-export default function AddCategories({
-  setCategories,
-  categories,
-  label,
-  placeHolder,
-  ...props
-}: InputProps) {
+export default function AddCategories({ setCategories, categories, label, placeHolder, ...props }: InputProps) {
   const { className, ...rest } = props;
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const remove = (category: string) =>
-    setCategories(categories.filter((item) => item !== category));
+  const remove = (category: string) => setCategories(categories.filter((item) => item !== category));
 
   const add = () => {
-    if (
-      inputRef.current &&
-      inputRef.current.value.trim() &&
-      categories.length <= 5
-    ) {
-      setCategories([
-        ...categories,
-        inputRef.current.value.replaceAll(" ", ""),
-      ]);
+    if (inputRef.current && inputRef.current.value.trim() && categories.length <= 5) {
+      setCategories([...categories, inputRef.current.value.replaceAll(" ", "")]);
       inputRef.current.value = "";
     }
   };
@@ -43,7 +29,7 @@ export default function AddCategories({
           ref={inputRef}
           label={label || "Category"}
           placeholder={placeHolder || "Category"}
-          classNameInput="bg-transparent backdrop-brightness-150 border-neutralDark-400"
+          className="bg-transparent backdrop-brightness-150 border-neutralDark-400"
         />
         <Button type="button" className="bg-transparent mt-auto" onClick={add}>
           Add
@@ -53,10 +39,7 @@ export default function AddCategories({
       <div className="flex flex-wrap gap-3">
         {categories.map((category, index) => {
           return (
-            <span
-              className="relative py-2  px-6 rounded-lg bg-orange-600 bg-opacity-50"
-              key={`${category}_${index}`}
-            >
+            <span className="relative py-2  px-6 rounded-lg bg-orange-600 bg-opacity-50" key={`${category}_${index}`}>
               <span>{category}</span>
               <span
                 onClick={() => remove(category)}
