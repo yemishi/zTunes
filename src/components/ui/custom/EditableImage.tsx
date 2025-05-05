@@ -37,18 +37,14 @@ export default function EditableImage({
   const { refresh } = useRouter();
 
   const defaultSize =
-    className?.includes("h-") ||
-      className?.includes("size") ||
-      className?.includes("w-")
-      ? ""
-      : "size-44";
+    className?.includes("h-") || className?.includes("size") || className?.includes("w-") ? "" : "size-44";
   const defaultRadius = className?.includes("rounded") ? "" : "rounded-full";
 
   const onchange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     setIsLoading(true);
     const upload = await handleImage(e.target.files as FileList);
 
-    if (upload.error) return toast.error(upload.message), setIsLoading(false);
+    if (upload.error || !upload.url) return toast.error(upload.message), setIsLoading(false);
     const oldUrl = coverPhoto;
     setCoverPhoto(upload.url);
     if (updateSession) {
@@ -68,15 +64,13 @@ export default function EditableImage({
 
   return (
     <div
-      className={`relative overflow-hidden shadow-lg ${defaultSize} ${defaultRadius} ${className ? className : ""
-        }`}
+      className={`relative overflow-hidden shadow-lg ${defaultSize} ${defaultRadius} ${className ? className : ""}`}
       {...rest}
     >
       <Image
         onMouseEnter={() => setIsEdit(true)}
         src={coverPhoto}
-        className={`${className ? className : ""
-          } h-full w-full object-cover object-center shadow-md ${defaultRadius}`}
+        className={`${className ? className : ""} h-full w-full object-cover object-center shadow-md ${defaultRadius}`}
       />
       {((isEdit && isOwner) || isLoading) && (
         <InputFileImg
