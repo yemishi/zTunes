@@ -5,6 +5,7 @@ import { AnimatePresence } from "framer-motion";
 
 const PersonalInfoField = lazy(() => import("../register/personalInfoField"));
 const ConfirmInfo = lazy(() => import("../register/confirmInfo"));
+import { IoIosArrowBack } from "react-icons/io";
 
 import { ErrorType } from "@/types/response";
 import Button from "../ui/buttons/Button";
@@ -48,10 +49,10 @@ export default function SignUpForm() {
   } = useForm<FieldValues>(fields);
 
   const description = {
-    0: "",
-    1: "Create a password",
-    2: "Tell us about yourself",
-    3: "Check your information",
+    0: "Don’t worry, no newsletter ambushes",
+    1: `Create a password for ${email || "your account"}`,
+    2: "Your name & birthdate",
+    3: "One last look before we go!",
   }[step];
 
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -104,12 +105,19 @@ export default function SignUpForm() {
 
     setResponse(response);
   };
+  const nextText = {
+    0: "Continue",
+    1: "Create password",
+    2: "Next",
+    3: "Confirm and finish",
+  }[step];
 
   const Component = {
     0: (
       <DivAnimated key="email-field" className="flex flex-col h-full gap-6 mt-5">
         <Input
           autoFocus
+          value={email}
           onChange={onChange}
           name="email"
           label="Email"
@@ -119,21 +127,21 @@ export default function SignUpForm() {
       </DivAnimated>
     ),
     1: (
-      <DivAnimated className="flex h-full flex-col gap-6">
+      <DivAnimated className="flex h-full flex-col gap-6 mt-5">
         <Input
           autoFocus
+          value={password}
           name="password"
           onChange={onChange}
           error={errors?.password || ""}
           label="Password"
           isPassword
           placeholder="securepass"
-          className="mt-7"
         />
       </DivAnimated>
     ),
     2: (
-      <DivAnimated key="personalField">
+      <DivAnimated key="personalField" className="mt-5">
         <PersonalInfoField
           nameOnChange={onChange}
           nameValue={name}
@@ -152,27 +160,26 @@ export default function SignUpForm() {
 
   return (
     <form onSubmit={onSubmit} className="flex flex-col gap-2 h-full overflow-clip">
-      {step !== 0 && (
-        <div className="flex flex-col gap-3">
-          <div className="self-start text-left flex gap-2 items-center">
-            <span onClick={() => setStep(step - 1)} className="font-poppins text-4xl text-gray-400">
-              &lt;
-            </span>
+      <div className="flex flex-col gap-3 ">
+        <div className="self-start flex gap-2 items-center">
+          <IoIosArrowBack
+            className={`size-7 ${step === 0 ? "opacity-70 pointer-events-none" : "hover:text-blue-400 cursor-pointer"}`}
+            onClick={() => setStep(step - 1)}
+          />
 
-            <span className="flex flex-col font-kanit">
-              <p className="text-gray-400">{`Step ${step} of 3`}</p>
-              <p className="font-medium">{description}</p>
-            </span>
-          </div>
+          <span className="flex flex-col">
+            <p className="text-orange">{`Step ${step + 1} of 4`}</p>
+            <p className="font-medium text-amber-300">{description}</p>
+          </span>
         </div>
-      )}
+      </div>
 
       <AnimatePresence mode="wait" initial={false}>
         {Component}
       </AnimatePresence>
 
       <Button type="submit" className="text-black mt-auto mx-auto mb-7">
-        Next
+        {nextText}
       </Button>
     </form>
   );
