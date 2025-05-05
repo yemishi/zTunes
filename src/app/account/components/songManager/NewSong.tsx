@@ -73,7 +73,6 @@ export default function NewSong({ artistId, close, name, albumId, setName }: Pro
           placeholder="Song"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          classNameInput="bg-transparent backdrop-brightness-150 border-neutralDark-400"
         />
 
         <AddCategories
