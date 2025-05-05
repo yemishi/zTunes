@@ -12,7 +12,7 @@ interface Props {
   };
   nameOnChange: ChangeEventHandler<HTMLInputElement>;
   nameValue?: string;
-  errors?: Record<string, string | null>;
+  errors: Record<string, string | null>;
 }
 
 export default function PersonalInfoField({ nameOnChange, nameValue, errors, setValue, birthDate }: Props) {
@@ -28,39 +28,18 @@ export default function PersonalInfoField({ nameOnChange, nameValue, errors, set
         error={errors?.name || ""}
         autoComplete="display_name"
         type="text"
-        info="This name will appear on your profile"
       />
 
-      <div className="font-kanit flex flex-col">
-        <span className="self-start text-left">
-          <label className="font-medium" htmlFor="bday">
-            Date of birth
-          </label>
-
-          <p className="text-gray-400 text-sm">This is necessary for a personalized experience</p>
-        </span>
-
+      <div className="font-kanit flex flex-col gap-3">
         <DateFields setValue={setValue} values={birthDate} errors={errors} />
 
-        <div className="text-red-500 self-star text-left mt-2 text-sm">
-          {errors?.bDay && (
-            <span className="flex gap-1 items-center">
+        <div className="text-red-500 mt-1 text-sm space-y-1">
+          {[errors?.bYear, errors?.bMonth, errors?.bDay].filter(Boolean).map((err, idx) => (
+            <div key={idx} className="flex gap-1 items-center">
               <IoAlertCircleOutline className="w-4 h-4" />
-              <p>{errors?.bDay}</p>
-            </span>
-          )}
-          {errors?.bMonth && (
-            <span className="flex gap-1 items-center">
-              <IoAlertCircleOutline className="w-4 h-4" />
-              <p>{errors?.bMonth}</p>
-            </span>
-          )}
-          {errors?.bYear && (
-            <span className="flex gap-1 items-center">
-              <IoAlertCircleOutline className="w-4 h-4" />
-              <p>{errors?.bYear}</p>
-            </span>
-          )}
+              <p>{err}</p>
+            </div>
+          ))}
         </div>
       </div>
     </div>
