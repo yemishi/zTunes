@@ -1,11 +1,12 @@
 "use client";
 
 import SignInForm from "@/components/form/SignInForm";
-import SignUpForm from "@/components/form/SignUpForm";
+
+const SignUpForm = lazy(() => import("@/components/form/SignUpForm"));
 import DivAnimated from "@/components/ui/custom/DivAnimated";
 import { AnimatePresence } from "framer-motion";
 import Link from "next/link";
-import { useState } from "react";
+import { lazy, useState } from "react";
 
 export default function Login() {
   const [action, setAction] = useState<"signin" | "signup" | "reset-pass">("signin");
@@ -47,10 +48,10 @@ export default function Login() {
         </AnimatePresence>
       </div>
 
-      <div className="text-gray-400 absolute bottom-7 flex flex-col items-center">
+      <div className="text-gray-400 absolute bottom-0 flex flex-col items-center">
         <Link
           href="/"
-          className="tracking-tighter self-center mb-2 text-white hover:text-orange-600 text-lg md:text-xl font-semibold"
+          className="tracking-tighter self-center mb-2 text-white hover:text-orange-600 text-lg md:text-xl font-semibold cursor-pointer"
         >
           Go Home
         </Link>
