@@ -40,17 +40,17 @@ export default function DateFields({ errors, values, isLoading, setValue, ...pro
     }
   };
   return (
-    <div className="grid grid-cols-[1fr_2fr_1.5fr] gap-3">
+    <div className="grid grid-cols-[1fr_2fr_1.5fr] gap-3 relative">
       <Input
         disabled={isLoading}
-        noMessage
         required
-        label=""
+        label="Day"
         id="day"
         placeholder="dd"
         type="number"
         autoComplete="bDay"
         inputMode="numeric"
+        disableErrorMsg
         error={errors?.bDay || ""}
         value={bDay}
         name="bDay"
@@ -71,13 +71,13 @@ export default function DateFields({ errors, values, isLoading, setValue, ...pro
         className={className ? className : ""}
         required
         disabled={isLoading}
-        noMessage
-        label=""
+        label="Year"
         placeholder="yyyy"
         name="bYear"
         inputMode="numeric"
         type="number"
         value={bYear}
+        disableErrorMsg
         error={errors?.bDay || ""}
         onChange={handleInput}
         autoComplete="bYear"
