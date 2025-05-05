@@ -119,7 +119,7 @@ export default function AlbumForm({ artistId, onclose, title: dataTitle }: Props
         </div>
 
         <Input
-          classNameInput="bg-transparent backdrop-brightness-150 border-neutralDark-400 "
+          className="bg-transparent backdrop-brightness-150 border-neutralDark-400 "
           disabled={isLoading}
           label="Title"
           placeholder="Album title"
