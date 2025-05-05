@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
-import { ErrorType, UserType } from "@/types/response";
+import { ErrorType } from "@/types/response";
 
 import Button from "../ui/buttons/Button";
 import uploadImage from "@/firebase/handleImage";
@@ -34,9 +34,7 @@ export default function NewPlaylistForm({
 
   useEffect(() => {
     const fetchData = async () => {
-      const data: UserType | ErrorType = await fetch(
-        `/api/user?username=${username}`
-      ).then((res) => res.json());
+      const data = await fetch(`/api/user?username=${username}`).then((res) => res.json());
       if (data.error) return toast.error(data.message);
       setIsAdmin(data.isAdmin);
     };
@@ -45,10 +43,7 @@ export default function NewPlaylistForm({
 
   const FormSchema = z.object({
     coverPhoto: z.any(),
-    name: z
-      .string()
-      .min(1, "This field is required")
-      .max(20, "The maximum characters is 15"),
+    name: z.string().min(1, "This field is required").max(20, "The maximum characters is 15"),
     desc: z.string(),
   });
 
@@ -65,8 +60,7 @@ export default function NewPlaylistForm({
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (!file || !file.type.startsWith("image/"))
-      return toast.error("Invalid image type");
+    if (!file || !file.type.startsWith("image/")) return toast.error("Invalid image type");
     const reader = new FileReader();
     reader.onloadend = () => {
       setDemoPhoto(reader.result as string);
@@ -79,13 +73,11 @@ export default function NewPlaylistForm({
   const onsubmit: SubmitHandler<InputsType> = async (values) => {
     FormSchema.parse(values);
 
-    if (!values.coverPhoto)
-      return setError("coverPhoto", { message: "This field is required" });
+    if (!values.coverPhoto) return setError("coverPhoto", { message: "This field is required" });
     setIsLoading(true);
     const { desc, name, coverPhoto } = values;
     const imageUrl = await uploadImage(coverPhoto);
-    if (imageUrl.error)
-      return toast.error(imageUrl.message), setIsLoading(false);
+    if (imageUrl.error) return toast.error(imageUrl.message), setIsLoading(false);
 
     const body = {
       title: name,
@@ -94,8 +86,7 @@ export default function NewPlaylistForm({
       desc,
       coverPhoto: imageUrl.url,
       songs: [],
-      officialCategories:
-        isAdmin && isCategories && categories.length > 0 ? categories : null,
+      officialCategories: isAdmin && isCategories && categories.length > 0 ? categories : null,
     };
 
     const uploadPlaylist: ErrorType = await fetch("/api/playlist", {
@@ -104,13 +95,7 @@ export default function NewPlaylistForm({
     }).then((res) => res.json());
     const { error, message } = uploadPlaylist;
     if (error) return toast.error(message), setIsLoading(false);
-    return (
-      toast(message),
-      refresh(),
-      onclose(),
-      setIsLoading(false),
-      onSuccess ? onSuccess() : null
-    );
+    return toast(message), refresh(), onclose(), setIsLoading(false), onSuccess ? onSuccess() : null;
   };
   return (
     <form
@@ -131,7 +116,7 @@ export default function NewPlaylistForm({
         label="Name"
         {...register("name")}
         placeholder="Playlist name"
-        classNameInput="bg-transparent backdrop-brightness-150 border-neutralDark-400"
+        className="bg-transparent backdrop-brightness-150 border-neutralDark-400"
       />
 
       <div className="flex flex-col gap-1 ">
@@ -164,22 +149,12 @@ export default function NewPlaylistForm({
             state={isCategories}
             setState={setIsCategories}
           />
-          {isCategories && (
-            <AddCategories
-              categories={categories}
-              setCategories={setCategories}
-            />
-          )}
+          {isCategories && <AddCategories categories={categories} setCategories={setCategories} />}
         </div>
       )}
 
       <span className="grid grid-cols-2 gap-3 md:px-20 md:mt-11 sm:col-span-2">
-        <Button
-          disabled={isLoading}
-          type="button"
-          onClick={onclose}
-          className="bg-white text-black"
-        >
+        <Button disabled={isLoading} type="button" onClick={onclose} className="bg-white text-black">
           Back
         </Button>
         <Button disabled={isLoading} type="submit">
@@ -210,17 +185,14 @@ function Toggle({
     >
       <div className="flex flex-col">
         <span className="text-lg">{title}</span>
-        <span className="text-gray-400 font-light">
-          {state ? isTrue : isFalse}
-        </span>
+        <span className="text-gray-400 font-light">{state ? isTrue : isFalse}</span>
       </div>
 
       <span
         className={`w-14 h-7 rounded-full self-center relative after:absolute after:h-5/6 after:w-6 after:top-2/4 after:-translate-y-2/4 after:bg-white 
-    after:rounded-full duration-200 after:duration-200 cursor-pointer ${state
-            ? "bg-orange-600 bg-opacity-80 after:left-2/4"
-            : "bg-neutralDark-400 after:left-1"
-          }`}
+    after:rounded-full duration-200 after:duration-200 cursor-pointer ${
+      state ? "bg-orange-600 bg-opacity-80 after:left-2/4" : "bg-neutralDark-400 after:left-1"
+    }`}
       />
     </div>
   );
