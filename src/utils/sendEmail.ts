@@ -1,5 +1,5 @@
 import nodemailer from "nodemailer";
-import jwt from "jsonwebtoken";
+import jwt, { SignOptions } from "jsonwebtoken";
 
 const transport = nodemailer.createTransport({
   host: "smtp.gmail.com",
@@ -25,9 +25,13 @@ const mailOptions = (email: string, html: string) => {
 };
 
 const url = (id: string, endPoint: string, duration?: string) => {
-  const generateToken = jwt.sign({ id }, process.env.JWT_SECRET as string, {
-    expiresIn: duration || "1h",
-  });
+  const generateToken = jwt.sign(
+    { id },
+    process.env.JWT_SECRET as string,
+    {
+      expiresIn: duration || "1h",
+    } as SignOptions
+  );
   const confirmationLink = `${process.env.URL}/${endPoint}?token=${generateToken}`;
   return confirmationLink;
 };
@@ -46,17 +50,11 @@ const resetPassHtml = (username: string, url: string) => `<html>
 </html>`;
 
 const resetPassEmail = (email: string, username: string, userId: string) => {
-  transport.sendMail(
-    mailOptions(
-      email,
-      resetPassHtml(username, url(userId, "password-reset", "30m"))
-    ),
-    (error) => {
-      if (error) {
-        return console.error(error, "failed at send email");
-      } else return console.log("email sent");
-    }
-  );
+  transport.sendMail(mailOptions(email, resetPassHtml(username, url(userId, "password-reset", "30m"))), (error) => {
+    if (error) {
+      return console.error(error, "failed at send email");
+    } else return console.log("email sent");
+  });
 };
 
 export { resetPassEmail };
