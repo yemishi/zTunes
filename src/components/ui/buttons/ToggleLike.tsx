@@ -1,18 +1,14 @@
 "use client";
 
 import useLike from "@/hooks/useLike";
+import { cleanClasses } from "@/utils/helpers";
 import { FaHeart } from "react-icons/fa6";
 
 interface PropsType extends React.HTMLAttributes<HTMLButtonElement> {
   songId: string;
 }
 
-export default function ToggleLike({
-  songId,
-  className,
-  onClick,
-  ...props
-}: PropsType) {
+export default function ToggleLike({ songId, className, onClick, ...props }: PropsType) {
   const { isLiked, isLoading, toggleLike } = useLike(songId);
   return (
     <button
@@ -20,11 +16,9 @@ export default function ToggleLike({
         onClick ? onClick(e) : null, toggleLike();
       }}
       {...props}
-      className={`${className} ${isLoading ? "pointer-events-none" : ""}  ${
-        className?.includes("size" || "h-" || "w-") ? "" : "size-12"
-      } ${
-        className?.includes("p-") ? "" : "p-2"
-      } flex font-medium text-lg items-center`}
+      className={`${cleanClasses(className, "flex font-medium text-lg items-center size-12 p-2")} ${
+        isLoading ? "pointer-events-none" : ""
+      }`}
     >
       <FaHeart
         className={`h-full w-full duration-200 hover:opacity-70 active:scale-105 ${
