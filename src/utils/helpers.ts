@@ -30,7 +30,7 @@ const isAvailable = async (
   value: string,
   field?: string
 ): Promise<
-  | ErrorType
+  | { error: true; message: string }
   | {
       error: false;
       response: boolean;
