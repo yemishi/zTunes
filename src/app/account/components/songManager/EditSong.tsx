@@ -87,17 +87,13 @@ export default function EditSong({ song }: { song: SongType }) {
           >
             <Input
               disabled={isLoading}
-              label=""
-              classNameInput="bg-transparent border-gray-300 border-b-2"
+              label="Album name"
               placeholder={name}
               value={name}
               onChange={(e) => updateObject("name", e.target.value)}
             />
             <span className="flex gap-2 ml-auto">
-              <GiConfirmed
-                onClick={changeName}
-                className={`size-7 text-green-500 duration-150 ${loadingClass}`}
-              />
+              <GiConfirmed onClick={changeName} className={`size-7 text-green-500 duration-150 ${loadingClass}`} />
               <GiCancel
                 onClick={() => updateObject("isEdit", false)}
                 className={`size-7  duration-150 ${loadingClass}`}
