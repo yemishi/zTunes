@@ -1,24 +1,25 @@
-import { ButtonHTMLAttributes } from "react";
+import { ButtonHTMLAttributes, ReactNode } from "react";
 
-import { Slot } from "@radix-ui/react-slot";
+import { cleanClasses } from "@/utils/helpers";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  asChild?: boolean;
   isLoading?: boolean;
+  children?: ReactNode;
 }
 
-export default function Button({ className, isLoading, asChild, ...props }: ButtonProps) {
-  const Component = asChild ? Slot : "button";
-  const defaultBackDrop = className?.includes("bg-transparent") ? "" : "backdrop-brightness-50";
-  const defaultBg = !className?.includes("bg") ? "bg-amber-500" : "";
-
+export default function Button({ children, isLoading, ...props }: ButtonProps) {
+  const { className, ...rest } = props;
   return (
-    <Component
-      {...props}
-      className={`${
-        className ? className : ""
-      } ${defaultBackDrop} ${defaultBg}  cursor-pointer px-4 py-2 rounded-full border border-white border-opacity-30 font-kanit hover:backdrop-brightness-150
-      disabled:animate-pulse duration-200 bg-opacity-75 hover:bg-opacity-85 border-none`}
-    />
+    <button
+      {...rest}
+      className={cleanClasses(
+        className,
+        `cursor-pointer px-4 py-2 rounded-full text-black bg-amber-500 font-kanit hover:brightness-110 active:scale-90 transition-all disabled:grayscale ${
+          isLoading ? "animate-pulse pointer-events-none" : ""
+        }`
+      )}
+    >
+      {children}
+    </button>
   );
 }
