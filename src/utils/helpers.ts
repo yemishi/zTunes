@@ -1,3 +1,4 @@
+"use client";
 import { ErrorType } from "@/types/response";
 import { format, lastDayOfMonth } from "date-fns";
 import { usePathname } from "next/navigation";
