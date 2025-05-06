@@ -11,7 +11,7 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
 }
 
 const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
-  const { label, className, error, placeholder, id, isPassword, disableErrorMsg, ...rest } = props;
+  const { label, className, placeholder, id, isPassword, error, disableErrorMsg, ...rest } = props;
   const [isPass, setIsPass] = useState(isPassword);
 
   const PassIcon = isPass ? FaEyeSlash : IoEyeSharp;
@@ -48,7 +48,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
         ref={labelRef}
         htmlFor={id || rest.name}
         className={`absolute left-4 bottom-2.5 origin-left duration-100  ${
-          hasValue ? "-translate-y-6 scale-90 font-light translate-x-1.5" : ""
+          hasValue ? "-translate-y-6 scale-90 font-light translate-x-1.5 md:-translate-y-7.5" : ""
         }`}
       >
         {label || placeholder}
@@ -66,7 +66,9 @@ const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
         </span>
       )}
       {error && !disableErrorMsg && (
-        <span className="ml-1 text-sm text-red-500 absolute -top-3 right-5 scale-90 origin-right">{error}</span>
+        <span className="ml-1 text-sm lg:text-lg text-red-500 absolute -top-3 right-5 scale-90 origin-right md:right-7 md:text-base">
+          {error}
+        </span>
       )}
     </div>
   );
