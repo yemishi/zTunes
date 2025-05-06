@@ -11,13 +11,7 @@ import Link from "next/link";
 import AddAlbum from "./albumManager/AddAlbum";
 import DivAnimated from "@/components/ui/custom/DivAnimated";
 
-export default function Albums({
-  props,
-  artistId,
-}: {
-  props: BundleType[];
-  artistId: string;
-}) {
+export default function Albums({ props, artistId }: { props: BundleType[]; artistId: string }) {
   const [show, setShow] = useState<boolean>(false);
   return (
     <div className="flex flex-col overflow-hidden">
@@ -37,18 +31,10 @@ export default function Albums({
             {props.map((item, index) => {
               const { title, coverPhoto, id } = item;
               return (
-                <DivAnimated
-                  key={`${id}_${index}`}
-                  reverse
-                  oneSide
-                  className="flex gap-3 items-center p-2 "
-                >
+                <DivAnimated key={`${id}_${index}`} reverse oneSide className="flex gap-3 items-center p-2 ">
                   <Image src={coverPhoto} className="size-9 md:size-12" />
                   <p className="md:text-lg">{title}</p>
-                  <Button
-                    asChild
-                    className="ml-auto rounded-lg bg-white text-black text-sm md:text-base"
-                  >
+                  <Button className="ml-auto rounded-lg bg-white text-black text-sm md:text-base">
                     <Link href={`/account/album/${id}`}>See</Link>
                   </Button>
                 </DivAnimated>
