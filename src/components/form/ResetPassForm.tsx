@@ -38,13 +38,10 @@ export default function ResetPassForm({ userId }: { userId: string }) {
     FormSchema.parse(values);
     const body = { password: values.password, userId };
     setIsLoading(true);
-    const data: { message: string; error: boolean } = await fetch(
-      "/api/user/password-reset",
-      {
-        method: "PATCH",
-        body: JSON.stringify(body),
-      }
-    ).then((res) => res.json());
+    const data: { message: string; error: boolean } = await fetch("/api/user/password-reset", {
+      method: "PATCH",
+      body: JSON.stringify(body),
+    }).then((res) => res.json());
     setResponse(data);
     setIsLoading(false);
   };
@@ -74,23 +71,16 @@ export default function ResetPassForm({ userId }: { userId: string }) {
               {response.error ? (
                 <Button onClick={() => setResponse(null)}>try again</Button>
               ) : (
-                <Button asChild className="mt-10">
+                <Button className="mt-10">
                   <Link href="/sign-in">Login</Link>
                 </Button>
               )}
             </DivAnimated>
           ) : (
             <DivAnimated key="formResetPass">
-              <form
-                onSubmit={handleSubmit(onSubmit)}
-                className="flex flex-col gap-3"
-              >
-                <h1 className="text-3xl font-montserrat font-bold self-start tracking-tighter ">
-                  Reset your password
-                </h1>
-                <p className="self-start">
-                  Please enter your new password below.
-                </p>
+              <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-3">
+                <h1 className="text-3xl font-montserrat font-bold self-start tracking-tighter ">Reset your password</h1>
+                <p className="self-start">Please enter your new password below.</p>
                 <Input
                   disabled={isLoading}
                   isPassword

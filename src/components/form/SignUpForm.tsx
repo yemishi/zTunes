@@ -13,6 +13,7 @@ import { isValidDate } from "@/utils/helpers";
 import useForm from "@/hooks/useForm";
 import DivAnimated from "../ui/custom/DivAnimated";
 import Input from "../ui/inputs/Input";
+import ProgressStep from "../ui/custom/ProgressStep";
 
 export default function SignUpForm() {
   const [step, setStep] = useState(0);
@@ -160,25 +161,12 @@ export default function SignUpForm() {
 
   return (
     <form onSubmit={onSubmit} className="flex flex-col gap-2 h-full overflow-clip">
-      <div className="flex flex-col gap-3 ">
-        <div className="self-start flex gap-2 items-center">
-          <IoIosArrowBack
-            className={`size-7 ${step === 0 ? "opacity-70 pointer-events-none" : "hover:text-blue-400 cursor-pointer"}`}
-            onClick={() => setStep(step - 1)}
-          />
-
-          <span className="flex flex-col">
-            <p className="text-orange">{`Step ${step + 1} of 4`}</p>
-            <p className="font-medium text-amber-300">{description}</p>
-          </span>
-        </div>
-      </div>
-
+      <ProgressStep totalSteps={3} desc={description as string} goBack={() => setStep(step - 1)} step={step} />
       <AnimatePresence mode="wait" initial={false}>
         {Component}
       </AnimatePresence>
 
-      <Button type="submit" className="text-black mt-auto mx-auto mb-7">
+      <Button type="submit" className="mt-auto mx-auto mb-7">
         {nextText}
       </Button>
     </form>

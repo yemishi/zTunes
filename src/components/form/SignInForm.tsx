@@ -1,7 +1,5 @@
 "use client";
 
-import { IoEyeSharp } from "react-icons/io5";
-import { FaEyeSlash } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
 import { FormEvent, useState } from "react";
@@ -9,11 +7,10 @@ import { FormEvent, useState } from "react";
 import Button from "../ui/buttons/Button";
 import Input from "../ui/inputs/Input";
 import useForm from "@/hooks/useForm";
-import { IoIosArrowBack } from "react-icons/io";
+import ProgressStep from "../ui/custom/ProgressStep";
 
-export default function SignInForm() {
+export default function SignInForm({ resetPass }: { resetPass: () => void }) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [isPass, setIsPass] = useState<boolean>(true);
 
   const { push } = useRouter();
   const {
@@ -29,7 +26,7 @@ export default function SignInForm() {
 
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
+    if (!validateAll()) return;
     setIsLoading(true);
     const response = await signIn("credentials", {
       name,
@@ -43,30 +40,16 @@ export default function SignInForm() {
     setIsLoading(false);
   };
 
-  const icon = (
-    <span onClick={() => setIsPass(!isPass)} className="absolute top-2/4 -translate-y-2/4 right-2 cursor-pointer">
-      {isPass ? <FaEyeSlash className="w-6 h-6" /> : <IoEyeSharp className="w-6 h-6" />}
-    </span>
-  );
-
   return (
-    <form onSubmit={onSubmit} className="flex flex-col gap-5 h-full">
-      <div className="flex flex-col gap-3 ">
-        <div className="self-start flex gap-2 items-center">
-          <IoIosArrowBack className="size-7 opacity-70 pointer-events-none" />
-
-          <span className="flex flex-col">
-            <p className="text-orange">{`Step 1 of 1`}</p>
-            <p className="font-medium text-amber-300">Welcome back! Log in to access your account.</p>
-          </span>
-        </div>
-      </div>
-
+    <form onSubmit={onSubmit} className="flex flex-col gap-5 h-full ">
+      <ProgressStep step={0} totalSteps={0} desc="Welcome back! Log in to access your account." goBack={() => {}} />
       <Input
         disabled={isLoading}
         onChange={onChange}
+        value={name}
         type="text"
         name="name"
+        autoFocus
         autoComplete="display_name"
         placeholder="Email or username"
         label="Email or username"
@@ -75,13 +58,20 @@ export default function SignInForm() {
 
       <Input
         disabled={isLoading}
+        value={password}
         name="password"
         onChange={onChange}
         error={errors.password || ""}
         isPassword
         label="Password"
       />
-
+      <button
+        onClick={resetPass}
+        type="button"
+        className="underline mx-auto underline-offset-2 md:underline-offset-4 max-md:tracking-tighter text-white hover:text-amber-300 transition-all cursor-pointer"
+      >
+        Forgot your password?
+      </button>
       <Button disabled={isLoading} type="submit" className="text-black mt-auto mx-auto mb-7">
         Log in
       </Button>
