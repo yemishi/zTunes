@@ -1,55 +1,50 @@
-import { SubmitHandler, useForm } from "react-hook-form";
+import { SubmitHandler } from "react-hook-form";
 import Button from "../ui/buttons/Button";
 import DivAnimated from "../ui/custom/DivAnimated";
 import Input from "../ui/inputs/Input";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
+import { FormEvent, useState } from "react";
 import { ErrorType } from "@/types/response";
+import useForm from "@/hooks/useForm";
+import ProgressStep from "../ui/custom/ProgressStep";
 
 export default function ForgotPass({ close }: { close: () => void }) {
-  type InputType = z.infer<typeof FormSchema>;
-  const [message, setMessage] = useState<string | null>();
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-
-  const FormSchema = z.object({
-    name: z.string().min(1, "This field is required."),
-  });
+  const [message, setMessage] = useState<string>();
+  const [isLoading, setIsLoading] = useState(false);
 
   const {
-    register,
-    handleSubmit,
+    errors,
+    values: { name },
+    validateAll,
+    onChange,
     setError,
-    formState: { errors },
-  } = useForm<InputType>({
-    resolver: zodResolver(FormSchema),
-  });
-  const onSubmit: SubmitHandler<InputType> = async (values) => {
-    FormSchema.parse(values);
+  } = useForm<{ name: string }>({ name: { value: "", min: 1 } });
+
+  const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!validateAll()) return;
     setIsLoading(true);
-    const response:ErrorType = await fetch(
-      `/api/user/password-reset?value=${values.name}`
-    ).then((res) => res.json());
+    const response: ErrorType = await fetch(`/api/user/password-reset?value=${name}`).then((res) => res.json());
 
     if (response.error) {
       setIsLoading(false);
-      return setError("name", { message: response.message });
+      return setError("name", response.message);
     }
     setIsLoading(false);
     setMessage(response.message);
   };
 
   return (
-    <DivAnimated reverse className="flex flex-col h-[450px] gap-2">
-      <h1 className="text-3xl font-montserrat font-bold self-start tracking-tighter ">
-        {message ? "Email sent" : "Reset your password"}
-      </h1>
-
-      <p className="text-left pr-3 mt-3">
-        {message
-          ? message
-          : "Enter your email address or username, and we'll send you a link to get back into your account."}
-      </p>
+    <div className="h-full flex flex-col">
+      <ProgressStep
+        desc={
+          message ?? "Enter your email address or username, and we'll send you a link to get back into your account."
+        }
+        goBack={() => {}}
+        step={0}
+        totalSteps={0}
+      />
 
       {message ? (
         <div className="flex flex-col gap-3 mt-7">
@@ -57,45 +52,35 @@ export default function ForgotPass({ close }: { close: () => void }) {
             Back to login
           </Button>
 
-          <Button
-            disabled={isLoading}
-            onClick={() => setMessage(null)}
-            className="bg-none"
-          >
+          <Button disabled={isLoading} onClick={() => setMessage("")} className="bg-none">
             Edit email/username
           </Button>
         </div>
       ) : (
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="flex flex-col gap-7 h-full"
-        >
+        <form onSubmit={onSubmit} className="flex flex-col gap-7 h-full ">
           <Input
             disabled={isLoading}
-            error={errors.name?.message}
-            {...register("name")}
+            error={errors.name || ""}
+            value={name}
+            onChange={onChange}
+            name="name"
+            autoFocus
             label="Email or Username"
-            type="text"
             className="mt-11"
           />
-          <Button
-            disabled={isLoading}
-            type="submit"
-            className="mt-auto text-black"
-          >
-            Send link
-          </Button>
-
-          <Button
-            disabled={isLoading}
+          <button
             onClick={close}
             type="button"
-            className="mt-auto self-center bg-transparent"
+            className="underline mx-auto underline-offset-2 md:underline-offset-4 max-md:tracking-tighter text-white hover:text-amber-300 transition-all cursor-pointer"
           >
-            Back
+            Go Back
+          </button>
+
+          <Button disabled={isLoading} type="submit" className="text-black mt-auto mx-auto mb-7">
+            Send link
           </Button>
         </form>
       )}
-    </DivAnimated>
+    </div>
   );
 }
