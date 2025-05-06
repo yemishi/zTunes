@@ -17,10 +17,7 @@ export default function LibInfo() {
 
   if (!session || !session.user || !session.user.name)
     return (
-      <Button
-        className="bg-gray-200 text-black rounded-lg mt-2 text-xl"
-        asChild
-      >
+      <Button className="bg-gray-200 text-black rounded-lg mt-2 text-xl">
         <Link href="/sign-in">Sign in</Link>
       </Button>
     );
@@ -42,13 +39,7 @@ export default function LibInfo() {
 
   const { setChildren, close: closeForm } = useTempOverlay();
 
-  const Form = (
-    <NewPlaylistForm
-      onclose={() => closeForm()}
-      username={user.name}
-      onSuccess={() => refetch()}
-    />
-  );
+  const Form = <NewPlaylistForm onclose={() => closeForm()} username={user.name} onSuccess={() => refetch()} />;
 
   return (
     <div className="flex flex-col w-full">
@@ -73,29 +64,21 @@ export default function LibInfo() {
         </div>
       </Link>
 
-      {playlists.map(
-        ({ id, coverPhoto, title, songs: { length: songsLength } }, index) => {
-          return (
-            <Link
-              key={`${id}_${index}`}
-              href={`/playlist/${id}`}
-              className="flex gap-2 hover:bg-black-450 duration-150 rounded-lg p-2 active:bg-black"
-            >
-              <Image
-                src={coverPhoto}
-                alt="Playlist cover photo"
-                className="size-12 rounded-md"
-              />
-              <div className="flex flex-col">
-                <span className="line-clamp-1">{title}</span>
-                <span className="text-gray-300 text-sm">
-                  {songsLength} songs
-                </span>
-              </div>
-            </Link>
-          );
-        }
-      )}
+      {playlists.map(({ id, coverPhoto, title, songs: { length: songsLength } }, index) => {
+        return (
+          <Link
+            key={`${id}_${index}`}
+            href={`/playlist/${id}`}
+            className="flex gap-2 hover:bg-black-450 duration-150 rounded-lg p-2 active:bg-black"
+          >
+            <Image src={coverPhoto} alt="Playlist cover photo" className="size-12 rounded-md" />
+            <div className="flex flex-col">
+              <span className="line-clamp-1">{title}</span>
+              <span className="text-gray-300 text-sm">{songsLength} songs</span>
+            </div>
+          </Link>
+        );
+      })}
 
       {!isFetchingNextPage && hasNextPage && <div ref={ref} />}
       {isFetchingNextPage && <div className="spinner" />}
