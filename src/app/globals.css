@@ -24,6 +24,8 @@
   --color-black-800: #0a0a0a;
   --color-black-900: #000000;
   --color-black: #000000;
+
+  --breakpoint-3xl: 120rem;
 }
 
 @layer base {
