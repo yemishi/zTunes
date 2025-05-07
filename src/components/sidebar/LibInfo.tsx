@@ -17,8 +17,10 @@ export default function LibInfo() {
 
   if (!session || !session.user || !session.user.name)
     return (
-      <Button className="bg-gray-200 text-black rounded-lg mt-2 text-xl">
-        <Link href="/sign-in">Sign in</Link>
+      <Button className="bg-gray-200 text-black rounded-lg mt-2 text-xl flex px-0 py-0">
+        <Link href="/login" className="flex-1 p-2">
+          Sign in
+        </Link>
       </Button>
     );
   const user = session.user;
@@ -45,7 +47,7 @@ export default function LibInfo() {
     <div className="flex flex-col w-full">
       <Button
         onClick={() => setChildren(Form)}
-        className="bg-black-400 flex items-center justify-center gap-2  border-none"
+        className="flex items-center justify-center gap-2 brightness-85"
       >
         <GoPlus className="size-7" /> New playlist
       </Button>
