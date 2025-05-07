@@ -1,25 +1,23 @@
 import { authOptions } from "@/lib/auth";
-import { ErrorType, ManyPlaylistType } from "@/types/response";
+import { ManyPlaylistType } from "@/types/response";
 import { getServerSession } from "next-auth";
 import { notFound, redirect } from "next/navigation";
 import Card from "../../components/card/Card";
 
 async function fetchData(username: string) {
-  const playlistsData = await fetch(
-    `${process.env.URL}/api/playlist?username=${username}&authorName=${username}`
-  ).then((res) => res.json());
+  const playlistsData = await fetch(`${process.env.URL}/api/playlist?username=${username}&authorName=${username}`).then(
+    (res) => res.json()
+  );
   if (playlistsData.error) {
-    if (playlistsData.status === 404) return notFound()
+    if (playlistsData.status === 404) return notFound();
     throw new Error(playlistsData.message);
-
   }
-  return playlistsData as ManyPlaylistType
-
+  return playlistsData as ManyPlaylistType;
 }
 
 export default async function MyLib() {
   const session = await getServerSession(authOptions);
-  if (!session?.user) return redirect("/sign-in");
+  if (!session?.user) return redirect("/login");
   const username = session.user.name;
   const { playlists } = await fetchData(username);
 
