@@ -1,7 +1,6 @@
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { hashSync } from "bcrypt"
 import { db } from "./db";
 import { compare } from "bcrypt";
 
@@ -14,14 +13,14 @@ export type UserToken = {
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(db),
-  secret: process.env.NEXTAUTH_SECRET,
+  secret: process.env.JWT_SECRET,
 
   session: {
     strategy: "jwt",
   },
   pages: {
-    signIn: "/sign-in",
-    signOut: "/sign-in",
+    signIn: "/login",
+    signOut: "/login",
   },
 
   providers: [
@@ -76,7 +75,7 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
     redirect({ baseUrl, url }) {
-      return `${baseUrl}/sign-in`;
+      return `${baseUrl}/login`;
     },
   },
 };
