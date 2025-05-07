@@ -4,10 +4,10 @@ import Link from "next/link";
 import { lazy, useState } from "react";
 import { AnimatePresence } from "framer-motion";
 
+import RecoverPassword from "./recoverPassword/RecoverPassword";
 import DivAnimated from "@/components/ui/custom/DivAnimated";
-import SignInForm from "@/components/form/SignInForm";
-import ForgotPass from "@/components/login/forgotPass";
-const SignUpForm = lazy(() => import("@/components/form/SignUpForm"));
+import SignInForm from "./signin/SignInForm";
+const SignUpForm = lazy(() => import("./signup/SignUpForm"));
 
 export default function Login() {
   const [action, setAction] = useState<"signin" | "signup" | "reset-pass">("signin");
@@ -60,7 +60,7 @@ export default function Login() {
 
           {action === "reset-pass" && (
             <DivAnimated reverse key="reset-pass-form">
-              <ForgotPass close={() => setAction("signin")} />
+              <RecoverPassword close={() => setAction("signin")} />
             </DivAnimated>
           )}
         </AnimatePresence>

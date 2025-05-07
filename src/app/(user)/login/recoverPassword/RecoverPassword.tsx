@@ -1,15 +1,11 @@
-import { SubmitHandler } from "react-hook-form";
-import Button from "../ui/buttons/Button";
-import DivAnimated from "../ui/custom/DivAnimated";
-import Input from "../ui/inputs/Input";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
+import Button from "../../../../components/ui/buttons/Button";
+import Input from "../../../../components/ui/inputs/Input";
 import { FormEvent, useState } from "react";
 import { ErrorType } from "@/types/response";
 import useForm from "@/hooks/useForm";
-import ProgressStep from "../ui/custom/ProgressStep";
+import ProgressStep from "../../../../components/ui/custom/ProgressStep";
 
-export default function ForgotPass({ close }: { close: () => void }) {
+export default function RecoverPassword({ close }: { close: () => void }) {
   const [message, setMessage] = useState<string>();
   const [isLoading, setIsLoading] = useState(false);
 

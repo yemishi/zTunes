@@ -8,7 +8,7 @@ type PropsType = {
   response?: ErrorType;
 };
 
-export default function ConfirmInfo({ email, name, bDay, response }: PropsType) {
+export default function SignUpSummary({ email, name, bDay, response }: PropsType) {
   const [day, month, year] = bDay.split("/");
   const formattedDate = format(String(Number(month) + 1), "LLLL");
 

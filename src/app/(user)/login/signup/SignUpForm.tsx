@@ -3,17 +3,16 @@
 import { FormEvent, lazy, useState } from "react";
 import { AnimatePresence } from "framer-motion";
 
-const PersonalInfoField = lazy(() => import("../register/personalInfoField"));
-const ConfirmInfo = lazy(() => import("../register/confirmInfo"));
-import { IoIosArrowBack } from "react-icons/io";
+const SignUpUserInfo = lazy(() => import("./signUpUserInfo/SignUpUserInfo"));
+const SignUpSummary = lazy(() => import("./signUpSummary/SignUpSummary"));
 
 import { ErrorType } from "@/types/response";
-import Button from "../ui/buttons/Button";
+import Button from "@/components/ui/buttons/Button";
 import { isValidDate } from "@/utils/helpers";
 import useForm from "@/hooks/useForm";
-import DivAnimated from "../ui/custom/DivAnimated";
-import Input from "../ui/inputs/Input";
-import ProgressStep from "../ui/custom/ProgressStep";
+import DivAnimated from "@/components/ui/custom/DivAnimated";
+import Input from "@/components/ui/inputs/Input";
+import ProgressStep from "@/components/ui/custom/ProgressStep";
 
 export default function SignUpForm() {
   const [step, setStep] = useState(0);
@@ -143,7 +142,7 @@ export default function SignUpForm() {
     ),
     2: (
       <DivAnimated key="personalField" className="mt-5">
-        <PersonalInfoField
+        <SignUpUserInfo
           nameOnChange={onChange}
           nameValue={name}
           setValue={setValue}
@@ -154,7 +153,7 @@ export default function SignUpForm() {
     ),
     3: (
       <DivAnimated key="confirm-info">
-        <ConfirmInfo response={response} bDay={`${bDay}/${bMonth}/${bYear}`} email={email} name={name} />
+        <SignUpSummary response={response} bDay={`${bDay}/${bMonth}/${bYear}`} email={email} name={name} />
       </DivAnimated>
     ),
   }[step];

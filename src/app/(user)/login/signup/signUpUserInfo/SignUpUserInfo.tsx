@@ -1,6 +1,6 @@
-import Input from "../ui/inputs/Input";
+import Input from "../../../../../components/ui/inputs/Input";
 import { IoAlertCircleOutline } from "react-icons/io5";
-import DateFields from "../ui/inputs/DateFields";
+import DateFields from "../../../../../components/ui/inputs/DateFields";
 import { ChangeEventHandler } from "react";
 
 interface Props {
@@ -15,7 +15,7 @@ interface Props {
   errors: Record<string, string | null>;
 }
 
-export default function PersonalInfoField({ nameOnChange, nameValue, errors, setValue, birthDate }: Props) {
+export default function SignUpUserInfo({ nameOnChange, nameValue, errors, setValue, birthDate }: Props) {
   return (
     <div className="flex flex-col gap-6">
       <Input
