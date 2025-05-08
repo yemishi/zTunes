@@ -4,32 +4,30 @@ import { notFound, redirect } from "next/navigation";
 import { authOptions } from "@/lib/auth";
 
 import ProfileHeader from "../../components/headers/ProfileHeader";
-import Albums from "./components/Albums";
-import DeleteAcc from "./components/userManager/DeleteAcc";
-import UpgradeToArtist from "./components/userManager/UpgradeToArtist";
+import AlbumsGrid from "./albumsGrid/AlbumsGrid";
+import DeleteAcc from "./deleteAcc/DeleteAcc";
+import UpgradeToArtist from "./upgradeToArtist/UpgradeToArtist";
 import Logout from "../../components/ui/buttons/Logout";
-import UpgradeToAdmin from "./components/userManager/UpgradeToAdmin";
-import ErrorWrapper from "@/components/ErrorWrapper";
+import UpgradeToAdmin from "./upgradeToAdmin/UpgradeToAdmin";
+import { ErrorWrapper } from "@/components";
 
 async function fetchData(username: string) {
-  const data = await fetch(
-    `${process.env.URL}/api/user?username=${username}&artistToo=true`,
-    { cache: "no-store" }
-  ).then((res) => res.json());
+  const data = await fetch(`${process.env.URL}/api/user?username=${username}&artistToo=true`, {
+    cache: "no-store",
+  }).then((res) => res.json());
   if (data.error) {
-    if (data.status === 404) return notFound()
+    if (data.status === 404) return notFound();
     throw new Error(data.message);
   }
-  const albumsData = await fetchAlbums(data.isArtist ? data.id : null)
+  const albumsData = await fetchAlbums(data.isArtist ? data.id : null);
 
   return [data, albumsData];
 }
 async function fetchAlbums(artistId: string | null) {
   if (!artistId) return;
-  const albums = await fetch(
-    `${process.env.URL}/api/album?artistId=${artistId}`,
-    { cache: "no-store" }
-  ).then((res) => res.json());
+  const albums = await fetch(`${process.env.URL}/api/album?artistId=${artistId}`, { cache: "no-store" }).then((res) =>
+    res.json()
+  );
   return albums;
 }
 
@@ -56,9 +54,11 @@ export default async function Dashboard() {
           </>
         )}
 
-        {albums && <ErrorWrapper error={albums.error} message={albums.message}>
-          <Albums artistId={id} props={albums} />
-        </ErrorWrapper>}
+        {albums && (
+          <ErrorWrapper error={albums.error} message={albums.message}>
+            <AlbumsGrid artistId={id} props={albums} />
+          </ErrorWrapper>
+        )}
 
         <Logout className="ml-auto rounded-lg mr-5" />
       </div>
