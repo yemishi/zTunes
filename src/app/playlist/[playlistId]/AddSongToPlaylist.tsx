@@ -1,7 +1,7 @@
 "use client"
 import CardSearch from "@/app/search/components/cardSearch"
 import { SearchType } from "@/app/search/page"
-import ErrorWrapper from "@/components/ErrorWrapper"
+import ErrorWrapper from "@/components/errorWrapper/ErrorWrapper"
 import Button from "@/components/ui/buttons/Button"
 import useScrollQuery from "@/hooks/useScrollQuery"
 import { useState } from "react"
