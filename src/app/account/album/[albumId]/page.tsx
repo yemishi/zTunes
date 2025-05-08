@@ -4,8 +4,8 @@ import { getServerSession } from "next-auth";
 import { notFound } from "next/navigation";
 
 import GenericHeader from "@/components/headers/GenericHeader";
-import ViewSongsAlbum from "../../components/ViewSongsAlbum";
-import DeleteAlbum from "../../components/albumManager/DeleteAlbum";
+import SongGrid from "./songsGrid/SongsGrid";
+import DeleteAlbum from "./deleteAlbum/DeleteAlbum";
 
 async function fetchData(albumId: string, artistName: string) {
   const albumInfo: BundleType & { urlsSongs: string[] } = await fetch(
@@ -47,7 +47,7 @@ export default async function ArtistPage(props: { params: Promise<{ albumId: str
         }}
         updateUrl={`/api/album?albumId=${albumId}`}
       />
-      <ViewSongsAlbum albumId={albumId} artistId={artistId} url={`/api/song?albumId=${albumId}`} />
+      <SongGrid albumId={albumId} artistId={artistId} url={`/api/song?albumId=${albumId}`} />
       <DeleteAlbum albumId={albumId} title={title} />
     </div>
   );
