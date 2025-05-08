@@ -59,12 +59,12 @@ export default function RootLayout({
         <body className={`w-full h-full text-white bg-black-700 overflow-x-hidden ${nunito.className}`}>
           <ToastContainer autoClose={3000} theme="dark" position="bottom-center" />
           <SkeletonTheme baseColor="#202020" highlightColor="#444">
-            <div className="">
+            <div className="w-full h-screen">
               <TempOverlay />
               <Sidebar />
               {children}
             </div>
-            <div id="modal"></div>
+            <div className="w-full " id="modal"></div>
           </SkeletonTheme>
           <UnderBar />
         </body>
