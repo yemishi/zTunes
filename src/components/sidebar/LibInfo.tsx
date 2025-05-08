@@ -8,13 +8,12 @@ import { PlaylistType } from "@/types/response";
 import { GoPlus } from "react-icons/go";
 import Image from "../ui/custom/Image";
 
-import NewPlaylistForm from "../form/NewPlaylistForm";
 import { redirect } from "next/navigation";
-import { useTempOverlay } from "@/context/Provider";
+import { Modal, PlaylistForm } from "@/components";
+import { useState } from "react";
 
 export default function LibInfo() {
   const { data: session } = useSession();
-
   if (!session || !session.user || !session.user.name)
     return (
       <Button className="bg-gray-200 text-black rounded-lg mt-2 text-xl flex px-0 py-0">
@@ -23,6 +22,7 @@ export default function LibInfo() {
         </Link>
       </Button>
     );
+  const [isPlaylistForm, setIsPlaylistForm] = useState(false);
   const user = session.user;
   const {
     values: playlists,
@@ -39,16 +39,14 @@ export default function LibInfo() {
 
   if (error || isError) return redirect("404");
 
-  const { setChildren, close: closeForm } = useTempOverlay();
-
-  const Form = <NewPlaylistForm onclose={() => closeForm()} username={user.name} onSuccess={() => refetch()} />;
-
   return (
     <div className="flex flex-col w-full">
-      <Button
-        onClick={() => setChildren(Form)}
-        className="flex items-center justify-center gap-2 brightness-85"
-      >
+      {isPlaylistForm && (
+        <Modal className="modal-container" onClose={() => setIsPlaylistForm(false)}>
+          <PlaylistForm onClose={() => setIsPlaylistForm(false)} username={user.name} onSuccess={() => refetch()} />
+        </Modal>
+      )}
+      <Button onClick={() => setIsPlaylistForm(true)} className="flex items-center justify-center gap-2 brightness-85">
         <GoPlus className="size-7" /> New playlist
       </Button>
 
