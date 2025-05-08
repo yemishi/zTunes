@@ -1,3 +1,5 @@
+"use client";
+
 import { HTMLAttributes, MouseEvent, ReactNode, useEffect } from "react";
 import { createPortal } from "react-dom";
 
@@ -18,9 +20,7 @@ const Modal = ({ children, onClose, ...props }: Props) => {
   }, []);
   const handleBackdropClick = (e: MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
-    if (e.target === e.currentTarget) {
-      onClose();
-    }
+    if (e.target === e.currentTarget) onClose();
   };
 
   if (!modalRoot) return <div className="bg-red-500">Modal not found.</div>;

@@ -6,7 +6,7 @@ import SongSkeleton from "../skeletons/SongSkeleton";
 import AddSongToPlaylist from "@/app/playlist/[playlistId]/AddSongToPlaylist";
 import { useTempOverlay } from "@/context/Provider";
 import Button from "../ui/buttons/Button";
-import ErrorWrapper from "../ErrorWrapper";
+import ErrorWrapper from "../errorWrapper/ErrorWrapper";
 
 export default function SongsQueryOrganizer({
   queryKey, url, asOl, playlistId, username, isOwner
