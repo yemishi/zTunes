@@ -32,15 +32,15 @@ export default function SignUpForm() {
       minMessage: "This field must have at least 3 letters",
     },
     password: { value: "", min: 6, minMessage: "This field must have at least 6 characters" },
-    bDay: { value: "", min: 1, minMessage: "The day field must have be valid" },
-    bYear: { value: "" },
-    bMonth: { value: "" },
+    day: { value: "", min: 1, minMessage: "The day field must have be valid" },
+    year: { value: "" },
+    month: { value: "" },
   };
   type FieldValues = { [K in keyof typeof fields]: (typeof fields)[K]["value"] };
 
   const {
     onChange,
-    values: { bDay, bMonth, bYear, email, name, password },
+    values: { day, month, year, email, name, password },
     validateAll,
     validate,
     setError,
@@ -77,7 +77,7 @@ export default function SignUpForm() {
   };
   const validatePass = () => (!validate("password") ? null : setStep(2));
   const validatePersonalInfo = async () => {
-    const isDateValid = isValidDate(bDay, bMonth, bYear);
+    const isDateValid = isValidDate(day, month, year);
     if (!isDateValid) return setError("bDay", "The day field needs to be valid.");
 
     if (!validate("bDay") || !validate("bMonth") || !validate("bYear") || !validate("name")) return;
@@ -94,7 +94,7 @@ export default function SignUpForm() {
     const body = {
       username: name,
       password,
-      birthDate: `${bDay}/${bMonth}/${bYear}`,
+      birthDate: `${day}/${month}/${year}`,
       email,
     };
 
@@ -147,13 +147,13 @@ export default function SignUpForm() {
           nameValue={name}
           setValue={setValue}
           errors={errors}
-          birthDate={{ bDay, bMonth, bYear }}
+          birthDate={{ bDay: day, bMonth: month, bYear: year }}
         />
       </DivAnimated>
     ),
     3: (
       <DivAnimated key="confirm-info">
-        <SignUpSummary response={response} bDay={`${bDay}/${bMonth}/${bYear}`} email={email} name={name} />
+        <SignUpSummary response={response} bDay={`${day}/${month}/${year}`} email={email} name={name} />
       </DivAnimated>
     ),
   }[step];
