@@ -11,7 +11,7 @@ import ProfileHeader from "@/components/headers/ProfileHeader";
 
 import ExpandableText from "@/components/ui/custom/ExpandableText";
 import SongsOrganizer from "@/components/organizer/SongsOrganizer";
-import ErrorWrapper from "@/components/ErrorWrapper";
+import ErrorWrapper from "@/components/errorWrapper/ErrorWrapper";
 
 import ArtistAlbums from "./ArtistAlbums";
 
