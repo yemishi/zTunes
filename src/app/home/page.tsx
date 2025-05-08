@@ -2,7 +2,7 @@ import { authOptions } from "@/lib/auth";
 import { getServerSession } from "next-auth";
 import ArtistsOrganizer from "../../components/organizer/ProfileOrganizer";
 import BundleOrganizer from "../../components/organizer/BundleOrganizer";
-import ErrorWrapper from "@/components/ErrorWrapper";
+import ErrorWrapper from "@/components/errorWrapper/ErrorWrapper";
 
 const getPlaylists =
   (username: string): any =>
