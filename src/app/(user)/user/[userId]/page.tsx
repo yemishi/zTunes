@@ -1,4 +1,4 @@
-import ErrorWrapper from "@/components/ErrorWrapper";
+import ErrorWrapper from "@/components/errorWrapper/ErrorWrapper";
 import ProfileHeader from "@/components/headers/ProfileHeader";
 import BundleOrganizer from "@/components/organizer/BundleOrganizer";
 import ProfileOrganizer from "@/components/organizer/ProfileOrganizer";
@@ -7,23 +7,22 @@ import { getServerSession } from "next-auth";
 import { notFound } from "next/navigation";
 
 async function fetchData(userId: string, username: string) {
-  const userData = await fetch(
-    `${process.env.URL}/api/user?userId=${userId}&getFollows=true`
-  ).then((res) => res.json());
+  const userData = await fetch(`${process.env.URL}/api/user?userId=${userId}&getFollows=true`).then((res) =>
+    res.json()
+  );
   if (userData.error) {
-    if (userData.status === 404) return notFound()
+    if (userData.status === 404) return notFound();
     throw new Error(userData.message);
   }
 
-  const followersInfo = await fetch(
-    `${process.env.URL}/api/followers?username=${username}&artistId=${userId}`
-  ).then((res) => res.json());
+  const followersInfo = await fetch(`${process.env.URL}/api/followers?username=${username}&artistId=${userId}`).then(
+    (res) => res.json()
+  );
 
   const { followers, userInfo, following, hasMore: hasMoreFollows } = userData;
-  const playlistData =
-    await fetch(
-      `${process.env.URL}/api/playlist?username=${username}&authorName=${userInfo.name}&limit=5`
-    ).then((res) => res.json());
+  const playlistData = await fetch(
+    `${process.env.URL}/api/playlist?username=${username}&authorName=${userInfo.name}&limit=5`
+  ).then((res) => res.json());
 
   return {
     followers,
@@ -35,32 +34,27 @@ async function fetchData(userId: string, username: string) {
   };
 }
 
-export default async function UserPage(
-  props0: {
-    params: Promise<{ userId: string }>;
-  }
-) {
+export default async function UserPage(props0: { params: Promise<{ userId: string }> }) {
   const params = await props0.params;
 
-  const {
-    userId
-  } = params;
+  const { userId } = params;
 
   const session = await getServerSession(authOptions);
   const username = session?.user.name as string;
 
-  const { followers, following, followersInfo, userInfo, playlistData, hasMoreFollows } =
-    await fetchData(userId, username);
+  const { followers, following, followersInfo, userInfo, playlistData, hasMoreFollows } = await fetchData(
+    userId,
+    username
+  );
 
   const { hasMore, playlists } = playlistData;
-
 
   const profileInfo = {
     profileName: userInfo.name,
     profileId: userInfo.id,
     cover: userInfo.avatar,
   };
-  console.log(followersInfo)
+
   return (
     <div className="flex flex-col gap-4 pb-32 md:ml-64 lg:ml-72 2xl:ml-80 min-[2000px]:ml-96">
       <ProfileHeader
