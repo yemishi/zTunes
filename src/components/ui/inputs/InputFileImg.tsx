@@ -8,17 +8,10 @@ interface InputProps extends React.HTMLAttributes<HTMLInputElement> {
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-export default function InputFileImg({
-  error,
-  demoPhoto,
-  isLoading,
-  onChange,
-  ...props
-}: InputProps) {
+export default function InputFileImg({ error, demoPhoto, isLoading, onChange, ...props }: InputProps) {
   const { className, onMouseEnter, onMouseLeave, ...rest } = props;
 
-  const defaultSize =
-    className?.includes("h-") || className?.includes("size") ? "" : "h-52";
+  const defaultSize = className?.includes("h-") || className?.includes("size") ? "" : "h-52";
   const defaultRadius = className?.includes("rounded") ? "" : "rounded-lg";
   return (
     <div
@@ -38,8 +31,7 @@ export default function InputFileImg({
         iconType="cam"
         onChange={(e) => {
           if (!e.target) return;
-          if (!e.target.files || !e.target.files[0].type.startsWith("image/"))
-            return toast.error("Invalid image type");
+          if (!e.target.files || !e.target.files[0].type.startsWith("image/")) return toast.error("Invalid image type");
           onChange ? onChange(e) : null;
         }}
         {...rest}
