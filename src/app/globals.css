@@ -60,6 +60,9 @@ input:-webkit-autofill:active {
 .spinner {
   @apply self-center size-7 rounded-full relative border-2 border-black-300 border-t-orange-500 animate-spin;
 }
+.modal-container {
+  @apply w-screen h-screen overflow-x-hidden overflow-y-clip max-w-3xl md:h-[900px] md:rounded-lg mx-auto my-auto bg-gray-300 p-4;
+}
 
 input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
