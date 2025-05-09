@@ -1,6 +1,6 @@
 import Skeleton from "react-loading-skeleton";
 import CardSkeleton from "../card/CardSkeleton";
-import Slider from "../../Slider/Slider";
+import Slider from "../../slider/Slider";
 
 export default function BundleStackSkeleton({ count }: { count?: number }) {
   return (
