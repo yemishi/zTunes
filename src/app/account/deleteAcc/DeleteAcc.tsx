@@ -1,7 +1,7 @@
 "use client";
 
-import Button from "@/components/ui/buttons/Button";
-import Input from "@/components/ui/inputs/Input";
+import Button from "@/ui/buttons/Button";
+import Input from "@/ui/inputs/Input";
 import { useTempOverlay } from "@/context/Provider";
 import useObject from "@/hooks/useObject";
 
@@ -15,20 +15,11 @@ export default function DeleteAcc({ userId }: { userId: string }) {
   const { close, setChildren } = useTempOverlay();
   const Form = <Component close={close} userId={userId} />;
   return (
-    <RiDeleteBin6Line
-      onClick={() => setChildren(Form)}
-      className="size-7 absolute top-4 right-4 cursor-pointer"
-    />
+    <RiDeleteBin6Line onClick={() => setChildren(Form)} className="size-7 absolute top-4 right-4 cursor-pointer" />
   );
 }
 
-const Component = ({
-  close,
-  userId,
-}: {
-  close: () => void;
-  userId: string;
-}) => {
+const Component = ({ close, userId }: { close: () => void; userId: string }) => {
   const {
     state: { isLoading, password },
     updateObject,
@@ -44,25 +35,17 @@ const Component = ({
       method: "DELETE",
       body: JSON.stringify({ userId, password }),
     }).then((res) => res.json());
-    if (response.error)
-      return updateObject("isLoading", false), toast.error(response.message);
+    if (response.error) return updateObject("isLoading", false), toast.error(response.message);
     toast.success(response.message), push("sign-up");
     signOut();
     return refresh();
   };
 
   return (
-    <form
-      onSubmit={onSubmit}
-      className="p-4 flex flex-col bg-neutralDark-700 gap-4 items-center"
-    >
+    <form onSubmit={onSubmit} className="p-4 flex flex-col bg-neutralDark-700 gap-4 items-center">
       <div className="flex flex-col font-kanit px-5 text-center">
-        <span className="text-2xl">
-          Are you sure you want to delete your account?
-        </span>
-        <span className="text-orange-300">
-          We will not be able to recover your information
-        </span>
+        <span className="text-2xl">Are you sure you want to delete your account?</span>
+        <span className="text-orange-300">We will not be able to recover your information</span>
       </div>
       <Input
         isPassword
@@ -74,12 +57,7 @@ const Component = ({
       />
 
       <span className="flex gap-3">
-        <Button
-          disabled={isLoading}
-          type="button"
-          onClick={close}
-          className="bg-white text-black"
-        >
+        <Button disabled={isLoading} type="button" onClick={close} className="bg-white text-black">
           Cancel
         </Button>
         <Button disabled={isLoading} type="submit">

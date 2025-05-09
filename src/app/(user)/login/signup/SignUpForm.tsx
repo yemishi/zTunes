@@ -7,12 +7,12 @@ const SignUpUserInfo = lazy(() => import("./signUpUserInfo/SignUpUserInfo"));
 const SignUpSummary = lazy(() => import("./signUpSummary/SignUpSummary"));
 
 import { ErrorType } from "@/types/response";
-import Button from "@/components/ui/buttons/Button";
+import Button from "@/ui/buttons/Button";
 import { isValidDate } from "@/utils/helpers";
 import useForm from "@/hooks/useForm";
-import DivAnimated from "@/components/ui/custom/DivAnimated";
-import Input from "@/components/ui/inputs/Input";
-import ProgressStep from "@/components/ui/custom/ProgressStep";
+import DivAnimated from "@/ui/custom/DivAnimated";
+import Input from "@/ui/inputs/Input";
+import ProgressStep from "@/ui/custom/ProgressStep";
 
 export default function SignUpForm() {
   const [step, setStep] = useState(0);
@@ -147,7 +147,7 @@ export default function SignUpForm() {
           nameValue={name}
           setValue={setValue}
           errors={errors}
-          birthDate={{ bDay: day, bMonth: month, bYear: year }}
+          birthDate={{ day, month, year }}
         />
       </DivAnimated>
     ),

@@ -16,11 +16,11 @@ import { formatDuration } from "@/utils/formatting";
 
 import SongOptions from "../../songOptions/songOptions";
 import AddToPlaylist from "../../songOptions/addToPlaylist";
-import Image from "../../ui/custom/Image";
-import ProgressBar from "../../ui/inputs/ProgressBar";
-import ToggleLike from "../../ui/buttons/ToggleLike";
+import Image from "@/ui/custom/Image";
+import ProgressBar from "@/ui/inputs/ProgressBar";
+import ToggleLike from "@/ui/buttons/ToggleLike";
 import { useTempOverlay } from "@/context/Provider";
-import VolumeInput from "@/components/ui/inputs/VolumeInput";
+import VolumeInput from "@/ui/inputs/VolumeInput";
 
 type PropsType = {
   song: SongType;
@@ -86,8 +86,7 @@ export default function PlayerDetails({
           exit={{ y: "100%" }}
           transition={{ duration: 0.2 }}
           style={{
-            background: `linear-gradient(to bottom,${vibrantColor || "rgb(33 33 33)"
-              } 0% ,#121212 100%)`,
+            background: `linear-gradient(to bottom,${vibrantColor || "rgb(33 33 33)"} 0% ,#121212 100%)`,
           }}
           className={`fixed overflow-auto top-0 left-0 w-full h-full z-40 p-3 gap-3 font-kanit flex flex-col`}
         >
@@ -97,10 +96,7 @@ export default function PlayerDetails({
             </button>
             <span className="text-lg flex-1 text-center">{albumName}</span>
 
-            <button
-              onClick={() => setChildren(Options)}
-              className="size-12 p-2"
-            >
+            <button onClick={() => setChildren(Options)} className="size-12 p-2">
               <TbDots className="h-full w-full" />
             </button>
           </div>
@@ -127,12 +123,8 @@ export default function PlayerDetails({
               <ProgressBar
                 value={currentTime}
                 onChange={handleProgress}
-                onMouseUp={() =>
-                  audioRef.current ? (audioRef.current.muted = false) : null
-                }
-                onMouseDown={() =>
-                  audioRef.current ? (audioRef.current.muted = true) : null
-                }
+                onMouseUp={() => (audioRef.current ? (audioRef.current.muted = false) : null)}
+                onMouseDown={() => (audioRef.current ? (audioRef.current.muted = true) : null)}
                 max={duration || 0}
                 currentProgress={currentTime / Number(duration)}
               />
@@ -149,11 +141,7 @@ export default function PlayerDetails({
               </button>
 
               <button onClick={togglePlayer}>
-                {isPlaying ? (
-                  <PiPauseCircleFill className="size-14" />
-                ) : (
-                  <MdPlayCircleFilled className="size-14" />
-                )}
+                {isPlaying ? <PiPauseCircleFill className="size-14" /> : <MdPlayCircleFilled className="size-14" />}
               </button>
 
               <button onClick={next}>

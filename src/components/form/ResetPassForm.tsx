@@ -1,10 +1,10 @@
 "use client";
 
-import Button from "../ui/buttons/Button";
-import Input from "../ui/inputs/Input";
+import Button from "@/ui/buttons/Button";
+import Input from "../../ui/inputs/Input";
 import { ChangeEvent, useState } from "react";
 import { AnimatePresence } from "framer-motion";
-import DivAnimated from "../ui/custom/DivAnimated";
+import DivAnimated from "@/ui/custom/DivAnimated";
 import Link from "next/link";
 import useForm from "@/hooks/useForm";
 

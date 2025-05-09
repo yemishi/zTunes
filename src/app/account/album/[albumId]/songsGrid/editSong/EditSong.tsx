@@ -9,8 +9,8 @@ import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { deleteSong } from "@/firebase/handleSong";
 
-import Button from "@/components/ui/buttons/Button";
-import Input from "@/components/ui/inputs/Input";
+import Button from "@/ui/buttons/Button";
+import Input from "@/ui/inputs/Input";
 import useObject from "@/hooks/useObject";
 import { PopConfirm } from "@/components";
 

@@ -3,8 +3,8 @@
 import { usePlayerContext } from "@/context/Provider";
 import { SongType } from "@/types/response";
 import EditSong from "./editSong/EditSong";
-import Input from "@/components/ui/inputs/Input";
-import Button from "@/components/ui/buttons/Button";
+import Input from "@/ui/inputs/Input";
+import Button from "@/ui/buttons/Button";
 import { useState } from "react";
 import CreateSong from "./createSong/CreateSong";
 import useScrollQuery from "@/hooks/useScrollQuery";

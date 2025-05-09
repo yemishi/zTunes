@@ -1,8 +1,8 @@
 "use client";
 
 import { lazy, useEffect, useState } from "react";
-import Image from "../ui/custom/Image";
-import Button from "../ui/buttons/Button";
+import Image from "@/ui/custom/Image";
+import Button from "@/ui/buttons/Button";
 import { Playlist } from "@prisma/client";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
@@ -84,10 +84,7 @@ export default function AddToPlaylist({
   return (
     <div className="h-full w-full font-kanit bg-black bg-opacity-85 p-4 pt-20 md:pt-3 flex flex-col md:max-w-[550px] md:max-h-[800px] md:rounded-lg">
       <div className="flex flex-col gap-5 mb-7 self-center items-center">
-        <Image
-          src={userAvatar as string}
-          className="size-28 md:size-40 rounded-lg"
-        />
+        <Image src={userAvatar as string} className="size-28 md:size-40 rounded-lg" />
         <span className="flex flex-col">
           <span className="text-2xl first-letter:uppercase">{username}</span>
         </span>
@@ -115,27 +112,16 @@ export default function AddToPlaylist({
                 <Image src={coverPhoto} className="size-14 md:size-20" />
                 <div className="flex flex-col  md:text-lg py-1">
                   <span>{title}</span>
-                  <span className="text-white opacity-60">
-                    {songs.length} songs
-                  </span>
+                  <span className="text-white opacity-60">{songs.length} songs</span>
                 </div>
               </div>
             );
           })}
       </div>
-      <Button
-        onClick={onclose}
-        className="mt-auto mb-14 md:self-center md:mb-2 md:text-lg"
-      >
+      <Button onClick={onclose} className="mt-auto mb-14 md:self-center md:mb-2 md:text-lg">
         Close
       </Button>
-      {forcePush && (
-        <ForceAddToPlaylist
-          goBack={() => setForcePush(null)}
-          onclose={onclose}
-          forcePush={forcePush}
-        />
-      )}
+      {forcePush && <ForceAddToPlaylist goBack={() => setForcePush(null)} onclose={onclose} forcePush={forcePush} />}
     </div>
   );
 }

@@ -2,7 +2,7 @@
 import { GrUserAdmin } from "react-icons/gr";
 
 import { useTempOverlay } from "@/context/Provider";
-import Button from "@/components/ui/buttons/Button";
+import Button from "@/ui/buttons/Button";
 import { ErrorType } from "@/types/response";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";

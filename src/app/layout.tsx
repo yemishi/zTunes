@@ -10,7 +10,7 @@ import { SkeletonTheme } from "react-loading-skeleton";
 import "react-toastify/dist/ReactToastify.css";
 import "react-loading-skeleton/dist/skeleton.css";
 import Sidebar from "@/components/sidebar/Sidebar";
-import TempOverlay from "@/components/ui/TempOverlay";
+import TempOverlay from "@/ui/TempOverlay";
 import { Session } from "next-auth";
 
 const nunito = Nunito({ subsets: ["latin"] });

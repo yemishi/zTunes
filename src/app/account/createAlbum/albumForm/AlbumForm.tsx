@@ -1,8 +1,8 @@
 import uploadImg, { deleteImage } from "@/firebase/handleImage";
-import InputFileImg from "../../../../components/ui/inputs/InputFileImg";
-import Input from "../../../../components/ui/inputs/Input";
-import DateFields from "../../../../components/ui/inputs/DateFields";
-import Button from "../../../../components/ui/buttons/Button";
+import InputFileImg from "../../../../ui/inputs/InputFileImg";
+import Input from "../../../../ui/inputs/Input";
+import DateFields from "../../../../ui/inputs/DateFields";
+import Button from "@/ui/buttons/Button";
 
 import { isValidDate } from "@/utils/helpers";
 import { ErrorType } from "@/types/response";

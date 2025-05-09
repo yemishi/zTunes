@@ -1,19 +1,13 @@
-"use client";;
+"use client";
 import { use } from "react";
 
 import SongsQueryOrganizer from "@/components/organizer/SongsQueryOrganizer";
-import PreviousPage from "@/components/ui/buttons/PreviousPage";
+import PreviousPage from "@/ui/buttons/PreviousPage";
 
-export default function Musics(
-  props: {
-    params: Promise<{ artistId: string }>;
-  }
-) {
+export default function Musics(props: { params: Promise<{ artistId: string }> }) {
   const params = use(props.params);
 
-  const {
-    artistId
-  } = params;
+  const { artistId } = params;
 
   return (
     <div className="flex flex-col gap-3 pb-32 md:pb-20 lg:ml-72 2xl:ml-80 min-[2000px]:ml-96">
@@ -22,10 +16,7 @@ export default function Musics(
         <h1 className="font-kanit text-2xl ml-4">Musics</h1>
       </div>
       <div className="p-2 flex flex-col ">
-        <SongsQueryOrganizer
-          queryKey={["Songs", artistId]}
-          url={`/api/song?artistId=${artistId}`}
-        />
+        <SongsQueryOrganizer queryKey={["Songs", artistId]} url={`/api/song?artistId=${artistId}`} />
       </div>
     </div>
   );

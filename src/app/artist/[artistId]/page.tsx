@@ -6,10 +6,10 @@ import { notFound } from "next/navigation";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 
-import Button from "@/components/ui/buttons/Button";
+import Button from "@/ui/buttons/Button";
 import ProfileHeader from "@/components/headers/ProfileHeader";
 
-import ExpandableText from "@/components/ui/custom/ExpandableText";
+import ExpandableText from "@/ui/custom/ExpandableText";
 import SongsOrganizer from "@/components/organizer/SongsOrganizer";
 import ErrorWrapper from "@/components/errorWrapper/ErrorWrapper";
 

@@ -3,37 +3,20 @@
 import { HTMLAttributes, useEffect, useState } from "react";
 import { formatDuration } from "@/utils/formatting";
 
-import Image from "../ui/custom/Image";
+import Image from "@/ui/custom/Image";
 import Link from "next/link";
 
-import PreviousPage from "../ui/buttons/PreviousPage";
-import InputText from "../ui/inputs/InputText";
-import EditableImage from "../ui/custom/EditableImage";
-import EditPlaylist from "../ui/buttons/EditPlaylist";
-import ExpandableText from "../ui/custom/ExpandableText";
+import PreviousPage from "@/ui/buttons/PreviousPage";
+import InputText from "../../ui/inputs/InputText";
+import EditableImage from "@/ui/custom/EditableImage";
+import EditPlaylist from "@/ui/buttons/EditPlaylist";
+import ExpandableText from "@/ui/custom/ExpandableText";
 import { getSongDuration } from "@/utils/helpers";
 import getVibrantColor from "@/utils/getVibrantColor";
 
-export default function GenericHeader({
-  info,
-  playlistId,
-  updateUrl,
-  username,
-  ...props
-}: DivProps) {
-  const {
-    author,
-    avatar,
-    title,
-    isOwner,
-    coverPhoto,
-    desc,
-    releasedDate,
-    isPublic,
-    authorId,
-    isUser,
-    urlsSongs,
-  } = info;
+export default function GenericHeader({ info, playlistId, updateUrl, username, ...props }: DivProps) {
+  const { author, avatar, title, isOwner, coverPhoto, desc, releasedDate, isPublic, authorId, isUser, urlsSongs } =
+    info;
 
   const { className, ...rest } = props;
   const [duration, setDuration] = useState<string>();
@@ -43,15 +26,12 @@ export default function GenericHeader({
   useEffect(() => {
     Promise.all(durationPromises)
       .then((durations) => {
-        const totalInSeconds = durations.reduce(
-          (pre, curr) => Number(pre) + Number(curr),
-          0
-        ) as number;
+        const totalInSeconds = durations.reduce((pre, curr) => Number(pre) + Number(curr), 0) as number;
         const formattedDuration = formatDuration(totalInSeconds);
         setDuration(formattedDuration);
       })
       .catch(() => setDuration("0s"));
-    getVibrantColor(coverPhoto).then((res) => setVibrantColor(res))
+    getVibrantColor(coverPhoto).then((res) => setVibrantColor(res));
   }, []);
 
   return (
@@ -60,8 +40,9 @@ export default function GenericHeader({
       style={{
         background: `linear-gradient(to bottom,${vibrantColor} 10%,transparent 100%)`,
       }}
-      className={`${className ? className : ""
-        } flex flex-col gap-2 h-full items-center w-full p-4 pt-0 pb-10 md:min-h-[350px] md:items-start`}
+      className={`${
+        className ? className : ""
+      } flex flex-col gap-2 h-full items-center w-full p-4 pt-0 pb-10 md:min-h-[350px] md:items-start`}
     >
       <span className="flex items-center py-4 justify-between w-full">
         <PreviousPage className="p-0" />
@@ -95,31 +76,17 @@ export default function GenericHeader({
               changeable={isOwner}
               patchUrl={updateUrl || "/api/playlist"}
             />
-            {releasedDate && (
-              <span className="font-light text-orange-300 md:hidden font-kanit">
-                {releasedDate}
-              </span>
-            )}
+            {releasedDate && <span className="font-light text-orange-300 md:hidden font-kanit">{releasedDate}</span>}
           </span>
 
           <span className="flex flex-col gap-1 md:flex-row  md:items-center md:gap-2 font-kanit text-sm md:text-base ">
-            <Link
-              href={`${`${isUser ? "/user" : "/artist"}`}/${authorId}`}
-              className="flex items-center gap-2 "
-            >
+            <Link href={`${`${isUser ? "/user" : "/artist"}`}/${authorId}`} className="flex items-center gap-2 ">
               <span>
-                <Image
-                  src={avatar}
-                  className="size-7 md:size-10 rounded-full"
-                />
+                <Image src={avatar} className="size-7 md:size-10 rounded-full" />
               </span>
-              <p className="first-letter:uppercase md:font-semibold">
-                {author}
-              </p>
+              <p className="first-letter:uppercase md:font-semibold">{author}</p>
             </Link>
-            <span className="hidden md:block">
-              • {releasedDate?.split("/")[2]} •
-            </span>
+            <span className="hidden md:block">• {releasedDate?.split("/")[2]} •</span>
             <div className="flex gap-1 text-opacity-70 text-white md:text-opacity-100">
               <span>{duration}</span>•<span>{urlsSongs.length} songs</span>
             </div>
@@ -133,7 +100,7 @@ export default function GenericHeader({
 }
 
 interface DivProps extends HTMLAttributes<HTMLDivElement> {
-  info: InfoType
+  info: InfoType;
   username?: string;
   playlistId?: string;
   updateUrl?: string;

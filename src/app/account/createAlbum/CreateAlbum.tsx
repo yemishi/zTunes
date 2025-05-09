@@ -1,7 +1,7 @@
 import AlbumForm from "@/app/account/createAlbum/albumForm/AlbumForm";
-import DivAnimated from "@/components/ui/custom/DivAnimated";
-import Button from "@/components/ui/buttons/Button";
-import Input from "@/components/ui/inputs/Input";
+import DivAnimated from "@/ui/custom/DivAnimated";
+import Button from "@/ui/buttons/Button";
+import Input from "@/ui/inputs/Input";
 
 import { useState } from "react";
 import { Modal } from "@/components";

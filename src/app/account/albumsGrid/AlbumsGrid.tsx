@@ -5,11 +5,11 @@ import { CardAcc } from "../cardAcc/CardAcc";
 import { useState } from "react";
 import { AnimatePresence } from "framer-motion";
 
-import Image from "@/components/ui/custom/Image";
-import Button from "@/components/ui/buttons/Button";
+import Image from "@/ui/custom/Image";
+import Button from "@/ui/buttons/Button";
 import Link from "next/link";
 import CreateAlbum from "../createAlbum/CreateAlbum";
-import DivAnimated from "@/components/ui/custom/DivAnimated";
+import DivAnimated from "@/ui/custom/DivAnimated";
 
 export default function AlbumsGrid({ props, artistId }: { props: BundleType[]; artistId: string }) {
   const [show, setShow] = useState(true);

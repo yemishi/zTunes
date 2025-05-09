@@ -1,7 +1,7 @@
-import Button from "@/components/ui/buttons/Button";
-import AddCategories from "@/components/ui/inputs/AddCategories";
-import Input from "@/components/ui/inputs/Input";
-import InputFile from "@/components/ui/inputs/InputFile";
+import Button from "@/ui/buttons/Button";
+import AddCategories from "@/ui/inputs/AddCategories";
+import Input from "@/ui/inputs/Input";
+import InputFile from "@/ui/inputs/InputFile";
 import uploadSong, { deleteSong } from "@/firebase/handleSong";
 
 import { ErrorType } from "@/types/response";

@@ -1,12 +1,12 @@
 "use client";
 
 import { useSession } from "next-auth/react";
-import Button from "../ui/buttons/Button";
+import Button from "@/ui//buttons/Button";
 import Link from "next/link";
 import useScrollQuery from "@/hooks/useScrollQuery";
 import { PlaylistType } from "@/types/response";
 import { GoPlus } from "react-icons/go";
-import Image from "../ui/custom/Image";
+import Image from "@/ui//custom/Image";
 
 import { redirect } from "next/navigation";
 import { Modal, PlaylistForm } from "@/components";

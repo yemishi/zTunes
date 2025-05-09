@@ -1,7 +1,7 @@
 import { useSession } from "next-auth/react";
 import Link from "next/link";
-import Image from "../ui/custom/Image";
-import Logout from "../ui/buttons/Logout";
+import Image from "@/ui/custom/Image";
+import Logout from "@/ui/buttons/Logout";
 
 export default function SessionPanel() {
   const { data: session } = useSession();
@@ -13,14 +13,8 @@ export default function SessionPanel() {
         href="/account"
         className="flex gap-2 items-center p-2 rounded-r-lg rounded-l-3xl font-bold hover:bg-black-450 duration-150 active:bg-black"
       >
-        <Image
-          src={user.picture}
-          alt="User avatar"
-          className="size-12 rounded-3xl"
-        />
-        <span className="line-clamp-1 mt-auto mb-2">
-          {user.name.charAt(0).toUpperCase() + user.name.slice(1)}
-        </span>
+        <Image src={user.picture} alt="User avatar" className="size-12 rounded-3xl" />
+        <span className="line-clamp-1 mt-auto mb-2">{user.name.charAt(0).toUpperCase() + user.name.slice(1)}</span>
       </Link>
       <Logout
         animateLess

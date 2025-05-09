@@ -5,7 +5,7 @@ import { lazy, useState } from "react";
 import { AnimatePresence } from "framer-motion";
 
 import RecoverPassword from "./recoverPassword/RecoverPassword";
-import DivAnimated from "@/components/ui/custom/DivAnimated";
+import DivAnimated from "@/ui/custom/DivAnimated";
 import SignInForm from "./signin/SignInForm";
 const SignUpForm = lazy(() => import("./signup/SignUpForm"));
 

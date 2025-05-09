@@ -1,4 +1,4 @@
-import Button from "@/components/ui/buttons/Button";
+import Button from "@/ui/buttons/Button";
 import Modal from "../modal/Modal";
 
 type PropsType = {

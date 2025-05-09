@@ -1,14 +1,14 @@
-import Input from "../../../../../components/ui/inputs/Input";
+import Input from "../../../../../ui/inputs/Input";
 import { IoAlertCircleOutline } from "react-icons/io5";
-import DateFields from "../../../../../components/ui/inputs/DateFields";
+import DateFields from "../../../../../ui/inputs/DateFields";
 import { ChangeEventHandler } from "react";
 
 interface Props {
   setValue: (fieldName: string, value: string) => void;
   birthDate: {
-    bDay: string;
-    bMonth: string;
-    bYear: string;
+    day: string;
+    month: string;
+    year: string;
   };
   nameOnChange: ChangeEventHandler<HTMLInputElement>;
   nameValue?: string;

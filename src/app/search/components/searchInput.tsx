@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import PreviousPage from "../../../components/ui/buttons/PreviousPage";
+import PreviousPage from "@/ui/buttons/PreviousPage";
 
 export default function SearchInput() {
   const { push } = useRouter();

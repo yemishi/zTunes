@@ -1,20 +1,20 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import Button from "../ui/buttons/Button";
+import Button from "@/ui/buttons/Button";
 import { useRouter } from "next/navigation";
 
 import clsx from "clsx";
-import PreviousPage from "../ui/buttons/PreviousPage";
-import EditableImage from "../ui/custom/EditableImage";
-import InputText from "../ui/inputs/InputText";
+import PreviousPage from "@/ui/buttons/PreviousPage";
+import EditableImage from "@/ui/custom/EditableImage";
+import InputText from "../../ui/inputs/InputText";
 
 import { useSession } from "next-auth/react";
 import { isAvailable, updateUser } from "@/utils/helpers";
 import { toast } from "react-toastify";
 import checkDev from "@/utils/isMobile";
 import { FaHeart } from "react-icons/fa6";
-import ExpandableText from "../ui/custom/ExpandableText";
+import ExpandableText from "@/ui/custom/ExpandableText";
 import getVibrantColor from "@/utils/getVibrantColor";
 
 type ProfileInfo = {

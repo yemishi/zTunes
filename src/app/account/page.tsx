@@ -7,7 +7,7 @@ import ProfileHeader from "../../components/headers/ProfileHeader";
 import AlbumsGrid from "./albumsGrid/AlbumsGrid";
 import DeleteAcc from "./deleteAcc/DeleteAcc";
 import UpgradeToArtist from "./upgradeToArtist/UpgradeToArtist";
-import Logout from "../../components/ui/buttons/Logout";
+import Logout from "@/ui/buttons/Logout";
 import UpgradeToAdmin from "./upgradeToAdmin/UpgradeToAdmin";
 import { ErrorWrapper } from "@/components";
 

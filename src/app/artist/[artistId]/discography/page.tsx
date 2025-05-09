@@ -1,32 +1,23 @@
 import SongsQueryOrganizer from "@/components/organizer/SongsQueryOrganizer";
-import Image from "@/components/ui/custom/Image";
+import Image from "@/ui/custom/Image";
 
 import { BundleType } from "@/types/response";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
 async function fetchData(artistId: string) {
-  const albums = await fetch(
-    `${process.env.URL}/api/album?artistId=${artistId}`
-  ).then((res) => res.json());
+  const albums = await fetch(`${process.env.URL}/api/album?artistId=${artistId}`).then((res) => res.json());
   if (albums.error) {
-    if (albums.status === 404) return notFound()
+    if (albums.status === 404) return notFound();
     throw new Error(albums.message);
-
   }
   return albums as BundleType[];
 }
 
-export default async function Discography(
-  props: {
-    params: Promise<{ artistId: string }>;
-  }
-) {
+export default async function Discography(props: { params: Promise<{ artistId: string }> }) {
   const params = await props.params;
 
-  const {
-    artistId
-  } = params;
+  const { artistId } = params;
 
   const albums = await fetchData(artistId);
 
@@ -40,31 +31,24 @@ export default async function Discography(
       </Link>
 
       <div className="flex flex-col gap-5 ">
-        {albums.map(
-          ({ title, type, releasedDate, coverPhoto, id, urlsSongs }, index) => {
-            return (
-              <div key={`${id}_${index}`} className="flex flex-col">
-                <div className="w-full flex gap-2 p-4">
-                  <Image src={coverPhoto} className="size-32 rounded md:size-52" />
-                  <div className="flex flex-col gap-2 font-kanit">
-                    <span className="text-2xl md:text-4xl">{title}</span>
+        {albums.map(({ title, type, releasedDate, coverPhoto, id, urlsSongs }, index) => {
+          return (
+            <div key={`${id}_${index}`} className="flex flex-col">
+              <div className="w-full flex gap-2 p-4">
+                <Image src={coverPhoto} className="size-32 rounded md:size-52" />
+                <div className="flex flex-col gap-2 font-kanit">
+                  <span className="text-2xl md:text-4xl">{title}</span>
 
-                    <div className="flex gap-1 text-gray-300 font-light md:text-xl">
-                      <span className="first-letter:uppercase">{type}</span>•
-                      <span>{releasedDate?.split("/")[2]}</span>•
-                      <span>{urlsSongs?.length} songs</span>
-                    </div>
+                  <div className="flex gap-1 text-gray-300 font-light md:text-xl">
+                    <span className="first-letter:uppercase">{type}</span>•<span>{releasedDate?.split("/")[2]}</span>•
+                    <span>{urlsSongs?.length} songs</span>
                   </div>
                 </div>
-                <SongsQueryOrganizer
-                  asOl
-                  queryKey={["Songs", title]}
-                  url={`/api/song?albumId=${id}`}
-                />
               </div>
-            );
-          }
-        )}
+              <SongsQueryOrganizer asOl queryKey={["Songs", title]} url={`/api/song?albumId=${id}`} />
+            </div>
+          );
+        })}
       </div>
     </div>
   );

@@ -1,11 +1,5 @@
 "use client";
-import React, {
-  useRef,
-  useState,
-  useEffect,
-  useCallback,
-  useMemo,
-} from "react";
+import React, { useRef, useState, useEffect, useCallback, useMemo } from "react";
 import { DivMotionProps } from "@/types/uiTypes";
 import { motion } from "framer-motion";
 import isMobile from "@/utils/isMobile";
@@ -59,14 +53,11 @@ export default function Slider({
   };
 
   const updateSliderPerView = useCallback(() => {
-    const foundSize = Object.entries(customBreakPoints || breakPoints).find(
-      ([point, obj]) => {
-        const { sliderPerView } = obj;
-        return checkMediaQuery(point) && sliderPerView;
-      }
-    );
-    if (foundSize && isDisableDrag)
-      setSliderPerView(foundSize[1].sliderPerView);
+    const foundSize = Object.entries(customBreakPoints || breakPoints).find(([point, obj]) => {
+      const { sliderPerView } = obj;
+      return checkMediaQuery(point) && sliderPerView;
+    });
+    if (foundSize && isDisableDrag) setSliderPerView(foundSize[1].sliderPerView);
     else setSliderPerView(false);
   }, [customBreakPoints, isDisableDrag]);
 
@@ -99,8 +90,7 @@ export default function Slider({
     };
   }, [calcRange, updateSliderPerView]);
   const isDrag =
-    (Number(slidesRef.current?.clientWidth) + 16 || 0) >
-      (sliderRef.current?.clientWidth || 0) && !isDisableDrag;
+    (Number(slidesRef.current?.clientWidth) + 16 || 0) > (sliderRef.current?.clientWidth || 0) && !isDisableDrag;
 
   return (
     <div ref={sliderRef} className={!isDrag ? "w-full" : "w-screen"}>
@@ -113,15 +103,10 @@ export default function Slider({
         }}
         dragElastic={0.2}
         dragTransition={{ bounceDamping: 18 }}
-        className={` ${className ? className : ""} ${
-          isDisableDrag ? "w-full" : "w-max"
-        } flex flex-row gap-4`}
+        className={` ${className ? className : ""} ${isDisableDrag ? "w-full" : "w-max"} flex flex-row gap-4`}
         {...rest}
       >
-        {React.Children.toArray(children).slice(
-          0,
-          sliderPerView || children.length
-        )}
+        {React.Children.toArray(children).slice(0, sliderPerView || children.length)}
       </motion.div>
     </div>
   );

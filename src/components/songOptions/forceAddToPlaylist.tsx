@@ -1,5 +1,5 @@
 import { toast } from "react-toastify";
-import Button from "../ui/buttons/Button";
+import Button from "@/ui/buttons/Button";
 import { motion } from "framer-motion";
 
 type PropsType = {
@@ -12,11 +12,7 @@ type PropsType = {
   goBack: () => void;
 };
 
-export default function ForceAddToPlaylist({
-  forcePush,
-  onclose,
-  goBack,
-}: PropsType) {
+export default function ForceAddToPlaylist({ forcePush, onclose, goBack }: PropsType) {
   const { playlistId, songSelected, username } = forcePush;
 
   const fetchData = async () => {
@@ -37,9 +33,7 @@ export default function ForceAddToPlaylist({
         animate={{ y: 0 }}
         className="flex flex-col bg-black-450 p-4 md:p-9 md:border md:rounded-lg max-w-[650px] self-center text-center gap-6"
       >
-        <p className="text-xl font-medium md:px-11 md:text-2xl text-white">
-          This playlist already have this song
-        </p>
+        <p className="text-xl font-medium md:px-11 md:text-2xl text-white">This playlist already have this song</p>
         <div className="gap-3 grid grid-cols-2">
           <Button className="bg-white" onClick={fetchData}>
             Add anyway

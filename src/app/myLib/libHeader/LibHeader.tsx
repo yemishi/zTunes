@@ -1,7 +1,7 @@
 "use client";
 
 import { useSession } from "next-auth/react";
-import Image from "@/components/ui/custom/Image";
+import Image from "@/ui/custom/Image";
 import { FaPlus } from "react-icons/fa6";
 import { useState } from "react";
 import { Modal, PlaylistForm } from "@/components";
