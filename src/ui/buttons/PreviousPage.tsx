@@ -1,24 +1,23 @@
 "use client";
+import { cleanClasses } from "@/utils/helpers";
 import { useRouter } from "next/navigation";
 import { memo } from "react";
 import { IoArrowBackOutline } from "react-icons/io5";
 
-interface DivProps extends React.HTMLAttributes<HTMLDivElement> { }
+interface DivProps extends React.HTMLAttributes<HTMLDivElement> {
+  isLightBg?: boolean;
+}
 
 const hasPrevious = typeof window !== "undefined" && window.history?.length;
 
-function PreviousPage({ className, ...props }: DivProps) {
+function PreviousPage({ className = "", isLightBg, ...props }: DivProps) {
   const { back } = useRouter();
 
   return (
-    <div
-      {...props}
-      className={`${className ? className : ""} ${className?.includes("p") ? "" : "py-4 pl-2"
-        } mr-auto`}
-    >
+    <div {...props} className={cleanClasses(className, "mr-auto py-4 pl-2")}>
       <IoArrowBackOutline
         onClick={() => (hasPrevious ? back() : null)}
-        className={`size-7 text-white cursor-pointer hover:opacity-90 active:text-amber-600 active:opacity-100 duration-100`}
+        className="size-7 cursor-pointer active:text-amber-600 transition-all"
       />
     </div>
   );
