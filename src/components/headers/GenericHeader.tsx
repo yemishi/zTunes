@@ -9,9 +9,9 @@ import Link from "next/link";
 import PreviousPage from "@/ui/buttons/PreviousPage";
 import InputText from "../../ui/inputs/InputText";
 import EditableImage from "@/ui/custom/EditableImage";
-import EditPlaylist from "@/ui/buttons/EditPlaylist";
+import EditPlaylist from "./editPlaylist/EditPlaylist";
 import ExpandableText from "@/ui/custom/ExpandableText";
-import { getSongDuration } from "@/utils/helpers";
+import { getSongDuration, isLightBg } from "@/utils/helpers";
 import getVibrantColor from "@/utils/getVibrantColor";
 
 export default function GenericHeader({ info, playlistId, updateUrl, username, ...props }: DivProps) {
@@ -44,8 +44,12 @@ export default function GenericHeader({ info, playlistId, updateUrl, username, .
         className ? className : ""
       } flex flex-col gap-2 h-full items-center w-full p-4 pt-0 pb-10 md:min-h-[350px] md:items-start`}
     >
-      <span className="flex items-center py-4 justify-between w-full">
-        <PreviousPage className="p-0" />
+      <span
+        className={`flex items-center py-4 justify-between w-full ${
+          isLightBg(vibrantColor || "") ? "text-black" : "text-white"
+        }`}
+      >
+        <PreviousPage isLightBg={isLightBg(vibrantColor || "")} />
         {isOwner && playlistId && (
           <EditPlaylist
             username={username as string}
