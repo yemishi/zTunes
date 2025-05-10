@@ -10,7 +10,6 @@ const getVibrantColor = async (img: string): Promise<string> => {
     const image = new Image();
     image.crossOrigin = "Anonymous";
     image.src = img;
-
     image.onload = () => {
       const canvas = document.createElement("canvas");
       const maxDimension = 100;
