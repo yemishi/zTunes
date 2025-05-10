@@ -1,5 +1,5 @@
 import Skeleton from "react-loading-skeleton";
-import Slider from "../../slider/Slider";
+import { Slider } from "@/components";
 import ProfileCardSkeleton from "../card/ProfileCardSkeleton";
 
 export default function ProfileBundleSkeleton({ count }: { count?: number }) {
