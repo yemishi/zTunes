@@ -6,12 +6,13 @@ import { IoEyeSharp } from "react-icons/io5";
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   label: string;
   error?: string;
+  borderColor?: string;
   isPassword?: boolean;
   disableErrorMsg?: boolean;
 }
 
 const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
-  const { label, className, placeholder, id, isPassword, error, disableErrorMsg, ...rest } = props;
+  const { label, className, placeholder, id, isPassword, error, disableErrorMsg, borderColor, ...rest } = props;
   const [isPass, setIsPass] = useState(isPassword);
 
   const PassIcon = isPass ? FaEyeSlash : IoEyeSharp;
@@ -32,12 +33,16 @@ const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
     <div
       className={`${cleanClasses(
         className,
-        `flex border-r-2 lg:text-lg flex-col group focus-within:border-amber-500 border-t-0 gap-1 border font-kanit relative p-3 
+        `${
+          borderColor ? `border-${borderColor}` : ""
+        } flex border-r-2 lg:text-lg flex-col group focus-within:border-amber-500 border-t-0 gap-1 border font-kanit relative p-3 
          border-b-2 rounded-full group focus-within:border-secondary-400`
       )} ${error ? "border-red-400 text-red-400" : ""} ${hasValue ? "border-blue-400" : ""} `}
     >
       <div
-        className={`absolute top-0 rounded-full border-t-2  group group-focus-within:border-amber-500 border-r -z-10  -right-0.5 h-full duration-100 ${
+        className={`${
+          borderColor ? `border-${borderColor}` : ""
+        } absolute top-0 rounded-full border-t-2 pointer-events-none group group-focus-within:border-amber-500 border-r -right-0.5 h-full duration-100 ${
           hasValue ? "rounded-l-none border-blue-400 " : ""
         } ${error ? "border-red-400 !w-0 !border-r-0" : " "}`}
         style={{
@@ -47,8 +52,8 @@ const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
       <label
         ref={labelRef}
         htmlFor={id || rest.name}
-        className={`absolute left-4 bottom-2.5 -z-20 origin-left duration-100  ${
-          hasValue ? "-translate-y-6 scale-90 font-light translate-x-1.5 md:-translate-y-7.5" : ""
+        className={`absolute left-4 bottom-2.5 origin-left duration-100  ${
+          hasValue ? "-translate-y-6 scale-90 font-light translate-x-1.5 md:-translate-y-7.5" : "pointer-events-none"
         }`}
       >
         {label || placeholder}
