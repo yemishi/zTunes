@@ -90,21 +90,24 @@ const getSongDuration = async (urlSong: string) => {
 };
 
 const cleanClasses = (className = "", fallback = "") => {
-  const current = className.split(/\s+/);
-  const fallbackClasses = fallback.split(/\s+/);
+  const splitClasses = (str: string) => str.trim().split(/\s+/).filter(Boolean);
 
-  const getPrefix = (cls: string) => cls.split("-")[0];
+  const getPrefixes = (cls: string) => cls.split(":").pop()!.split("-")[0];
 
-  const existingPrefixes = new Set(current.map(getPrefix));
+  const currentClasses = splitClasses(className);
+  const fallbackClasses = splitClasses(fallback);
+
+  const existingPrefixes = new Set(currentClasses.map(getPrefixes));
 
   const filteredFallback = fallbackClasses.filter((cls) => {
-    const prefix = getPrefix(cls);
+    const prefix = getPrefixes(cls);
     return !existingPrefixes.has(prefix);
   });
 
-  return [...current, ...filteredFallback].join(" ").trim();
-};
+  const merged = [...new Set([...currentClasses, ...filteredFallback])];
 
+  return merged.join(" ");
+};
 const isLightBg = (hexColor: string): boolean => {
   const r = parseInt(hexColor.slice(1, 3), 16);
   const g = parseInt(hexColor.slice(3, 5), 16);
