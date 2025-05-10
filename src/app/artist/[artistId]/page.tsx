@@ -62,12 +62,11 @@ export default async function Artist(props: { params: Promise<{ artistId: string
         {songsData.songs.length > 0 && <SongsOrganizer songs={songsData.songs} title="Musics" />}
 
         {songsData.hasMore && (
-          <Button className="bg-white rounded-lg self-start ml-4">
-            <Link href={`/artist/${artist.id}/musics`}>Show all</Link>
+          <Button href={`/artist/${artist.id}/musics`} className="bg-white rounded-lg self-start ml-4">
+            See all
           </Button>
         )}
       </ErrorWrapper>
-
       <Link
         href={`/artist/${artist.id}/discography`}
         className="self-end mr-4 font-kanit text-lg text-white text-opacity-50 underline underline-offset-[6px] hover:text-opacity-100 duration-100"
