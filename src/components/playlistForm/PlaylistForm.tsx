@@ -103,7 +103,8 @@ export default function PlaylistForm({
 
       <Input
         type="text"
-        className="!border-black self-center"
+        borderColor="black"
+        className="self-center"
         disabled={isLoading}
         error={errors.name || ""}
         name="name"
