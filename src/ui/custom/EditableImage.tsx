@@ -15,6 +15,7 @@ interface InputProps extends React.HTMLAttributes<HTMLElement> {
   updateSession?: boolean;
   extraBody?: object;
   method?: string;
+  onSuccess: () => Promise<void>;
 }
 
 export default function EditableImage({
@@ -23,6 +24,7 @@ export default function EditableImage({
   uploadUrl,
   extraBody,
   fieldUpload,
+  onSuccess,
   method,
   updateSession,
   ...props
@@ -58,7 +60,7 @@ export default function EditableImage({
     }).then((res) => res.json());
     if (update.error) return toast.error(update.message);
     await deleteImage(oldUrl);
-
+    await onSuccess();
     refresh(), setIsLoading(false);
   };
 
