@@ -13,8 +13,15 @@ import EditPlaylist from "./editPlaylist/EditPlaylist";
 import ExpandableText from "@/ui/custom/ExpandableText";
 import { getSongDuration, isLightBg } from "@/utils/helpers";
 import getVibrantColor from "@/utils/getVibrantColor";
-
-export default function GenericHeader({ info, playlistId, updateUrl, username, ...props }: DivProps) {
+import { useQueryClient } from "@tanstack/react-query";
+export default function GenericHeader({
+  info,
+  playlistId,
+  updateUrl = "/api/playlist",
+  username,
+  onUpdateText,
+  ...props
+}: DivProps) {
   const { author, avatar, title, isOwner, coverPhoto, desc, releasedDate, isPublic, authorId, isUser, urlsSongs } =
     info;
 
@@ -33,6 +40,12 @@ export default function GenericHeader({ info, playlistId, updateUrl, username, .
       .catch(() => setDuration("0s"));
     getVibrantColor(coverPhoto).then((res) => setVibrantColor(res));
   }, []);
+  const queryClient = useQueryClient();
+  const refetchUserPlaylists = async () => {
+    await queryClient.invalidateQueries({
+      queryKey: ["User playlists", username],
+    });
+  };
 
   return (
     <div
@@ -65,8 +78,9 @@ export default function GenericHeader({ info, playlistId, updateUrl, username, .
           className="rounded-lg size-44 md:size-52 self-center md:self-start"
           fieldUpload="coverPhoto"
           initialValue={coverPhoto}
+          onSuccess={refetchUserPlaylists}
           isOwner={isOwner}
-          uploadUrl={updateUrl || "/api/playlist"}
+          uploadUrl={updateUrl}
           extraBody={{ id: playlistId }}
         />
 
@@ -76,9 +90,10 @@ export default function GenericHeader({ info, playlistId, updateUrl, username, .
               className="text-center md:text-left text-3xl md:text-5xl lg:text-6xl font-bold font-montserrat first-letter:uppercase"
               extraBody={{ id: playlistId }}
               initialValue={title}
+              onSuccess={refetchUserPlaylists}
               fieldType="title"
               changeable={isOwner}
-              patchUrl={updateUrl || "/api/playlist"}
+              patchUrl={updateUrl}
             />
             {releasedDate && <span className="font-light text-orange-300 md:hidden font-kanit">{releasedDate}</span>}
           </span>
@@ -108,6 +123,7 @@ interface DivProps extends HTMLAttributes<HTMLDivElement> {
   username?: string;
   playlistId?: string;
   updateUrl?: string;
+  onUpdateText?: () => void;
 }
 
 type InfoType = {
@@ -117,6 +133,7 @@ type InfoType = {
   coverPhoto: string;
   authorId: string;
   isOwner: boolean;
+  username?: string;
   isPublic?: boolean;
   desc?: string;
   isUser?: Boolean;
