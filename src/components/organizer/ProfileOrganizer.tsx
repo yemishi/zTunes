@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import Slider from "../Slider/Slider";
+import Slider from "../slider/Slider";
 import ProfileCard from "../card/ProfileCard";
 
 type PropsType = {

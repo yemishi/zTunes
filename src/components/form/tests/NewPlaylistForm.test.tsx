@@ -1,6 +1,6 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import NewPlaylistForm from "../NewPlaylistForm";
+import NewPlaylistForm from "../../playlistForm/PlaylistForm";
 import { toast } from "react-toastify";
 
 

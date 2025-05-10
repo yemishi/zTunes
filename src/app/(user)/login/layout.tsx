@@ -9,8 +9,8 @@ export default function LoginLayout({ children }: { children: React.ReactNode })
   return (
     <div
       style={{ background: `url(${bg.src})` }}
-      className={`w-full h-full !bg-cover !bg-center !bg-no-repeat flex items-center justify-center
-  flex-col`}
+      className="w-full h-full !bg-cover !bg-center !bg-no-repeat flex items-center justify-center
+  flex-col"
     >
       {children}
     </div>

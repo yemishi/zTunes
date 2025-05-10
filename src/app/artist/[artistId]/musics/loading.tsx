@@ -1,5 +1,5 @@
 import SongSkeleton from "@/components/skeletons/SongSkeleton";
-import PreviousPage from "@/components/ui/buttons/PreviousPage";
+import PreviousPage from "@/ui/buttons/PreviousPage";
 import Skeleton from "react-loading-skeleton";
 
 export default function () {

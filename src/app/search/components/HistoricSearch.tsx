@@ -1,5 +1,5 @@
 "use client";
-import Button from "@/components/ui/buttons/Button";
+import Button from "@/ui/buttons/Button";
 import { SearchType } from "../page";
 import CardSearch from "./cardSearch";
 import { useRouter } from "next/navigation";
@@ -7,13 +7,7 @@ import { useState } from "react";
 import { ErrorType } from "@/types/response";
 import { toast } from "react-toastify";
 
-export default function HistoricSearch({
-  historic,
-  username,
-}: {
-  username: string;
-  historic: SearchType[];
-}) {
+export default function HistoricSearch({ historic, username }: { username: string; historic: SearchType[] }) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { refresh } = useRouter();
   const resetHistoric = async () => {
@@ -23,8 +17,7 @@ export default function HistoricSearch({
       method: "PATCH",
       body: JSON.stringify(body),
     }).then((res) => res.json());
-    if (response.error)
-      return toast.error(response.message), setIsLoading(false);
+    if (response.error) return toast.error(response.message), setIsLoading(false);
     refresh(), setIsLoading(false);
   };
 
@@ -39,13 +32,7 @@ export default function HistoricSearch({
       </Button>
       {historic.map((info, index) => {
         return (
-          <CardSearch
-            isLoading={isLoading}
-            key={`${info.refId}_${index}`}
-            username={username}
-            data={info}
-            isHistoric
-          />
+          <CardSearch isLoading={isLoading} key={`${info.refId}_${index}`} username={username} data={info} isHistoric />
         );
       })}
     </div>

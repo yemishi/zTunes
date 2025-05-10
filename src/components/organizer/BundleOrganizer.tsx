@@ -1,6 +1,6 @@
 "use client";
 
-import Slider from "../Slider/Slider";
+import Slider from "../slider/Slider";
 import { BundleType } from "@/types/response";
 import Card from "../card/Card";
 import Link from "next/link";

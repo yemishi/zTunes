@@ -1,14 +1,12 @@
 "use client";
 
-import { SubmitHandler, useForm } from "react-hook-form";
-import Button from "../ui/buttons/Button";
-import Input from "../ui/inputs/Input";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
+import Button from "@/ui/buttons/Button";
+import Input from "../../ui/inputs/Input";
+import { ChangeEvent, useState } from "react";
 import { AnimatePresence } from "framer-motion";
-import DivAnimated from "../ui/custom/DivAnimated";
+import DivAnimated from "@/ui/custom/DivAnimated";
 import Link from "next/link";
+import useForm from "@/hooks/useForm";
 
 export default function ResetPassForm({ userId }: { userId: string }) {
   const [response, setResponse] = useState<{
@@ -16,35 +14,26 @@ export default function ResetPassForm({ userId }: { userId: string }) {
     message: string;
   } | null>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
-
-  type FormType = z.infer<typeof FormSchema>;
-  const FormSchema = z
-    .object({
-      password: z.string().min(6, "This field must have at least 6 letters"),
-      confirmPass: z.string().min(6, "This field must have at least 6 letters"),
-    })
-    .refine(({ confirmPass, password }) => confirmPass === password, {
-      path: ["confirmPass"],
-      message: "This field needs to be the same as the other",
-    });
-
   const {
-    handleSubmit,
-    register,
-    formState: { errors },
-  } = useForm<FormType>({ resolver: zodResolver(FormSchema) });
+    values: { confirmPass, password },
+    validateAll,
+    errors,
+    onChange,
+  } = useForm<{ password: string; confirmPass: string }>({
+    password: { value: "", min: 6 },
+    confirmPass: { value: "", min: 6, compareField: "password" },
+  });
 
-  const onSubmit: SubmitHandler<FormType> = async (values) => {
-    FormSchema.parse(values);
-    const body = { password: values.password, userId };
+  const onSubmit = async (e: ChangeEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!validateAll()) return;
+
+    const body = { password, userId };
     setIsLoading(true);
-    const data: { message: string; error: boolean } = await fetch(
-      "/api/user/password-reset",
-      {
-        method: "PATCH",
-        body: JSON.stringify(body),
-      }
-    ).then((res) => res.json());
+    const data: { message: string; error: boolean } = await fetch("/api/user/password-reset", {
+      method: "PATCH",
+      body: JSON.stringify(body),
+    }).then((res) => res.json());
     setResponse(data);
     setIsLoading(false);
   };
@@ -74,38 +63,34 @@ export default function ResetPassForm({ userId }: { userId: string }) {
               {response.error ? (
                 <Button onClick={() => setResponse(null)}>try again</Button>
               ) : (
-                <Button asChild className="mt-10">
+                <Button className="mt-10">
                   <Link href="/sign-in">Login</Link>
                 </Button>
               )}
             </DivAnimated>
           ) : (
             <DivAnimated key="formResetPass">
-              <form
-                onSubmit={handleSubmit(onSubmit)}
-                className="flex flex-col gap-3"
-              >
-                <h1 className="text-3xl font-montserrat font-bold self-start tracking-tighter ">
-                  Reset your password
-                </h1>
-                <p className="self-start">
-                  Please enter your new password below.
-                </p>
+              <form onSubmit={onSubmit} className="flex flex-col gap-3">
+                <h1 className="text-3xl font-montserrat font-bold self-start tracking-tighter ">Reset your password</h1>
+                <p className="self-start">Please enter your new password below.</p>
                 <Input
                   disabled={isLoading}
                   isPassword
                   autoFocus
-                  {...register("password")}
-                  error={errors.password?.message}
+                  value={password}
+                  onChange={onChange}
+                  name="password"
+                  error={errors.password || ""}
                   label="New password"
                 />
 
                 <Input
                   disabled={isLoading}
                   isPassword
-                  {...register("confirmPass")}
-                  error={errors.confirmPass?.message}
-                  label="Confirm new password"
+                  value={confirmPass}
+                  onChange={onChange}
+                  error={errors.confirmPass || ""}
+                  label="Confirm password"
                 />
                 <Button type="submit" className="mt-10">
                   Change password

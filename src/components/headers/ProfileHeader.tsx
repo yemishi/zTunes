@@ -1,20 +1,20 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import Button from "../ui/buttons/Button";
+import Button from "@/ui/buttons/Button";
 import { useRouter } from "next/navigation";
 
 import clsx from "clsx";
-import PreviousPage from "../ui/buttons/PreviousPage";
-import EditableImage from "../ui/custom/EditableImage";
-import InputText from "../ui/inputs/InputText";
+import PreviousPage from "@/ui/buttons/PreviousPage";
+import EditableImage from "@/ui/custom/EditableImage";
+import InputText from "../../ui/inputs/InputText";
 
 import { useSession } from "next-auth/react";
 import { isAvailable, updateUser } from "@/utils/helpers";
 import { toast } from "react-toastify";
 import checkDev from "@/utils/isMobile";
 import { FaHeart } from "react-icons/fa6";
-import ExpandableText from "../ui/custom/ExpandableText";
+import ExpandableText from "@/ui/custom/ExpandableText";
 import getVibrantColor from "@/utils/getVibrantColor";
 
 type ProfileInfo = {
@@ -43,7 +43,7 @@ export default function ProfileHeader({
   const { profileName, profileId, cover } = profileInfo;
   const [isFollow, setIsFollow] = useState<boolean>(!!isInclude);
   const [follows, setFollows] = useState<number>(followersLength);
-  const [vibrantColor, setVibrantColor] = useState("transparent")
+  const [vibrantColor, setVibrantColor] = useState("transparent");
   const { push, refresh } = useRouter();
   const { update } = useSession();
   const isMobile = checkDev();
@@ -51,10 +51,10 @@ export default function ProfileHeader({
   useEffect(() => {
     const fetchVibrantColor = async () => {
       if (isMobile || !isArtist) {
-        getVibrantColor(cover).then((res) => setVibrantColor(res))
-
+        getVibrantColor(cover).then((res) => setVibrantColor(res));
       }
-    }; fetchVibrantColor();
+    };
+    fetchVibrantColor();
   }, [cover, isArtist, isMobile]);
 
   const fetchFollow = async () => {
@@ -62,7 +62,7 @@ export default function ProfileHeader({
     setIsFollow(newFollowState);
     setFollows((prev) => (newFollowState ? prev + 1 : prev - 1));
 
-    const body = { username, artistId: profileId, };
+    const body = { username, artistId: profileId };
 
     await fetch(`/api/followers`, {
       method: "PATCH",
@@ -70,26 +70,34 @@ export default function ProfileHeader({
     }).catch(() => {
       setIsFollow(!newFollowState);
       setFollows((prev) => (newFollowState ? prev - 1 : prev + 1));
-    })
+    });
   };
 
   const isOwner = username === profileName;
 
-  const onchange = useCallback(async (currValue: string) => {
-    if (currValue === username) return;
-    const available = await isAvailable(currValue);
-    if (available.error) { toast.error(available.message); return; }
-    if (available.response) { toast.error("Name not available"); return; }
-    const body = { userId: profileId, username: currValue };
-    const updateName = await updateUser(body);
-    if (updateName.error) {
-      toast.error(updateName.message)
-      return;
-    }
-    await update({ name: currValue })
-    refresh();
-  },
-    [username, profileId, refresh, update]);
+  const onchange = useCallback(
+    async (currValue: string) => {
+      if (currValue === username) return;
+      const available = await isAvailable(currValue);
+      if (available.error) {
+        toast.error(available.message);
+        return;
+      }
+      if (available.response) {
+        toast.error("Name not available");
+        return;
+      }
+      const body = { userId: profileId, username: currValue };
+      const updateName = await updateUser(body);
+      if (updateName.error) {
+        toast.error(updateName.message);
+        return;
+      }
+      await update({ name: currValue });
+      refresh();
+    },
+    [username, profileId, refresh, update]
+  );
 
   const containerClasses = clsx(
     "w-full relative flex flex-col items-center gap-3 md:items-start !bg-cover !bg-center",
@@ -104,26 +112,14 @@ export default function ProfileHeader({
   return (
     <div
       style={{
-        background:
-          isMobile || !isArtist
-            ? `linear-gradient(to bottom,${vibrantColor} 0% ,transparent 100%)`
-            : "",
+        background: isMobile || !isArtist ? `linear-gradient(to bottom,${vibrantColor} 0% ,transparent 100%)` : "",
       }}
       className={containerClasses}
     >
       <PreviousPage className="p-4 md:z-10" />
 
-      <div
-        className={`flex flex-col items-center mt-auto ${isArtist ? "" : "md:p-4 md:flex-row"
-          }`}
-      >
-        <div
-          className={
-            isArtist
-              ? "md:absolute md:w-full md:top-0 md:left-0 md:h-full"
-              : "mt-auto"
-          }
-        >
+      <div className={`flex flex-col items-center mt-auto ${isArtist ? "" : "md:p-4 md:flex-row"}`}>
+        <div className={isArtist ? "md:absolute md:w-full md:top-0 md:left-0 md:h-full" : "mt-auto"}>
           <EditableImage
             className={profileImgClass}
             updateSession={!isArtist}
@@ -160,8 +156,9 @@ export default function ProfileHeader({
               ) : (
                 <FaHeart
                   onClick={() => (username ? fetchFollow() : push("/sign-in"))}
-                  className={`size-9 cursor-pointer duration-150 z-10  ${isFollow ? "text-amber-500" : "text-white text-opacity-30"
-                    }`}
+                  className={`size-9 cursor-pointer duration-150 z-10  ${
+                    isFollow ? "text-amber-500" : "text-white text-opacity-30"
+                  }`}
                 />
               ))}
             {follows > 0 && (
@@ -169,11 +166,8 @@ export default function ProfileHeader({
                 {follows} Follows
               </span>
             )}
-
           </div>
-          {artistAbout && !isMobile && (
-            <ExpandableText>{artistAbout}</ExpandableText>
-          )}
+          {artistAbout && !isMobile && <ExpandableText>{artistAbout}</ExpandableText>}
         </div>
       </div>
     </div>

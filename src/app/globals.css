@@ -24,6 +24,8 @@
   --color-black-800: #0a0a0a;
   --color-black-900: #000000;
   --color-black: #000000;
+
+  --breakpoint-3xl: 120rem;
 }
 
 @layer base {
@@ -46,15 +48,6 @@ input[type="number"] {
   -moz-appearance: textfield;
 }
 
-.inputForm {
-  @apply px-3 py-2 mt-auto *:bg-black outline-hidden text-lg md:text-xl duration-200 hover:bg-black/55 disabled:animate-pulse disabled:bg-white text-white
-   rounded-md appearance-none;
-}
-.form {
-  @apply mb-7 bg-linear-to-b from-[#1f1e1a] to-transparent backdrop-blur-sm w-full flex text-center h-full
-  flex-col pt-10 px-8 text-white gap-4 max-w-[450px] min-[450px]:h-[600px] min-[450px]:rounded-lg overflow-clip justify-center md:text-xl md:max-w-[550px];
-}
-
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
@@ -62,12 +55,15 @@ input:-webkit-autofill:active {
   -webkit-background-clip: text;
   -webkit-text-fill-color: #ffffff;
   transition: background-color 5000s ease-in-out 0s;
-  box-shadow: inset 0 0 20px 20px #1c160a;
 }
 
 .spinner {
   @apply self-center size-7 rounded-full relative border-2 border-black-300 border-t-orange-500 animate-spin;
 }
+.modal-container {
+  @apply w-screen h-screen overflow-x-hidden overflow-y-clip max-w-3xl md:h-[900px] md:rounded-lg mx-auto my-auto bg-gray-300 p-4;
+}
+
 input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;

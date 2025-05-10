@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "@/components/ui/custom/Image";
+import Image from "@/ui/custom/Image";
 
 import { SearchType } from "../page";
 import { useRouter } from "next/navigation";
@@ -13,7 +13,12 @@ import usePlayer from "@/hooks/usePlayer";
 type UrlValues = "album" | "artist" | "user" | "playlist";
 
 export default function CardSearch({
-  data, username, isHistoric, refetch, isLoading: loadingProp, playlistId
+  data,
+  username,
+  isHistoric,
+  refetch,
+  isLoading: loadingProp,
+  playlistId,
 }: {
   username: string;
   data: SearchType;
@@ -22,10 +27,8 @@ export default function CardSearch({
   playlistId?: string;
   isHistoric?: true;
 }) {
-
-
   const { refId, type, title, coverPhoto, desc: descData, songData } = data;
-  const { turnOnPlayer } = usePlayerContext()
+  const { turnOnPlayer } = usePlayerContext();
   const desc = descData || type;
   const baseUrl = {
     album: "/album",
@@ -39,12 +42,14 @@ export default function CardSearch({
 
   const { refresh, push } = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  const [songSelected, setSongSelected] = useState<{ createAt: string, songId: string } | null>(data.songData?.songSelected || null)
-  const { isPlaying } = usePlayer()
+  const [songSelected, setSongSelected] = useState<{ createAt: string; songId: string } | null>(
+    data.songData?.songSelected || null
+  );
+  const { isPlaying } = usePlayer();
   const handleHistoric = async (action?: string) => {
     if (!username) return;
     setIsLoading(true);
-    const { songData, ...rest } = data
+    const { songData, ...rest } = data;
     await fetch(`/api/search`, {
       method: "PATCH",
       body: JSON.stringify({
@@ -66,45 +71,43 @@ export default function CardSearch({
 
   const toggleInPlaylist = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
-    if (!songData || !playlistId) return
-    setIsLoading(true)
+    if (!songData || !playlistId) return;
+    setIsLoading(true);
 
     if (songSelected) {
       const data = await fetch(`/api/playlist`, {
         method: "PATCH",
-        body: JSON.stringify({ id: playlistId, songSelected, toRemove: true })
-      }).then((res) => res.json())
-      setIsLoading(false)
-      if (data.error) return toast.error(data.message)
+        body: JSON.stringify({ id: playlistId, songSelected, toRemove: true }),
+      }).then((res) => res.json());
+      setIsLoading(false);
+      if (data.error) return toast.error(data.message);
       refresh();
-      if (refetch) refetch()
-      return setSongSelected(null)
+      if (refetch) refetch();
+      return setSongSelected(null);
     }
 
     const data = await fetch(`/api/playlist`, {
       method: "PATCH",
-      body: JSON.stringify({ id: playlistId, songSelected: songData.id, })
-    }).then((res) => res.json())
-    setIsLoading(false); refresh();
-    if (refetch) refetch()
-    if (data.error) return toast.error(data.message);
-    setSongSelected(data.newSong)
+      body: JSON.stringify({ id: playlistId, songSelected: songData.id }),
+    }).then((res) => res.json());
+    setIsLoading(false);
     refresh();
-    if (refetch) refetch()
-  }
+    if (refetch) refetch();
+    if (data.error) return toast.error(data.message);
+    setSongSelected(data.newSong);
+    refresh();
+    if (refetch) refetch();
+  };
 
-  const loadingClass =
-    isLoading || loadingProp
-      ? "grayscale animate-pulse pointer-events-none"
-      : "";
+  const loadingClass = isLoading || loadingProp ? "grayscale animate-pulse pointer-events-none" : "";
   const handleOnClick = () => {
-    handleHistoric()
+    handleHistoric();
     if (songData) {
-      turnOnPlayer([songData], 0)
-      return
+      turnOnPlayer([songData], 0);
+      return;
     }
-    push(goTo)
-  }
+    push(goTo);
+  };
   return (
     <div
       onClick={handleOnClick}
@@ -113,25 +116,43 @@ export default function CardSearch({
       <span className="size-12 md:size-16">
         <Image
           src={coverPhoto}
-          className={`h-full w-full ${desc.toLowerCase() === "user" || desc.toLowerCase() === "artist" ? "rounded-full" : "rounded-lg"}`}
+          className={`h-full w-full ${
+            desc.toLowerCase() === "user" || desc.toLowerCase() === "artist" ? "rounded-full" : "rounded-lg"
+          }`}
         />
       </span>
 
       <div className="flex flex-col font-kanit font-light leading-3 md:font-medium">
         <span className="text-lg first-letter:uppercase md:text-xl">{title}</span>
-        <button onClick={(e) => { e.stopPropagation(); push(goTo); handleHistoric() }}
-          className="text-white text-opacity-65 text-sm md:text-base w-max hover:text-opacity-100 active:text-orange-500">{desc}</button>
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            push(goTo);
+            handleHistoric();
+          }}
+          className="text-white text-opacity-65 text-sm md:text-base w-max hover:text-opacity-100 active:text-orange-500"
+        >
+          {desc}
+        </button>
       </div>
-      {playlistId && <button onClick={toggleInPlaylist} className={`${songSelected ? "text-green-400 border-green-400" : "active:text-orange-500 active:border-orange-500 hover:opacity-100"}
-       size-7 md:size-8 ml-auto mr-3 border-2 opacity-75 rounded-full flex items-center justify-center`}>
-        {songSelected ? <FaCheck /> : <FaPlus />}
-      </button>}
-      {isHistoric && <button
-        onClick={removeFromHistory}
-        className="ml-auto self-center font-kanit text-xl md:text-2xl"
-      >
-        X
-      </button>}
-    </div >
+      {playlistId && (
+        <button
+          onClick={toggleInPlaylist}
+          className={`${
+            songSelected
+              ? "text-green-400 border-green-400"
+              : "active:text-orange-500 active:border-orange-500 hover:opacity-100"
+          }
+       size-7 md:size-8 ml-auto mr-3 border-2 opacity-75 rounded-full flex items-center justify-center`}
+        >
+          {songSelected ? <FaCheck /> : <FaPlus />}
+        </button>
+      )}
+      {isHistoric && (
+        <button onClick={removeFromHistory} className="ml-auto self-center font-kanit text-xl md:text-2xl">
+          X
+        </button>
+      )}
+    </div>
   );
 }

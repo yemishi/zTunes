@@ -1,4 +1,4 @@
-import Button from "@/components/ui/buttons/Button";
+import Button from "@/ui/buttons/Button";
 import InvalidToken from "@/components/user/invalidToken";
 import Jwt from "jsonwebtoken";
 import Link from "next/link";
@@ -8,10 +8,7 @@ async function getData(token: string) {
     type DecodeType = {
       id: string;
     };
-    const decoded = Jwt.verify(
-      token,
-      process.env.JWT_SECRET as string
-    ) as DecodeType;
+    const decoded = Jwt.verify(token, process.env.JWT_SECRET as string) as DecodeType;
 
     const body = {
       userId: decoded.id,
@@ -31,12 +28,8 @@ async function getData(token: string) {
     };
   }
 }
-export default async function page(context: {
-  searchParams: Promise<{ token: string }>;
-}) {
-  const { info, message, title, error } = await getData(
-    (await context.searchParams).token
-  );
+export default async function page(context: { searchParams: Promise<{ token: string }> }) {
+  const { info, message, title, error } = await getData((await context.searchParams).token);
   if (error) return <InvalidToken />;
 
   return (
@@ -48,7 +41,7 @@ export default async function page(context: {
         <h1 className="text-3xl text-white">{title}</h1>
         <p>{message}</p>
         <p>{info}</p>
-        <Button className="mt-auto py-3" asChild>
+        <Button className="mt-auto py-3">
           <Link href="/sign-in">Manage Account</Link>
         </Button>
       </div>

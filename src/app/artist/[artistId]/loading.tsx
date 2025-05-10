@@ -1,7 +1,7 @@
 import SongOptionsSkeleton from "@/components/skeletons/SongSkeleton";
 import BundleStackSkeleton from "@/components/skeletons/bundle/BundleStackSkeleton";
 
-import PreviousPage from "@/components/ui/buttons/PreviousPage";
+import PreviousPage from "@/ui/buttons/PreviousPage";
 import Skeleton from "react-loading-skeleton";
 
 export default function () {

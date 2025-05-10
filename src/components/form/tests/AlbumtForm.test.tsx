@@ -1,6 +1,6 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import AlbumForm from "../AlbumForm";
+import AlbumForm from "../../../app/account/createAlbum/albumForm/AlbumForm";
 import { toast } from "react-toastify";
 
 jest.mock("next/navigation", () => ({

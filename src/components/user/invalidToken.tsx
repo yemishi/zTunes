@@ -1,5 +1,5 @@
 import Link from "next/link";
-import Button from "../ui/buttons/Button";
+import Button from "@/ui/buttons/Button";
 
 export default function InvalidToken() {
   return (
@@ -11,7 +11,7 @@ export default function InvalidToken() {
         <h1 className="text-3xl text-white">Your Link Didn't Work</h1>
         <p>Try clicking the link in your email again.</p>
         <p>To generate a new email, please visit Account Management.</p>
-        <Button className="mt-auto py-3" asChild>
+        <Button className="mt-auto py-3">
           <Link href="/sign-in">Manage Account</Link>
         </Button>
       </div>

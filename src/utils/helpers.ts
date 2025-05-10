@@ -1,3 +1,4 @@
+"use client";
 import { ErrorType } from "@/types/response";
 import { format, lastDayOfMonth } from "date-fns";
 import { usePathname } from "next/navigation";
@@ -30,7 +31,7 @@ const isAvailable = async (
   value: string,
   field?: string
 ): Promise<
-  | ErrorType
+  | { error: true; message: string }
   | {
       error: false;
       response: boolean;
@@ -89,19 +90,32 @@ const getSongDuration = async (urlSong: string) => {
 };
 
 const cleanClasses = (className = "", fallback = "") => {
-  const current = className.split(/\s+/);
-  const fallbackClasses = fallback.split(/\s+/);
+  const splitClasses = (str: string) => str.trim().split(/\s+/).filter(Boolean);
 
-  const getPrefix = (cls: string) => cls.split("-")[0];
+  const getPrefixes = (cls: string) => cls.split(":").pop()!.split("-")[0];
 
-  const existingPrefixes = new Set(current.map(getPrefix));
+  const currentClasses = splitClasses(className);
+  const fallbackClasses = splitClasses(fallback);
+
+  const existingPrefixes = new Set(currentClasses.map(getPrefixes));
 
   const filteredFallback = fallbackClasses.filter((cls) => {
-    const prefix = getPrefix(cls);
+    const prefix = getPrefixes(cls);
     return !existingPrefixes.has(prefix);
   });
 
-  return [...current, ...filteredFallback].join(" ").trim();
+  const merged = [...new Set([...currentClasses, ...filteredFallback])];
+
+  return merged.join(" ");
+};
+const isLightBg = (hexColor: string): boolean => {
+  const r = parseInt(hexColor.slice(1, 3), 16);
+  const g = parseInt(hexColor.slice(3, 5), 16);
+  const b = parseInt(hexColor.slice(5, 7), 16);
+
+  const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+
+  return luminance > 0.5;
 };
 
-export { cleanClasses, isValidDate, getSongDuration, updateUser, isAvailable, removeFromPlaylist, urlMatch };
+export { cleanClasses, isValidDate, getSongDuration, updateUser, isAvailable, removeFromPlaylist, urlMatch, isLightBg };

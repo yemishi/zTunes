@@ -1,8 +1,8 @@
 import SongOptions from "@/components/songOptions/songOptions";
-import Image from "@/components/ui/custom/Image";
-import ProgressBar from "@/components/ui/inputs/ProgressBar";
-import ToggleLike from "@/components/ui/buttons/ToggleLike";
-import VolumeInput from "@/components/ui/inputs/VolumeInput";
+import Image from "@/ui/custom/Image";
+import ProgressBar from "@/ui/inputs/ProgressBar";
+import ToggleLike from "@/ui/buttons/ToggleLike";
+import VolumeInput from "@/ui/inputs/VolumeInput";
 import { useTempOverlay } from "@/context/Provider";
 import usePlayer from "@/hooks/usePlayer";
 import { formatDuration } from "@/utils/formatting";
@@ -10,26 +10,10 @@ import Link from "next/link";
 import { RxDotsVertical } from "react-icons/rx";
 
 export default function PlayerDesktop() {
-  const {
-    audioRef,
-    currentTime,
-    duration,
-    handleProgress,
-    handleVolume,
-    volume,
-    song,
-    onend,
-    PlayerControls,
-  } = usePlayer();
+  const { audioRef, currentTime, duration, handleProgress, handleVolume, volume, song, onend, PlayerControls } =
+    usePlayer();
   if (!song) return;
-  const {
-    artistId,
-    artistName,
-    coverPhoto,
-    id: songId,
-    name: title,
-    urlSong,
-  } = song;
+  const { artistId, artistName, coverPhoto, id: songId, name: title, urlSong } = song;
 
   const { close, setChildren } = useTempOverlay();
   const Options = () => <SongOptions onclose={close} song={song} />;
@@ -39,12 +23,8 @@ export default function PlayerDesktop() {
         max={duration || 0}
         value={currentTime}
         onChange={handleProgress}
-        onMouseUp={() =>
-          audioRef.current ? (audioRef.current.muted = false) : null
-        }
-        onMouseDown={() =>
-          audioRef.current ? (audioRef.current.muted = true) : null
-        }
+        onMouseUp={() => (audioRef.current ? (audioRef.current.muted = false) : null)}
+        onMouseDown={() => (audioRef.current ? (audioRef.current.muted = true) : null)}
         currentProgress={currentTime / Number(duration)}
         className="rangeOrange bg-orange-600"
         classContainer="!absolute top-0 w-full"
@@ -67,16 +47,8 @@ export default function PlayerDesktop() {
       </div>
 
       <div className="flex gap-3 ml-auto relative">
-        <VolumeInput
-          fixed
-          onChange={handleVolume}
-          value={volume}
-          currentProgress={volume}
-        />
-        <RxDotsVertical
-          className="h-10 w-6 ml-auto"
-          onClick={() => setChildren(Options)}
-        />
+        <VolumeInput fixed onChange={handleVolume} value={volume} currentProgress={volume} />
+        <RxDotsVertical className="h-10 w-6 ml-auto" onClick={() => setChildren(Options)} />
       </div>
       <audio onEnded={onend} ref={audioRef} src={urlSong} />
     </div>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Image from "../../ui/custom/Image";
+import Image from "@/ui/custom/Image";
 import PlayerDetails from "./PlayerDetails";
 import usePlayer from "../../../hooks/usePlayer";
 import getVibrantColor from "@/utils/getVibrantColor";
@@ -30,7 +30,7 @@ export default function PlayerMobile() {
   const { artistName, coverPhoto, name, urlSong } = song;
 
   useEffect(() => {
-    getVibrantColor(coverPhoto).then((res) => setVibrantColor(res))
+    getVibrantColor(coverPhoto).then((res) => setVibrantColor(res));
   }, [song]);
 
   return (
@@ -43,20 +43,13 @@ export default function PlayerMobile() {
         <Image src={coverPhoto} className="size-10 rounded" />
         <div className="flex flex-col">
           <span>{name}</span>
-          <span className="first-letter:uppercase text-sm text-gray-400">
-            {artistName}
-          </span>
+          <span className="first-letter:uppercase text-sm text-gray-400">{artistName}</span>
         </div>
       </div>
       <span onClick={(e) => e.stopPropagation()}>
         <PlayerControls />
       </span>
-      <audio
-        autoPlay={isPlaying}
-        onEnded={onend}
-        ref={audioRef}
-        src={urlSong}
-      />
+      <audio autoPlay={isPlaying} onEnded={onend} ref={audioRef} src={urlSong} />
 
       <PlayerDetails
         isVisible={showDetails}

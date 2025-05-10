@@ -10,10 +10,10 @@ import { CgPlayListRemove } from "react-icons/cg";
 import { toast } from "react-toastify";
 import { removeFromPlaylist } from "@/utils/helpers";
 
-import Image from "../ui/custom/Image";
+import Image from "@/ui/custom/Image";
 import Link from "next/link";
-import Button from "../ui/buttons/Button";
-import ToggleLike from "../ui/buttons/ToggleLike";
+import Button from "@/ui/buttons/Button";
+import ToggleLike from "@/ui/buttons/ToggleLike";
 import { useSession } from "next-auth/react";
 import AddToPlaylist from "./addToPlaylist";
 import { useTempOverlay } from "@/context/Provider";
@@ -25,17 +25,9 @@ interface DivProps extends React.HTMLAttributes<HTMLDivElement> {
   refetch?: () => void;
 }
 
-export default function SongOptions({
-  song,
-  onclose,
-  playlistId,
-  refetch,
-  className,
-  ...props
-}: DivProps) {
+export default function SongOptions({ song, onclose, playlistId, refetch, className, ...props }: DivProps) {
   const { push } = useRouter();
-  const { albumId, artistId, artistName, coverPhoto, name, id, createdAt } =
-    song;
+  const { albumId, artistId, artistName, coverPhoto, name, id, createdAt } = song;
   const { data: session } = useSession();
   const user = session?.user;
 
@@ -59,12 +51,7 @@ export default function SongOptions({
 
   const { close, setChildren } = useTempOverlay();
   const PlaylistsOptions = () => (
-    <AddToPlaylist
-      onclose={close}
-      options={options}
-      userAvatar={user?.picture}
-      username={user?.name}
-    />
+    <AddToPlaylist onclose={close} options={options} userAvatar={user?.picture} username={user?.name} />
   );
 
   const linkStyle =
@@ -78,21 +65,13 @@ export default function SongOptions({
       <div className="flex md:flex-col md:items-center gap-5 mb-7">
         <Image src={coverPhoto} className="size-16 md:size-44" />
         <span className="flex flex-col">
-          <span className="text-lg first-letter:uppercase md:text-2xl">
-            {name}
-          </span>
-          <span className="text-white text-opacity-75 text-sm md:text-lg">
-            {artistName}
-          </span>
+          <span className="text-lg first-letter:uppercase md:text-2xl">{name}</span>
+          <span className="text-white text-opacity-75 text-sm md:text-lg">{artistName}</span>
         </span>
       </div>
 
       <div className={linkStyle}>
-        <ToggleLike
-          onClick={() => (user ? null : onclose())}
-          className="size-6 md:size-10 p-0"
-          songId={id}
-        />
+        <ToggleLike onClick={() => (user ? null : onclose())} className="size-6 md:size-10 p-0" songId={id} />
         Like
       </div>
 
