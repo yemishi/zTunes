@@ -51,12 +51,15 @@ export default function RootLayout({
   session: Session | null;
 }>) {
   return (
-    <html lang="en" className={`${poppins.variable} ${kanit.variable} ${playFair.variable} ${montserrat.variable}`}>
+    <html
+      lang="en"
+      className={`${poppins.variable} overflow-hidden  ${kanit.variable} ${playFair.variable} ${montserrat.variable}`}
+    >
       <head>
         <link rel="shortcut icon" href="#" />
       </head>
       <Provider session={session}>
-        <body className={`w-full h-full text-white bg-black-700 overflow-x-hidden ${nunito.className}`}>
+        <body className={`w-full h-full text-white  bg-black-700 overflow-x-hidden ${nunito.className}`}>
           <ToastContainer autoClose={3000} theme="dark" position="bottom-center" />
           <SkeletonTheme baseColor="#202020" highlightColor="#444">
             <div className="w-full h-screen">
