@@ -1,4 +1,5 @@
-import { useRef, useState } from "react";
+"use client";
+import { useState } from "react";
 import Input from "./Input";
 import Button from "../buttons/Button";
 

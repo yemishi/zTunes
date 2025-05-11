@@ -1,3 +1,4 @@
+"use client";
 import { useState } from "react";
 import Image from "./Image";
 import InputFileImg from "../inputs/InputFileImg";

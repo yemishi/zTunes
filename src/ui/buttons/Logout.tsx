@@ -7,18 +7,12 @@ interface ButtonProps extends React.HtmlHTMLAttributes<HTMLButtonElement> {
   animateLess?: boolean;
 }
 
-export default function Logout({
-  animateLess,
-  iconLess,
-  ...props
-}: ButtonProps) {
+export default function Logout({ animateLess, iconLess, ...props }: ButtonProps) {
   const { onClick, className, ...rest } = props;
   const defaultBg = className?.includes("bg") ? "" : "bg-gray-300 text-black";
   const defaultPadding = className?.includes("p-") ? "" : "p-2";
   const defaultAnimate = animateLess ? "" : "active:scale-105 duration-150";
-  const defaultFont = className?.includes("font-")
-    ? ""
-    : "font-mon font-semibold";
+  const defaultFont = className?.includes("font-") ? "" : "font-mon font-semibold";
   const defaultTextSize = className?.includes("text") ? "" : "text-lg";
 
   const logout = () => {

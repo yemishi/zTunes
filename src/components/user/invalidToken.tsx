@@ -12,7 +12,7 @@ export default function InvalidToken() {
         <p>Try clicking the link in your email again.</p>
         <p>To generate a new email, please visit Account Management.</p>
         <Button className="mt-auto py-3">
-          <Link href="/sign-in">Manage Account</Link>
+          <Link href="/login">Manage Account</Link>
         </Button>
       </div>
     </div>

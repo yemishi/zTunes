@@ -14,7 +14,7 @@ type SessionUser = {
   };
 };
 
-export default async function Profile() {
+async function Profile() {
   const {
     user: { name, picture },
   } = (await getServerSession(authOptions)) as SessionUser;

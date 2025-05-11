@@ -37,7 +37,7 @@ export default async function page(context: { searchParams: Promise<{ token: str
       <div
         className="bg-gradient-to-b from-zinc-950 to-transparent min-h-[500px] w-full rounded-lg text-gray-300 text-center 
       px-10 py-16 font-kanit gap-6 flex flex-col max-w-[450px]"
-      >
+      >aa
         <h1 className="text-3xl text-white">{title}</h1>
         <p>{message}</p>
         <p>{info}</p>

@@ -3,14 +3,11 @@ import "./globals.css";
 
 import { Poppins, Playfair_Display, Kanit, Nunito, Montserrat } from "next/font/google";
 import Provider from "@/context/Provider";
-import UnderBar from "../components/underBar/underBar";
 import { ToastContainer } from "react-toastify";
 import { SkeletonTheme } from "react-loading-skeleton";
 
 import "react-toastify/dist/ReactToastify.css";
 import "react-loading-skeleton/dist/skeleton.css";
-import Sidebar from "@/components/sidebar/Sidebar";
-import { Session } from "next-auth";
 
 const nunito = Nunito({ subsets: ["latin"] });
 const poppins = Poppins({
@@ -47,7 +44,7 @@ export default function RootLayout({
   session,
 }: Readonly<{
   children: React.ReactNode;
-  session: Session | null;
+  session: never;
 }>) {
   return (
     <html
@@ -61,11 +58,9 @@ export default function RootLayout({
         <body className={`w-full h-full text-white bg-black-700 pt-4 overflow-x-hidden ${nunito.className}`}>
           <ToastContainer autoClose={3000} theme="dark" position="bottom-center" />
           <SkeletonTheme baseColor="#202020" highlightColor="#444">
-            <Sidebar />
-            <div className="w-full h-screen pb-32 md:pb-20 md:pl-64 lg:pl-72 2xl:pl-80 3xl:pl-96">{children}</div>
-            <div className="w-full" id="modal"></div>
+            <div className="w-full h-screen">{children}</div>
+            <div className="w-full" id="modal" />
           </SkeletonTheme>
-          <UnderBar />
         </body>
       </Provider>
     </html>

@@ -1,3 +1,4 @@
+"use client";
 import { cleanClasses } from "@/utils/helpers";
 import { InputHTMLAttributes, forwardRef, useEffect, useRef, useState } from "react";
 import { FaEyeSlash } from "react-icons/fa";

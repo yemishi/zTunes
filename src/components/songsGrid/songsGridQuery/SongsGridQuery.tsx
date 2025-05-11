@@ -3,7 +3,7 @@ import useScrollQuery from "@/hooks/useScrollQuery";
 import SongsOrganizer from "../SongsGrid";
 import { SongType } from "@/types/response";
 import SongSkeleton from "../../skeletons/SongSkeleton";
-import AddSongToPlaylist from "@/app/playlist/[playlistId]/AddSongToPlaylist";
+import AddSongToPlaylist from "@/app/(main)/playlist/[playlistId]/AddSongToPlaylist";
 import Button from "@/ui/buttons/Button";
 import ErrorWrapper from "../../errorWrapper/ErrorWrapper";
 import { useState } from "react";

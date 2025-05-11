@@ -7,10 +7,7 @@ async function getData(token: string) {
     type TokenType = {
       id: string;
     };
-    const decode = Jwt.verify(
-      token,
-      process.env.JWT_SECRET as string
-    ) as TokenType;
+    const decode = Jwt.verify(token, process.env.JWT_SECRET as string) as TokenType;
 
     return {
       error: false,

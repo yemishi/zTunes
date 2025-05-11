@@ -2,14 +2,14 @@
 
 import { useEffect, useState } from "react";
 import Image from "@/ui/custom/Image";
-import PlayerDetails from "./PlayerDetails";
+import PlayerDetails from "./playerDetails/PlayerDetails";
 import { UsePlayerType } from "../../../hooks/usePlayer";
 import getVibrantColor from "@/utils/getVibrantColor";
-import ProgressBar from "@/ui/inputs/ProgressBar";
+import ProgressBar from "@/components/underBar/Player/progressBar/ProgressBar";
 import Link from "next/link";
 import ToggleLike from "@/ui/buttons/ToggleLike";
 import { RxDotsVertical } from "react-icons/rx";
-import VolumeInput from "@/ui/inputs/VolumeInput";
+import VolumeInput from "@/components/underBar/Player/progressBar/volumeHandler/VolumeHandler";
 import Modal from "@/components/modal/Modal";
 import SongOptions from "@/components/songOptions/songOptions";
 

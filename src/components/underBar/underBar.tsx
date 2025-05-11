@@ -5,15 +5,10 @@ import NavBarMobile from "./navBarMobile";
 import Player from "./Player/Player";
 import { IoIosPlay } from "react-icons/io";
 
-import { usePathname } from "next/navigation";
 import usePlayer, { UsePlayerType } from "@/hooks/usePlayer";
 
 export default function UnderBar() {
   const player = usePlayer();
-  const pathName = usePathname();
-  const hidden = ["login", "validation", "password-reset"].some((route) => pathName.includes(route));
-
-  if (hidden) return;
 
   return (
     <div className="w-full fixed bottom-0 flex flex-col gap-2 items-center">
