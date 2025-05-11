@@ -1,9 +1,7 @@
-import Button from "@/ui/buttons/Button";
-import Input from "../../../../../ui/inputs/Input";
+import { Input, ProgressStep, Button } from "@/ui";
 import { FormEvent, useState } from "react";
 import { ErrorType } from "@/types/response";
 import useForm from "@/hooks/useForm";
-import ProgressStep from "@/ui/custom/ProgressStep";
 
 export default function RecoverPassword({ close }: { close: () => void }) {
   const [message, setMessage] = useState<string>();
