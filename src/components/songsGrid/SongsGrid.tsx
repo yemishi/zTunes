@@ -9,7 +9,6 @@ import { usePlayerContext } from "@/context/Provider";
 import Image from "@/ui/custom/Image";
 import Link from "next/link";
 import ToggleLike from "@/ui/buttons/ToggleLike";
-import checkDev from "@/utils/isMobile";
 import SongSkeleton from "../skeletons/SongSkeleton";
 import { dateFormat } from "@/utils/formatting";
 import Modal from "../modal/Modal";
@@ -18,7 +17,7 @@ const SongDuration = lazy(() => import("@/ui/custom/SongDuration"));
 const SongOptions = lazy(() => import("../songOptions/songOptions"));
 const AddToPlaylist = lazy(() => import("../songOptions/addToPlaylist"));
 
-export default function SongsOrganizer({
+export default function SongsGrid({
   songs,
   asOl,
   title,
@@ -47,12 +46,6 @@ export default function SongsOrganizer({
   const turnOnPlayer = (index: number) => {
     setPlayer(songs), setCurrSong(index);
   };
-
-  const Options = (selectedSong: SongType) => (
-    <SongOptions refetch={refetch} song={selectedSong} playlistId={playlistId} onclose={close} />
-  );
-
-  const isMobile = checkDev();
 
   if (isLoading)
     return (
@@ -100,26 +93,23 @@ export default function SongsOrganizer({
                 </div>
               </div>
 
-              {!isMobile && (
-                <Link
-                  href={`/album/${albumId}`}
-                  onClick={(e) => e.stopPropagation()}
-                  className="text-xl opacity-75 hover:underline hover:underline-offset-4 hover:opacity-100 duration-150 w-max "
-                >
-                  {albumName}
-                </Link>
-              )}
+              <Link
+                href={`/album/${albumId}`}
+                onClick={(e) => e.stopPropagation()}
+                className="hidden md:block text-xl opacity-75 hover:underline hover:underline-offset-4 hover:opacity-100 duration-150 w-max "
+              >
+                {albumName}
+              </Link>
               <div
                 onClick={(e) => e.stopPropagation()}
-                className={`flex md:  md:grid-cols-3  gap-2 justify-items-end items-center ml-auto `}
+                className={`flex md:grid-cols-3 gap-2 justify-items-end items-center ml-auto `}
               >
-                {!isMobile && (
-                  <>
-                    {playlistId && <span className="mr-3 text-lg opacity-75 ">{dateFormat(createdAt)}</span>}
-                    <ToggleLike songId={id} />
-                    <SongDuration urlSong={urlSong} rerender={songs} />
-                  </>
-                )}
+                {playlistId && <span className="mr-3 text-lg opacity-75 ">{dateFormat(createdAt)}</span>}
+                <div className="hidden md:flex gap-1 items-center">
+                  <ToggleLike songId={id} />
+                  <SongDuration urlSong={urlSong} rerender={songs} />
+                </div>
+
                 {isModal && (
                   <Modal className="modal-container" onClose={closeModal}>
                     <SongOptions refetch={refetch} song={song} playlistId={playlistId} onclose={closeModal} />

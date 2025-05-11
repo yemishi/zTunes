@@ -2,7 +2,7 @@
 
 import { usePlayerContext } from "@/context/Provider";
 import { useSession } from "next-auth/react";
-import { useEffect, useRef, useState } from "react";
+import { JSX, RefObject, useEffect, useRef, useState } from "react";
 import { IoIosPause, IoIosPlay } from "react-icons/io";
 import { IoPlaySkipBackSharp, IoPlaySkipForward } from "react-icons/io5";
 
@@ -17,9 +17,7 @@ export default function usePlayer() {
   const [isPlaying, setIsPlaying] = useState<boolean>(true);
   const [volume, setVolume] = useState<number>(1);
 
-  const togglePlayer = (
-    justPlay?: "play" | React.MouseEvent<any, MouseEvent>
-  ) => {
+  const togglePlayer = (justPlay?: "play" | React.MouseEvent<any, MouseEvent>) => {
     if (audioRef.current?.paused) {
       audioRef.current.play(), setIsPlaying(true);
     } else {
@@ -73,14 +71,10 @@ export default function usePlayer() {
   };
   const previous = () => {
     if (!Number.isInteger(currSong) || !player) return;
-    (currSong as number) - 1 < 0
-      ? setCurrSong(0)
-      : setCurrSong((currSong as number) - 1);
+    (currSong as number) - 1 < 0 ? setCurrSong(0) : setCurrSong((currSong as number) - 1);
   };
 
-  const handleProgress = ({
-    target: { value },
-  }: React.ChangeEvent<HTMLInputElement>) => {
+  const handleProgress = ({ target: { value } }: React.ChangeEvent<HTMLInputElement>) => {
     if (!audioRef.current) return;
     audioRef.current.currentTime = Number(value);
     setCurrentTime(Number(value));
@@ -98,21 +92,16 @@ export default function usePlayer() {
       <div className="flex items-center gap-3 md:gap-3 p-2">
         <IoPlaySkipBackSharp
           onClick={previous}
-          className={`size-4 md:size-6 ${Number(currSong) - 1 >= 0 ? "cursor-pointer" : "opacity-50"
-            }`}
+          className={`size-4 md:size-6 ${Number(currSong) - 1 >= 0 ? "cursor-pointer" : "opacity-50"}`}
         />
 
-        <CurrIcon
-          onClick={togglePlayer}
-          className="size-8 md:size-10 cursor-pointer"
-        />
+        <CurrIcon onClick={togglePlayer} className="size-8 md:size-10 cursor-pointer" />
 
         <IoPlaySkipForward
           onClick={next}
-          className={`size-4 md:size-6 ${player && Number(currSong) + 1 <= player.length - 1
-            ? "cursor-pointer"
-            : "opacity-50"
-            }`}
+          className={`size-4 md:size-6 ${
+            player && Number(currSong) + 1 <= player.length - 1 ? "cursor-pointer" : "opacity-50"
+          }`}
         />
       </div>
     );
@@ -131,7 +120,22 @@ export default function usePlayer() {
     volume,
     onend,
     next,
-    song:
-      player && Number.isInteger(currSong) ? player[currSong as number] : null,
+    song: player && Number.isInteger(currSong) ? player[currSong as number] : null,
   };
+}
+
+export interface UsePlayerType {
+  handleProgress: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleVolume: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  currentTime: number;
+  togglePlayer: (justPlay?: "play" | React.MouseEvent<any, MouseEvent>) => void;
+  PlayerControls: () => JSX.Element;
+  isPlaying: boolean;
+  duration?: number;
+  previous: () => void;
+  audioRef: RefObject<HTMLAudioElement>;
+  volume: number;
+  onend: () => Promise<void>;
+  next: () => void;
+  song: any | null;
 }

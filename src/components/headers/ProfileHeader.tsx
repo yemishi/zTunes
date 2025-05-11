@@ -12,7 +12,6 @@ import InputText from "../../ui/inputs/InputText";
 import { useSession } from "next-auth/react";
 import { isAvailable, updateUser } from "@/utils/helpers";
 import { toast } from "react-toastify";
-import checkDev from "@/utils/isMobile";
 import { FaHeart } from "react-icons/fa6";
 import ExpandableText from "@/ui/custom/ExpandableText";
 import getVibrantColor from "@/utils/getVibrantColor";
@@ -46,16 +45,14 @@ export default function ProfileHeader({
   const [vibrantColor, setVibrantColor] = useState("transparent");
   const { push, refresh } = useRouter();
   const { update } = useSession();
-  const isMobile = checkDev();
-
   useEffect(() => {
     const fetchVibrantColor = async () => {
-      if (isMobile || !isArtist) {
+      if (!isArtist) {
         getVibrantColor(cover).then((res) => setVibrantColor(res));
       }
     };
     fetchVibrantColor();
-  }, [cover, isArtist, isMobile]);
+  }, [cover, isArtist]);
 
   const fetchFollow = async () => {
     const newFollowState = !isFollow;
@@ -100,7 +97,7 @@ export default function ProfileHeader({
   );
 
   const containerClasses = clsx(
-    "w-full relative flex flex-col items-center gap-3 md:items-start !bg-cover !bg-center",
+    "w-full hidden relative md:flex flex-col items-center gap-3 md:items-start !bg-cover !bg-center",
     isArtist ? "md:min-h-[440px] lg:min-h-[480px]" : "md:min-h-[350px]"
   );
 
@@ -112,7 +109,7 @@ export default function ProfileHeader({
   return (
     <div
       style={{
-        background: isMobile || !isArtist ? `linear-gradient(to bottom,${vibrantColor} 0% ,transparent 100%)` : "",
+        background: !isArtist ? `linear-gradient(to bottom,${vibrantColor} 0% ,transparent 100%)` : "",
       }}
       className={containerClasses}
     >
@@ -138,7 +135,7 @@ export default function ProfileHeader({
             className="text-center md:text-left text-3xl md:text-5xl lg:text-6xl font-bold font-montserrat first-letter:uppercase"
             min={3}
             max={25}
-            rows={isMobile ? 1 : 2}
+            rows={1}
             changeable={isOwner}
             initialValue={profileName}
             onblur={(currValue: string) => onchange(currValue)}
@@ -146,16 +143,16 @@ export default function ProfileHeader({
 
           <div className="flex flex-col gap-2 md:flex-row md:items-center">
             {!isOwner &&
-              (isMobile || !isArtist ? (
+              (!isArtist ? (
                 <Button
-                  onClick={() => (username ? fetchFollow() : push("/sign-in"))}
-                  className="bg-transparent py-1 text-base md:z-10"
+                  onClick={() => (username ? fetchFollow() : push("/login"))}
+                  className="hidden md:flex bg-transparent py-1 text-base md:z-10"
                 >
                   {isFollow ? "unfollow" : "Follow"}
                 </Button>
               ) : (
                 <FaHeart
-                  onClick={() => (username ? fetchFollow() : push("/sign-in"))}
+                  onClick={() => (username ? fetchFollow() : push("/login"))}
                   className={`size-9 cursor-pointer duration-150 z-10  ${
                     isFollow ? "text-amber-500" : "text-white text-opacity-30"
                   }`}
@@ -167,7 +164,7 @@ export default function ProfileHeader({
               </span>
             )}
           </div>
-          {artistAbout && !isMobile && <ExpandableText>{artistAbout}</ExpandableText>}
+          {artistAbout && <ExpandableText className="hidden md:flex">{artistAbout}</ExpandableText>}
         </div>
       </div>
     </div>

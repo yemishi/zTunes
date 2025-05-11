@@ -33,7 +33,7 @@ export default function ProgressBar({
       ref={divRef}
       className={`${classContainer ? classContainer : ""} ${
         vertical ? "rotate-[270deg]" : ""
-      } relative flex items-center `}
+      } hidden  md:flex items-center relative`}
     >
       <input
         value={value}
@@ -43,16 +43,14 @@ export default function ProgressBar({
         type="range"
         className={`${
           className ? className : ""
-        } bg-white cursor-pointer appearance-none w-full bg-opacity-20 h-1 rounded-full outline-none z-10`}
+        } bg-white/20 cursor-pointer appearance-none w-full h-1 rounded-full outline-none z-10`}
         {...rest}
       />
       <div
         style={{
           width: Number(divRef.current?.clientWidth) * currentProgress || 0,
         }}
-        className={`${
-          className ? className : ""
-        } ${defaultBg} absolute h-1 rounded-full  `}
+        className={`${className ? className : ""} ${defaultBg} absolute h-1 rounded-full  `}
       />
     </div>
   );

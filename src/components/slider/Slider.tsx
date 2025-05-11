@@ -1,15 +1,11 @@
 "use client";
 import React, { useRef, useState, useEffect, useCallback, useMemo } from "react";
 import { DivMotionProps } from "@/types/uiTypes";
-import { motion } from "framer-motion";
-import isMobile from "@/utils/isMobile";
+import { animate, motion, useMotionValue } from "framer-motion";
+import { cleanClasses } from "@/utils/helpers";
 
 interface CustomBreakPoints {
-  1024: { sliderPerView?: number | false };
-  1280: { sliderPerView?: number | false };
-  1600: { sliderPerView?: number | false };
-  1850: { sliderPerView?: number | false };
-  2160: { sliderPerView?: number | false };
+  [key: number]: { sliderPerView?: number | false };
 }
 
 interface PropsType extends DivMotionProps {
@@ -24,86 +20,91 @@ export default function Slider({
   onDrag,
   onDragEnd,
   customBreakPoints,
-  persistentDrag,
   children,
   ...props
 }: PropsType) {
   const sliderRef = useRef<HTMLDivElement>(null);
   const slidesRef = useRef<HTMLDivElement>(null);
 
-  const { className, ...rest } = props;
+  const { className = "", ...rest } = props;
 
-  const [rangeLeft, setRangeLeft] = useState<number>(0);
-  const [sliderPerView, setSliderPerView] = useState<number | false>();
+  const [rangeLeft, setRangeLeft] = useState(0);
+  const [sliderPerView, setSliderPerView] = useState<number>(children.length);
+  const [isDraggable, setIsDraggable] = useState<boolean>(false);
 
-  const isDisableDrag = persistentDrag === undefined && !isMobile();
-
-  const breakPoints = useMemo(() => {
-    return {
-      "1024": { sliderPerView: isDisableDrag && 2 },
-      "1280": { sliderPerView: isDisableDrag && 3 },
-      "1600": { sliderPerView: isDisableDrag && 4 },
-      "1850": { sliderPerView: isDisableDrag && 5 },
-      "2160": { sliderPerView: isDisableDrag && 6 },
-    };
-  }, [isDisableDrag]);
-
-  const checkMediaQuery = (size: string) => {
-    return window.matchMedia(`(max-width: ${size}px)`).matches;
+  const breakPoints: { [key: number]: number } = {
+    1024: 2,
+    1280: 3,
+    1600: 4,
+    1850: 5,
+    2160: 6,
   };
 
-  const updateSliderPerView = useCallback(() => {
-    const foundSize = Object.entries(customBreakPoints || breakPoints).find(([point, obj]) => {
-      const { sliderPerView } = obj;
-      return checkMediaQuery(point) && sliderPerView;
-    });
-    if (foundSize && isDisableDrag) setSliderPerView(foundSize[1].sliderPerView);
-    else setSliderPerView(false);
-  }, [customBreakPoints, isDisableDrag]);
+  const x = useMotionValue(0);
+
+  const updateSliderConfig = useCallback(() => {
+    const width = window.innerWidth;
+    if (width <= 768) {
+      setIsDraggable(true);
+      setSliderPerView(children.length);
+      return;
+    }
+    let matched = children.length;
+
+    for (const point in breakPoints) {
+      if (width <= parseInt(point)) {
+        matched = breakPoints[parseInt(point)];
+        break;
+      }
+    }
+    animate(x, 0, { duration: 0.4 });
+    setIsDraggable(false);
+    setSliderPerView(matched);
+  }, [children]);
 
   const calcRange = useCallback(() => {
-    if (!slidesRef.current) return;
-    const sliderWidth = sliderRef.current?.clientWidth;
-    const slidesNode = Array.from(slidesRef.current.children);
-    const widthArr = slidesNode.map((e) => e.clientWidth);
-    const slidesWidth = widthArr.reduce((acc, cur) => acc + cur);
+    if (!slidesRef.current || !sliderRef.current) return;
+    const sliderWidth = sliderRef.current.clientWidth;
+    const slides = Array.from(slidesRef.current.children);
+    const totalSlidesWidth = slides.reduce((acc, slide) => acc + (slide as HTMLElement).offsetWidth, 0);
 
-    setRangeLeft(
-      slidesWidth - (sliderWidth || 0) + children.length * 15 + 16 //16 bcuz gap-4
-    );
-  }, [children, sliderRef.current?.clientWidth]);
+    setRangeLeft(Math.max(0, totalSlidesWidth - sliderWidth + children.length * 15 + 16));
+  }, [children.length]);
 
   useEffect(() => {
+    updateSliderConfig();
     calcRange();
-    updateSliderPerView();
-  }, [calcRange, updateSliderPerView]);
+  }, [updateSliderConfig, calcRange]);
 
   useEffect(() => {
     const handleResize = () => {
-      updateSliderPerView();
-      calcRange();
+      clearTimeout((handleResize as any)._timeout);
+      (handleResize as any)._timeout = setTimeout(() => {
+        updateSliderConfig();
+        calcRange();
+      }, 100);
     };
 
     window.addEventListener("resize", handleResize);
     return () => {
       window.removeEventListener("resize", handleResize);
+      clearTimeout((handleResize as any)._timeout);
     };
-  }, [calcRange, updateSliderPerView]);
-  const isDrag =
-    (Number(slidesRef.current?.clientWidth) + 16 || 0) > (sliderRef.current?.clientWidth || 0) && !isDisableDrag;
+  }, [updateSliderConfig, calcRange]);
 
   return (
-    <div ref={sliderRef} className={!isDrag ? "w-full" : "w-screen"}>
+    <div ref={sliderRef} className={`${!isDraggable ? "w-full" : "w-screen"} overflow-hidden`}>
       <motion.div
         ref={slidesRef}
-        drag={isDrag ? "x" : false}
+        drag={isDraggable ? "x" : false}
         dragConstraints={{
           right: 0,
-          left: -rangeLeft,
+          left: rangeLeft > 0 ? -rangeLeft : 0,
         }}
+        style={{ x }}
         dragElastic={0.2}
         dragTransition={{ bounceDamping: 18 }}
-        className={` ${className ? className : ""} ${isDisableDrag ? "w-full" : "w-max"} flex flex-row gap-4`}
+        className={cleanClasses(className, "w-max lg::w-full flex flex-row gap-4")}
         {...rest}
       >
         {React.Children.toArray(children).slice(0, sliderPerView || children.length)}

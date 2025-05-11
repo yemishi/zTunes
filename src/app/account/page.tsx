@@ -33,13 +33,13 @@ async function fetchAlbums(artistId: string | null) {
 
 export default async function Dashboard() {
   const session = await getServerSession(authOptions);
-  if (!session) return redirect("/sign-in");
+  if (!session) return redirect("/login");
 
   const { name: username } = session.user;
   const [{ avatar, id, name, isArtist, isAdmin }, albums] = await fetchData(username);
 
   return (
-    <div className="flex flex-col gap-4 relative pb-32 md:pb-20 md:ml-64 lg:ml-72 2xl:ml-80 min-[2000px]:ml-96">
+    <div className="flex flex-col gap-4 relative">
       <ProfileHeader
         followersLength={0}
         profileInfo={{ cover: avatar, profileId: id, profileName: name }}

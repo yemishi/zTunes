@@ -1,7 +1,7 @@
 "use client";
 
 import ErrorWrapper from "@/components/errorWrapper/ErrorWrapper";
-import BundleOrganizer from "@/components/organizer/BundleOrganizer";
+import BundleOrganizer from "@/components/bundleGrid/BundleGrid";
 import BundleStackSkeleton from "@/components/skeletons/bundle/BundleStackSkeleton";
 import { BundleType } from "@/types/response";
 import { useEffect, useState } from "react";

@@ -1,5 +1,5 @@
 import Button from "@/ui/buttons/Button";
-import Input from "../../../../ui/inputs/Input";
+import Input from "../../../../../ui/inputs/Input";
 import { FormEvent, useState } from "react";
 import { ErrorType } from "@/types/response";
 import useForm from "@/hooks/useForm";

@@ -1,7 +1,7 @@
 "use client";
 import { use } from "react";
 
-import SongsQueryOrganizer from "@/components/organizer/SongsQueryOrganizer";
+import SongsQueryOrganizer from "@/components/songsGrid/songsGridQuery/SongsGridQuery";
 import PreviousPage from "@/ui/buttons/PreviousPage";
 
 export default function Musics(props: { params: Promise<{ artistId: string }> }) {

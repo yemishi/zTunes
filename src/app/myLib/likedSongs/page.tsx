@@ -1,4 +1,4 @@
-import SongsOrganizer from "@/components/organizer/SongsOrganizer";
+import SongsOrganizer from "@/components/songsGrid/SongsGrid";
 import { authOptions } from "@/lib/auth";
 import { SongType } from "@/types/response";
 import { getServerSession } from "next-auth";

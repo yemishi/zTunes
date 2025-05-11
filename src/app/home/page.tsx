@@ -1,7 +1,7 @@
 import { authOptions } from "@/lib/auth";
 import { getServerSession } from "next-auth";
-import ArtistsOrganizer from "../../components/organizer/ProfileOrganizer";
-import BundleOrganizer from "../../components/organizer/BundleOrganizer";
+import ArtistsOrganizer from "../../components/profileGrid/ProfileGrid";
+import BundleOrganizer from "../../components/bundleGrid/BundleGrid";
 import ErrorWrapper from "@/components/errorWrapper/ErrorWrapper";
 
 const getPlaylists =
@@ -27,7 +27,7 @@ export default async function Home() {
   ]);
 
   return (
-    <div className="w-full min-h-full flex flex-col pb-32 md:pb-20 md:ml-64 lg:ml-72 2xl:ml-80 min-[2000px]:ml-96">
+    <div className="w-full h-full flex flex-col">
       <ErrorWrapper error={albums.error} message={albums.message} className="ml-4 mt-4 self-center md:self-start">
         {albums.length > 0 && <BundleOrganizer title="popular albums" baseUrl="/album" props={albums} />}
       </ErrorWrapper>

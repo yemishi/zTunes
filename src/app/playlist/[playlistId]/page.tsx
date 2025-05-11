@@ -1,7 +1,7 @@
 "use server";
 
 import GenericHeader from "@/components/headers/GenericHeader";
-import SongsQueryOrganizer from "@/components/organizer/SongsQueryOrganizer";
+import SongsQueryOrganizer from "@/components/songsGrid/songsGridQuery/SongsGridQuery";
 
 import { authOptions } from "@/lib/auth";
 14;

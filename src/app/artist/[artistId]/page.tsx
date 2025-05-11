@@ -10,7 +10,7 @@ import Button from "@/ui/buttons/Button";
 import ProfileHeader from "@/components/headers/ProfileHeader";
 
 import ExpandableText from "@/ui/custom/ExpandableText";
-import SongsOrganizer from "@/components/organizer/SongsOrganizer";
+import SongsOrganizer from "@/components/songsGrid/SongsGrid";
 import ErrorWrapper from "@/components/errorWrapper/ErrorWrapper";
 
 import ArtistAlbums from "./ArtistAlbums";

@@ -32,7 +32,7 @@ export default async function ArtistPage(props: { params: Promise<{ albumId: str
   );
 
   return (
-    <div className="pb-32 md:pb-20 md:ml-64 lg:ml-72 2xl:ml-80  min-[2000px]:ml-96 flex flex-col relative">
+    <div className="flex flex-col relative">
       <GenericHeader
         info={{
           avatar,

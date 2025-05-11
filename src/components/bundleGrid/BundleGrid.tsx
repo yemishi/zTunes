@@ -5,7 +5,7 @@ import { BundleType } from "@/types/response";
 import Card from "../card/Card";
 import Link from "next/link";
 
-export default function BundleOrganizer({
+export default function BundleGrid({
   title,
   props,
   seeMore,
@@ -16,17 +16,13 @@ export default function BundleOrganizer({
   baseUrl: string;
   seeMore?: string;
 }) {
-
   return (
     <div className="text-white p-4 flex flex-col font-kanit gap-3">
       <span className="flex items-center">
         <h2 className="text-xl first-letter:uppercase">{title}</h2>
 
         {seeMore && (
-          <Link
-            href={seeMore}
-            className="ml-auto text-white text-opacity-65 hover:text-opacity-100"
-          >
+          <Link href={seeMore} className="ml-auto text-white text-opacity-65 hover:text-opacity-100">
             See more
           </Link>
         )}
@@ -34,8 +30,7 @@ export default function BundleOrganizer({
 
       <Slider>
         {props.map((item, index) => {
-          const { coverPhoto, id, title, artistId, artistName, isOfficial } =
-            item;
+          const { coverPhoto, id, title, artistId, artistName, isOfficial } = item;
           return (
             <Card
               key={`${id}_${index}`}

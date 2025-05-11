@@ -21,8 +21,8 @@ export default function ToggleLike({ songId, className, onClick, ...props }: Pro
       }`}
     >
       <FaHeart
-        className={`h-full w-full duration-200 hover:opacity-70 active:scale-105 ${
-          isLiked ? "text-amber-600 " : "text-white text-opacity-55"
+        className={`h-full w-full cursor-pointer duration-200 hover:opacity-70 active:scale-105 ${
+          isLiked ? "text-amber-600 " : "text-white opacity-55"
         }`}
       />
     </button>

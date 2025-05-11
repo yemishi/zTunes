@@ -11,7 +11,7 @@ type PropsType = {
   isArtist: boolean;
 };
 
-export default function ProfileOrganizer({
+export default function ProfileGrid({
   props,
   title,
   seeMore,
@@ -25,10 +25,7 @@ export default function ProfileOrganizer({
       <span className="flex items-center">
         <h2 className="text-xl first-letter:uppercase">{title}</h2>
         {seeMore && (
-          <Link
-            href={seeMore}
-            className="ml-auto text-white text-opacity-65 hover:text-opacity-100"
-          >
+          <Link href={seeMore} className="ml-auto text-white text-opacity-65 hover:text-opacity-100">
             See more
           </Link>
         )}

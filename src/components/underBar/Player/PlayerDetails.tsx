@@ -85,7 +85,7 @@ export default function PlayerDetails({
       )}
       {isVisible && (
         <motion.div
-          key="modal"
+          key="song-detail-modal"
           initial={{ y: "100%" }}
           animate={{ y: 0 }}
           exit={{ y: "100%" }}
@@ -93,7 +93,7 @@ export default function PlayerDetails({
           style={{
             background: `linear-gradient(to bottom,${vibrantColor || "rgb(33 33 33)"} 0% ,#121212 100%)`,
           }}
-          className={`fixed overflow-auto top-0 left-0 w-full h-full z-40 p-3 gap-3 font-kanit flex flex-col`}
+          className={`fixed md:hidden overflow-auto top-0 left-0 w-full h-full z-40 p-3 gap-3 font-kanit flex flex-col`}
         >
           <div className="flex justify-between items-center ">
             <button onClick={onClose} className="size-12 p-2">

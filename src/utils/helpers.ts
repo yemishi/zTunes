@@ -3,11 +3,6 @@ import { ErrorType } from "@/types/response";
 import { format, lastDayOfMonth } from "date-fns";
 import { usePathname } from "next/navigation";
 
-const urlMatch = (path: string) => {
-  const pathName = usePathname();
-  return pathName.includes(path);
-};
-
 const removeFromPlaylist = async (
   songSelected: {
     songId: any;
@@ -118,4 +113,4 @@ const isLightBg = (hexColor: string): boolean => {
   return luminance > 0.5;
 };
 
-export { cleanClasses, isValidDate, getSongDuration, updateUser, isAvailable, removeFromPlaylist, urlMatch, isLightBg };
+export { cleanClasses, isValidDate, getSongDuration, updateUser, isAvailable, removeFromPlaylist, isLightBg };

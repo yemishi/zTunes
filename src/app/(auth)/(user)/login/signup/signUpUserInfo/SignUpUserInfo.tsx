@@ -1,6 +1,6 @@
-import Input from "../../../../../ui/inputs/Input";
+import Input from "../../../../../../ui/inputs/Input";
 import { IoAlertCircleOutline } from "react-icons/io5";
-import DateFields from "../../../../../ui/inputs/DateFields";
+import DateFields from "../../../../../../ui/inputs/DateFields";
 import { ChangeEventHandler } from "react";
 
 interface Props {

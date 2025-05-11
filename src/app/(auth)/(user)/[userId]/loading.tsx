@@ -6,7 +6,7 @@ import Skeleton from "react-loading-skeleton";
 
 export default function () {
   return (
-    <div className="flex flex-col gap-4 pb-32 md:ml-64 lg:ml-72 2xl:ml-80 min-[2000px]:ml-96">
+    <div className="flex flex-col gap-4">
       <UserHeader />
       <BundleStackSkeleton count={10} />
       <ProfileBundleSkeleton count={10} />

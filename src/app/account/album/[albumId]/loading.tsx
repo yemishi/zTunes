@@ -3,7 +3,7 @@ import Skeleton from "react-loading-skeleton";
 
 export default function () {
   return (
-    <div className="pb-32 md:pb-20 md:ml-64 lg:ml-72 2xl:ml-80  min-[2000px]:ml-96 flex flex-col">
+    <div className="flex flex-col">
       <GenericHeaderSkeleton />
       <div className="flex flex-col p-2">
         {Array.from({ length: 10 }).map((_, index) => (

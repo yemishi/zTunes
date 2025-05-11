@@ -1,7 +1,7 @@
 import ErrorWrapper from "@/components/errorWrapper/ErrorWrapper";
 import ProfileHeader from "@/components/headers/ProfileHeader";
-import BundleOrganizer from "@/components/organizer/BundleOrganizer";
-import ProfileOrganizer from "@/components/organizer/ProfileOrganizer";
+import BundleOrganizer from "@/components/bundleGrid/BundleGrid";
+import ProfileOrganizer from "@/components/profileGrid/ProfileGrid";
 import { authOptions } from "@/lib/auth";
 import { getServerSession } from "next-auth";
 import { notFound } from "next/navigation";
@@ -56,7 +56,7 @@ export default async function UserPage(props0: { params: Promise<{ userId: strin
   };
 
   return (
-    <div className="flex flex-col gap-4 pb-32 md:ml-64 lg:ml-72 2xl:ml-80 min-[2000px]:ml-96">
+    <div className="flex flex-col gap-4">
       <ProfileHeader
         username={username}
         profileInfo={profileInfo}
