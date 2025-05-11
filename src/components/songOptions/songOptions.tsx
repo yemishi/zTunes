@@ -16,7 +16,8 @@ import Button from "@/ui/buttons/Button";
 import ToggleLike from "@/ui/buttons/ToggleLike";
 import { useSession } from "next-auth/react";
 import AddToPlaylist from "./addToPlaylist";
-import { useTempOverlay } from "@/context/Provider";
+import { useState } from "react";
+import Modal from "../modal/Modal";
 
 interface DivProps extends React.HTMLAttributes<HTMLDivElement> {
   song: SongType;
@@ -30,6 +31,7 @@ export default function SongOptions({ song, onclose, playlistId, refetch, classN
   const { albumId, artistId, artistName, coverPhoto, name, id, createdAt } = song;
   const { data: session } = useSession();
   const user = session?.user;
+  const [isModal, setIsModal] = useState(false);
 
   const selected = { songId: id, createdAt };
   const toRemove = () => {
@@ -49,19 +51,20 @@ export default function SongOptions({ song, onclose, playlistId, refetch, classN
     title: name,
   };
 
-  const { close, setChildren } = useTempOverlay();
-  const PlaylistsOptions = () => (
-    <AddToPlaylist onclose={close} options={options} userAvatar={user?.picture} username={user?.name} />
-  );
-
   const linkStyle =
     "flex gap-3 py-2 md:w-60 md:rounded-lg md:bg-gradient-to-r md:from-transparent hover:to-black-500 items-center text-left";
   return (
-    <div
-      {...props}
-      className="flex bg-black fixed top-2/4 -translate-y-2/4  bg-opacity-75 md:bg-black-400 md:bg-opacity-75 flex-col md:text-center font-medium text-lg md:text-xl h-full w-full font-kanit 
-      md:max-w-[550px] md:max-h-[700px] md:items-center md:pt-4 md:rounded-lg backdrop-blur-lg  p-4 pt-20"
-    >
+    <div {...props} className="flex flex-col md:text-center font-medium text-lg md:text-xl h-full w-full font-kanit ">
+      {isModal && (
+        <Modal className="modal-container" onClose={() => setIsModal(false)}>
+          <AddToPlaylist
+            onclose={() => setIsModal(false)}
+            options={options}
+            userAvatar={user?.picture}
+            username={user?.name}
+          />
+        </Modal>
+      )}
       <div className="flex md:flex-col md:items-center gap-5 mb-7">
         <Image src={coverPhoto} className="size-16 md:size-44" />
         <span className="flex flex-col">
@@ -92,7 +95,7 @@ export default function SongOptions({ song, onclose, playlistId, refetch, classN
       <button
         onClick={() => {
           if (!user) return push("/sign-in"), onclose();
-          setChildren(PlaylistsOptions);
+          setIsModal(true);
         }}
         className={linkStyle}
       >

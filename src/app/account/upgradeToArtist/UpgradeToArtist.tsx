@@ -4,25 +4,20 @@ import InputFileImg from "@/ui/inputs/InputFileImg";
 import Image from "@/ui/custom/Image";
 import Button from "@/ui/buttons/Button";
 import uploadImg from "@/firebase/handleImage";
-import useObject from "@/hooks/useObject";
 
 import { ErrorType } from "@/types/response";
 import { useRouter } from "next/navigation";
 import { GiMicrophone } from "react-icons/gi";
 import { CardAcc } from "../cardAcc/CardAcc";
 import { toast } from "react-toastify";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 
 export default function UpgradeToArtist({ userId }: { userId: string }) {
-  const {
-    state: { coverPhoto, isArtist, isLoading, summary },
-    updateObject,
-  } = useObject<{
-    isArtist: boolean;
-    coverPhoto: FileList | null;
-    isLoading: boolean;
-    summary: string;
-  }>();
+  const [isArtist, setIsArtist] = useState(false);
+  const [coverPhoto, setCoverPhoto] = useState<FileList | null>();
+  const [isLoading, setIsLoading] = useState(false);
+  const [summary, setSummary] = useState("");
+
   const demoPhoto = useMemo(() => {
     if (coverPhoto) return URL.createObjectURL(coverPhoto[0]);
     return "";
@@ -33,7 +28,7 @@ export default function UpgradeToArtist({ userId }: { userId: string }) {
   const onSubmit = async (e: any) => {
     e.preventDefault();
     if (!coverPhoto || !summary) return toast.error("All fields is required");
-    updateObject("isLoading", true);
+    setIsLoading(true);
     const urlImg = await uploadImg(coverPhoto);
     if (urlImg.error) return toast.error(urlImg.message);
     const body = {
@@ -46,13 +41,13 @@ export default function UpgradeToArtist({ userId }: { userId: string }) {
       method: "PATCH",
       body: JSON.stringify(body),
     }).then((res) => res.json());
-    if (response.error) return toast.error(response.message), updateObject("isLoading", false);
+    if (response.error) return toast.error(response.message), setIsLoading(false);
     return refresh(), toast.success(response.message);
   };
   return (
     <>
       <CardAcc
-        onClick={() => updateObject("isArtist", true)}
+        onClick={() => setIsArtist(true)}
         Icon={GiMicrophone}
         title="I'm an artist"
         subTitle="Upgrade to artist account"
@@ -69,7 +64,7 @@ export default function UpgradeToArtist({ userId }: { userId: string }) {
                 isLoading={isLoading}
                 className="absolute w-full h-full top-0 backdrop-brightness-75 "
                 onChange={(e) => {
-                  if (e.target.files && e.target.files[0]) updateObject("coverPhoto", e.target.files);
+                  if (e.target.files && e.target.files[0]) setCoverPhoto(e.target.files);
                 }}
               />
             </div>
@@ -79,13 +74,13 @@ export default function UpgradeToArtist({ userId }: { userId: string }) {
               <textarea
                 className="bg-neutralDark-800 w-full min-h-24 max-h-64 p-2 rounded-lg mt-2"
                 placeholder="Tell about you"
-                onChange={(e) => updateObject("summary", e.target.value)}
+                onChange={(e) => setSummary(e.target.value)}
               />
             </div>
             <span className="grid grid-cols-2 gap-3 mt-6">
               <Button
                 type="button"
-                onClick={() => updateObject("isArtist", false)}
+                onClick={() => setIsArtist(false)}
                 isLoading={isLoading}
                 className="bg-white text-black"
               >

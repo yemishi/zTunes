@@ -4,7 +4,7 @@ import { SongType } from "@/types/response";
 import { RxDotsVertical } from "react-icons/rx";
 import { lazy, useState } from "react";
 import { useSession } from "next-auth/react";
-import { usePlayerContext, useTempOverlay } from "@/context/Provider";
+import { usePlayerContext } from "@/context/Provider";
 
 import Image from "@/ui/custom/Image";
 import Link from "next/link";
@@ -12,6 +12,7 @@ import ToggleLike from "@/ui/buttons/ToggleLike";
 import checkDev from "@/utils/isMobile";
 import SongSkeleton from "../skeletons/SongSkeleton";
 import { dateFormat } from "@/utils/formatting";
+import Modal from "../modal/Modal";
 
 const SongDuration = lazy(() => import("@/ui/custom/SongDuration"));
 const SongOptions = lazy(() => import("../songOptions/songOptions"));
@@ -38,13 +39,14 @@ export default function SongsOrganizer({
     coverPhoto: string;
     title: string;
   } | null>(null);
+  const [isModal, setIsModal] = useState(false);
+  const closeModal = () => setIsModal(false);
 
   const { data } = useSession();
   const user = data?.user;
   const turnOnPlayer = (index: number) => {
     setPlayer(songs), setCurrSong(index);
   };
-  const { close, setChildren } = useTempOverlay();
 
   const Options = (selectedSong: SongType) => (
     <SongOptions refetch={refetch} song={selectedSong} playlistId={playlistId} onclose={close} />
@@ -118,7 +120,12 @@ export default function SongsOrganizer({
                     <SongDuration urlSong={urlSong} rerender={songs} />
                   </>
                 )}
-                <RxDotsVertical className="h-full w-6 md:w-8" onClick={(e) => setChildren(Options(song))} />
+                {isModal && (
+                  <Modal className="modal-container" onClose={closeModal}>
+                    <SongOptions refetch={refetch} song={song} playlistId={playlistId} onclose={closeModal} />
+                  </Modal>
+                )}
+                <RxDotsVertical className="h-full w-6 md:w-8" onClick={() => setIsModal(true)} />
               </div>
             </div>
           );

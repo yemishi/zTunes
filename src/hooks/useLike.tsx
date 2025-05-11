@@ -18,25 +18,22 @@ export default function useLike(songId: string) {
   useEffect(() => {
     const fetchData = async () => {
       if (!username) return setIsLiked(false), setIsLoading(false);
-      const data: boolean = await fetch(
-        `/api/song/likedSong?username=${username}&songId=${songId}`
-      ).then((res) => res.json());
+      const data: boolean = await fetch(`/api/song/likedSong?username=${username}&songId=${songId}`).then((res) =>
+        res.json()
+      );
       setIsLiked(data), setIsLoading(false);
     };
     fetchData();
   }, [songId]);
 
   const toggleLike = async () => {
-    if (!username) return push("/sign-in");
+    if (!username) return push("/login");
     setIsLoading(true), setIsLiked(!isLiked);
     const data: ErrorType = await fetch(`/api/song/likedSong`, {
       method: "PATCH",
       body: JSON.stringify({ songId, username }),
     }).then((res) => res.json());
-    if (data.error)
-      return (
-        toast.error(data.message), setIsLoading(false), setIsLiked(!isLiked)
-      );
+    if (data.error) return toast.error(data.message), setIsLoading(false), setIsLiked(!isLiked);
     return refresh(), setIsLoading(false);
   };
 

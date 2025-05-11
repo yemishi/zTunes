@@ -19,8 +19,8 @@ import AddToPlaylist from "../../songOptions/addToPlaylist";
 import Image from "@/ui/custom/Image";
 import ProgressBar from "@/ui/inputs/ProgressBar";
 import ToggleLike from "@/ui/buttons/ToggleLike";
-import { useTempOverlay } from "@/context/Provider";
 import VolumeInput from "@/ui/inputs/VolumeInput";
+import Modal from "@/components/modal/Modal";
 
 type PropsType = {
   song: SongType;
@@ -73,11 +73,16 @@ export default function PlayerDetails({
     onClose();
   }, [pathname]);
 
-  const { setChildren, close } = useTempOverlay();
-  const Options = () => <SongOptions song={song} onclose={close} />;
+  const [isModal, setIsModal] = useState(false);
+  const closeModal = () => setIsModal(false);
 
   return (
     <AnimatePresence>
+      {isModal && (
+        <Modal className="modal-container" onClose={closeModal}>
+          <SongOptions song={song} onclose={closeModal} />
+        </Modal>
+      )}
       {isVisible && (
         <motion.div
           key="modal"
@@ -96,7 +101,7 @@ export default function PlayerDetails({
             </button>
             <span className="text-lg flex-1 text-center">{albumName}</span>
 
-            <button onClick={() => setChildren(Options)} className="size-12 p-2">
+            <button onClick={() => setIsModal(true)} className="size-12 p-2">
               <TbDots className="h-full w-full" />
             </button>
           </div>

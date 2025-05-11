@@ -10,7 +10,6 @@ import { SkeletonTheme } from "react-loading-skeleton";
 import "react-toastify/dist/ReactToastify.css";
 import "react-loading-skeleton/dist/skeleton.css";
 import Sidebar from "@/components/sidebar/Sidebar";
-import TempOverlay from "@/ui/TempOverlay";
 import { Session } from "next-auth";
 
 const nunito = Nunito({ subsets: ["latin"] });
@@ -63,7 +62,6 @@ export default function RootLayout({
           <ToastContainer autoClose={3000} theme="dark" position="bottom-center" />
           <SkeletonTheme baseColor="#202020" highlightColor="#444">
             <div className="w-full h-screen">
-              <TempOverlay />
               <Sidebar />
               {children}
             </div>

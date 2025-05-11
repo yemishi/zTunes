@@ -11,27 +11,23 @@ import { deleteSong } from "@/firebase/handleSong";
 
 import Button from "@/ui/buttons/Button";
 import Input from "@/ui/inputs/Input";
-import useObject from "@/hooks/useObject";
 import { PopConfirm } from "@/components";
+import { useState } from "react";
 
 export default function EditSong({ song }: { song: SongType }) {
   const { name: initialName, albumId, id, artistId, urlSong } = song;
-  const {
-    state: { isDelete, isEdit, isLoading, name },
-    updateObject,
-  } = useObject({
-    name: initialName,
-    isEdit: false,
-    isDelete: false,
-    isLoading: false,
-  });
+
+  const [name, setName] = useState(initialName);
+  const [isEdit, setIsEdit] = useState(false);
+  const [isDelete, setIsDelete] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const { refresh } = useRouter();
   const loadingClass = isLoading ? "pointer-event-none animate-pulse" : "";
 
   const changeName = async () => {
     if (initialName.toLocaleLowerCase() === name.toLocaleLowerCase()) return;
-    updateObject("isLoading", true);
+    setIsLoading(true);
     const body = {
       songId: id,
       albumId,
@@ -42,11 +38,11 @@ export default function EditSong({ song }: { song: SongType }) {
       body: JSON.stringify(body),
     }).then((res) => res.json());
     if (response.error) {
-      updateObject("isLoading", false);
+      setIsLoading(false);
       return toast.error(response.message);
     }
     toast.success(response.message);
-    refresh(), updateObject("isEdit", false);
+    refresh(), setIsEdit(false);
   };
 
   const removeSong = async () => {
@@ -54,7 +50,7 @@ export default function EditSong({ song }: { song: SongType }) {
       songId: id,
       artistId,
     };
-    updateObject("isLoading", false);
+    setIsLoading(false);
     const response: ErrorType = await fetch(`/api/song`, {
       method: "DELETE",
       body: JSON.stringify(body),
@@ -63,14 +59,14 @@ export default function EditSong({ song }: { song: SongType }) {
     await deleteSong(urlSong);
     toast.success(response.message);
     refresh();
-    updateObject("isLoading", false);
+    setIsLoading(false);
   };
 
   return (
     <>
       <Button
         onClick={(e) => {
-          e.stopPropagation(), updateObject("isEdit", true);
+          e.stopPropagation(), setIsEdit(true);
         }}
         className="ml-auto rounded-lg  text-sm bg-white text-black"
       >
@@ -91,16 +87,13 @@ export default function EditSong({ song }: { song: SongType }) {
               label="Album name"
               placeholder={name}
               value={name}
-              onChange={(e) => updateObject("name", e.target.value)}
+              onChange={(e) => setName(e.target.value)}
             />
             <span className="flex gap-2 ml-auto">
+              <GiCancel onClick={() => setIsEdit(false)} className={`size-7  duration-150 ${loadingClass}`} />
               <GiConfirmed onClick={changeName} className={`size-7 text-green-500 duration-150 ${loadingClass}`} />
-              <GiCancel
-                onClick={() => updateObject("isEdit", false)}
-                className={`size-7  duration-150 ${loadingClass}`}
-              />
               <RiDeleteBin6Line
-                onClick={() => updateObject("isDelete", true)}
+                onClick={() => setIsDelete(true)}
                 className={`size-7  duration-150 ${loadingClass} text-red-500 `}
               />
             </span>
@@ -109,12 +102,7 @@ export default function EditSong({ song }: { song: SongType }) {
       </AnimatePresence>
 
       {isDelete && (
-        <PopConfirm
-          onClose={() => updateObject("isDelete", false)}
-          confirm={removeSong}
-          name={initialName}
-          isLoading={isLoading}
-        />
+        <PopConfirm onClose={() => setIsDelete(false)} confirm={removeSong} name={initialName} isLoading={isLoading} />
       )}
     </>
   );

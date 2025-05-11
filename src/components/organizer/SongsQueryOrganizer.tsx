@@ -4,9 +4,10 @@ import SongsOrganizer from "./SongsOrganizer";
 import { SongType } from "@/types/response";
 import SongSkeleton from "../skeletons/SongSkeleton";
 import AddSongToPlaylist from "@/app/playlist/[playlistId]/AddSongToPlaylist";
-import { useTempOverlay } from "@/context/Provider";
 import Button from "@/ui/buttons/Button";
 import ErrorWrapper from "../errorWrapper/ErrorWrapper";
+import { useState } from "react";
+import Modal from "../modal/Modal";
 
 export default function SongsQueryOrganizer({
   queryKey,
@@ -36,21 +37,22 @@ export default function SongsQueryOrganizer({
     queryKey,
     url,
   });
-
-  const { setChildren, close } = useTempOverlay();
-  const addSong = () =>
-    setChildren(
-      <AddSongToPlaylist
-        refetch={refetch}
-        onClose={close}
-        playlistId={playlistId as string}
-        username={username as string}
-      />
-    );
+  const [isModal, setIsModal] = useState(false);
+  const closeModal = () => setIsModal(false);
   return (
     <div className="flex flex-col">
+      {isModal && (
+        <Modal className="modal-container" onClose={closeModal}>
+          <AddSongToPlaylist
+            refetch={refetch}
+            onClose={closeModal}
+            playlistId={playlistId as string}
+            username={username as string}
+          />
+        </Modal>
+      )}
       {isOwner && (
-        <Button onClick={addSong} className="mr-auto ml-3 my-2 rounded-md">
+        <Button onClick={() => setIsModal(true)} className="mr-auto ml-3 my-2 rounded-md">
           Add song
         </Button>
       )}
