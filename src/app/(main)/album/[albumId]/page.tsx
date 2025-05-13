@@ -4,9 +4,7 @@ import SongsQueryOrganizer from "@/components/songsGrid/songsGridQuery/SongsGrid
 import { notFound } from "next/navigation";
 
 async function fetchData(albumId: string) {
-  const albumInfo = await fetch(`${process.env.URL}/api/album?albumId=${albumId}`, { cache: "no-store" }).then((res) =>
-    res.json()
-  );
+  const albumInfo = await fetch(`${process.env.URL}/api/album?albumId=${albumId}`).then((res) => res.json());
 
   if (albumInfo.error) {
     if (albumInfo.status === 404) return notFound();
@@ -22,11 +20,12 @@ export default async function Album(props: { params: Promise<{ albumId: string }
 
   const albumInfo = await fetchData(albumId);
 
-  const { artistId, artistName, coverPhoto, releasedDate, title, avatar, desc, id, urlsSongs } = albumInfo;
+  const { artistId, artistName, coverPhoto, releasedDate, title, avatar, desc, id, tracks, vibrantColor } = albumInfo;
 
   return (
     <div className="flex flex-col">
       <GenericHeader
+        vibrantColor={vibrantColor}
         info={{
           isOwner: false,
           authorId: artistId,
@@ -34,7 +33,7 @@ export default async function Album(props: { params: Promise<{ albumId: string }
           avatar: avatar as string,
           coverPhoto,
           title,
-          urlsSongs,
+          tracks,
           desc,
           releasedDate,
         }}

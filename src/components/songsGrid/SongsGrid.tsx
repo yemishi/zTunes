@@ -6,14 +6,13 @@ import { lazy, useState } from "react";
 import { useSession } from "next-auth/react";
 import { usePlayerContext } from "@/context/Provider";
 
-import Image from "@/ui/custom/Image";
+import { Image, ToggleLike } from "@/ui";
 import Link from "next/link";
-import ToggleLike from "@/ui/buttons/ToggleLike";
 import SongSkeleton from "../skeletons/SongSkeleton";
 import { dateFormat } from "@/utils/formatting";
 import Modal from "../modal/Modal";
+import { getFormattedDuration } from "@/utils/helpers";
 
-const SongDuration = lazy(() => import("@/ui/custom/SongDuration"));
 const SongOptions = lazy(() => import("../songOptions/songOptions"));
 const AddToPlaylist = lazy(() => import("../songOptions/addToPlaylist"));
 
@@ -63,7 +62,7 @@ export default function SongsGrid({
       {songs
         .sort((a, b) => a.name.trim().localeCompare(b.name.trim()))
         .map((song, index) => {
-          const { artistId, artistName, coverPhoto, name, id, urlSong, albumId, albumName, createdAt } = song;
+          const { artistId, artistName, coverPhoto, name, id, albumId, albumName, createdAt, track } = song;
 
           return (
             <div
@@ -104,10 +103,10 @@ export default function SongsGrid({
                 onClick={(e) => e.stopPropagation()}
                 className={`flex md:grid-cols-3 gap-2 justify-items-end items-center ml-auto `}
               >
-                {playlistId && <span className="mr-3 text-lg opacity-75 ">{dateFormat(createdAt)}</span>}
+                {playlistId && <span className="mr-3 text-lg opacity-75">{dateFormat(createdAt)}</span>}
                 <div className="hidden md:flex gap-1 items-center">
                   <ToggleLike songId={id} />
-                  <SongDuration urlSong={urlSong} rerender={songs} />
+                  <span className="text-lg">{getFormattedDuration(track.duration)}</span>
                 </div>
 
                 {isModal && (

@@ -38,7 +38,7 @@ interface BundleType {
   status: number;
   isOfficial?: boolean;
   desc?: string;
-  urlsSongs?: string[];
+  tracks?: { url: string; duration: number }[];
 }
 
 interface FollowersType {
@@ -49,9 +49,7 @@ interface FollowersType {
 interface ArtistType {
   id: string;
   name: string;
-
   summary: string;
-
   cover: string;
   profile: {
     avatar: string;
@@ -92,7 +90,8 @@ interface SongType {
   coverPhoto: string;
   albumId: string;
   name: string;
-  urlSong: string;
+  category?: string[];
+  track: { url: string; duration: number };
   error: false;
 }
 

@@ -6,15 +6,15 @@ import { Suspense, lazy } from "react";
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 const UserSessionPanel = lazy(() => import("./userSessionPanel/SessionPanel"));
 const UserLibPanel = lazy(() => import("./userLibPanel/UserLibPanel"));
 
 export default function Sidebar() {
   const pathName = usePathname();
-  const hidden = ["login", "validation", "password-reset"].some((route) => pathName.includes(route));
-
-  if (hidden) return;
+  const { data: session } = useSession();
+  const user = session?.user;
   const liMapped = [
     { Icon: PiHouseLight, to: "home" },
     { Icon: PiMagnifyingGlassLight, to: "search" },
@@ -47,7 +47,7 @@ export default function Sidebar() {
 
       <div className="flex flex-col rounded-lg flex-1 bg-black-700 p-2 overflow-y-auto">
         <Suspense fallback={<div className="spinner" />}>
-          <UserLibPanel />
+          <UserLibPanel username={user?.name} />
         </Suspense>
       </div>
     </div>

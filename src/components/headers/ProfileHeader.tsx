@@ -20,6 +20,7 @@ type ProfileInfo = {
   profileName: string;
   profileId: string;
   cover: string;
+  vibrantColor?: { color: string; isLight: boolean };
 };
 
 interface ProfileHeaderProps {
@@ -39,20 +40,29 @@ export default function ProfileHeader({
   profileInfo,
   followersLength,
 }: ProfileHeaderProps) {
-  const { profileName, profileId, cover } = profileInfo;
-  const [isFollow, setIsFollow] = useState<boolean>(!!isInclude);
-  const [follows, setFollows] = useState<number>(followersLength);
-  const [vibrantColor, setVibrantColor] = useState("transparent");
-  const { push, refresh } = useRouter();
   const { update } = useSession();
+  const { push, refresh } = useRouter();
+  const { profileName, profileId, cover, vibrantColor } = profileInfo;
+
+  const [isFollow, setIsFollow] = useState(isInclude);
+  const [follows, setFollows] = useState(followersLength);
+  const [vibrant, setVibrant] = useState(vibrantColor);
+
   useEffect(() => {
-    const fetchVibrantColor = async () => {
-      if (!isArtist) {
-        getVibrantColor(cover).then((res) => setVibrantColor(res));
-      }
-    };
-    fetchVibrantColor();
-  }, [cover, isArtist]);
+    if (!vibrantColor) {
+      const fetchVibrantColor = async () => {
+        const vibrantColor = await getVibrantColor(cover);
+        setVibrant(vibrantColor);
+        const body = {
+          userId: profileId,
+          vibrantColor,
+        };
+
+        await fetch(`/api/user`, { method: "PATCH", body: JSON.stringify(body) });
+      };
+      fetchVibrantColor();
+    }
+  }, []);
 
   const fetchFollow = async () => {
     const newFollowState = !isFollow;
@@ -97,7 +107,7 @@ export default function ProfileHeader({
   );
 
   const containerClasses = clsx(
-    "w-full hidden relative md:flex flex-col items-center gap-3 md:items-start !bg-cover !bg-center",
+    "w-full  relative md:flex flex-col items-center gap-3 md:items-start !bg-cover !bg-center",
     isArtist ? "md:min-h-[440px] lg:min-h-[480px]" : "md:min-h-[350px]"
   );
 
@@ -109,7 +119,7 @@ export default function ProfileHeader({
   return (
     <div
       style={{
-        background: !isArtist ? `linear-gradient(to bottom,${vibrantColor} 0% ,transparent 100%)` : "",
+        background: `linear-gradient(to bottom, ${vibrant?.color} 0% ,transparent 100%)`,
       }}
       className={containerClasses}
     >
@@ -153,8 +163,8 @@ export default function ProfileHeader({
               ) : (
                 <FaHeart
                   onClick={() => (username ? fetchFollow() : push("/login"))}
-                  className={`size-9 cursor-pointer duration-150 z-10  ${
-                    isFollow ? "text-amber-500" : "text-white text-opacity-30"
+                  className={`size-9 cursor-pointer duration-150 mx-auto  ${
+                    isFollow ? "text-amber-500" : "text-white/50"
                   }`}
                 />
               ))}

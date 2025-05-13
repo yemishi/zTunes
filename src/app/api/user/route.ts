@@ -6,7 +6,6 @@ import { User } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 import { jsonError } from "../helpers";
 
-
 export async function GET(req: NextRequest) {
   const userId = req.nextUrl.searchParams.get("userId") as string;
   const username = req.nextUrl.searchParams.get("username") as string;
@@ -28,6 +27,7 @@ export async function GET(req: NextRequest) {
       isArtist: !!user.isArtist,
       avatar: user.profile?.avatar || null,
       isAdmin: !!user.isAdmin,
+      vibrantColor: user.vibrantColor,
     };
 
     if (!getFollows) {
@@ -53,14 +53,14 @@ export async function GET(req: NextRequest) {
 
     const followersInfo = followersData?.users
       ? await db.user.findMany({
-        where: { id: { in: followersData.users } },
-        select: {
-          id: true,
-          username: true,
-          isArtist: true,
-          profile: { select: { avatar: true } },
-        },
-      })
+          where: { id: { in: followersData.users } },
+          select: {
+            id: true,
+            username: true,
+            isArtist: true,
+            profile: { select: { avatar: true } },
+          },
+        })
       : [];
 
     const formatUser = (user: any) => ({
@@ -83,10 +83,9 @@ export async function GET(req: NextRequest) {
   }
 }
 
-
 export async function PATCH(req: NextRequest) {
   try {
-    const { userId, avatar, username } = await req.json();
+    const { userId, avatar, username, vibrantColor } = await req.json();
     const user = await db.user.findFirst({
       where: {
         id: userId,
@@ -96,10 +95,9 @@ export async function PATCH(req: NextRequest) {
     await db.user.update({
       where: { id: user?.id },
       data: {
-        username: username ? username : user?.username,
-        profile: avatar
-          ? { avatar, birthDate: user?.profile?.birthDate }
-          : user?.profile,
+        username: username ?? user?.username,
+        profile: avatar ? { avatar, birthDate: user?.profile?.birthDate } : user?.profile,
+        vibrantColor: vibrantColor ?? user?.vibrantColor,
       },
     });
 
@@ -110,12 +108,11 @@ export async function PATCH(req: NextRequest) {
           artistName: username,
         },
       });
-
     }
 
     return NextResponse.json({ message: "User updated with success" });
   } catch (error) {
-    return jsonError("An error occurred while trying to obtain user information.")
+    return jsonError("An error occurred while trying to obtain user information.");
   }
 }
 
@@ -123,13 +120,11 @@ export async function DELETE(req: NextRequest) {
   try {
     const { userId, password } = await req.json();
     const user = await db.user.findFirst({ where: { id: userId } });
-    if (!user)
-      return jsonError("User not found.", 404)
+    if (!user) return jsonError("User not found.", 404);
 
     const checkPass = await compare(password, user.password as string);
 
-    if (!checkPass)
-      return jsonError("Password incorrect")
+    if (!checkPass) return jsonError("Password incorrect");
 
     await deleteArtistDrawer(user);
 
@@ -168,7 +163,7 @@ export async function DELETE(req: NextRequest) {
 
     return NextResponse.json({ message: "User deleted with success" });
   } catch (error) {
-    return jsonError("We had a problem trying to delete the user")
+    return jsonError("We had a problem trying to delete the user");
   }
 }
 
@@ -192,7 +187,7 @@ async function deleteArtistDrawer(user: User) {
     });
   });
   const songsPromise = songs.map(async (song) => {
-    await deleteSong(song.urlSong);
+    await deleteSong(song.track.url);
   });
 
   const updatePlaylists = db.playlist.updateMany({

@@ -37,7 +37,7 @@ export default async function Discography(props: { params: Promise<{ artistId: s
       </Link>
 
       <div className="flex flex-col gap-5 ">
-        {albums.map(({ title, type, releasedDate, coverPhoto, id, urlsSongs }, index) => {
+        {albums.map(({ title, type, releasedDate, coverPhoto, id, tracks }, index) => {
           return (
             <div key={`${id}_${index}`} className="flex flex-col">
               <div className="w-full flex gap-2 p-4">
@@ -47,7 +47,7 @@ export default async function Discography(props: { params: Promise<{ artistId: s
 
                   <div className="flex gap-1 text-gray-300 font-light md:text-xl">
                     <span className="first-letter:uppercase">{type}</span>•<span>{releasedDate?.split("/")[2]}</span>•
-                    <span>{urlsSongs?.length} songs</span>
+                    <span>{tracks?.length} songs</span>
                   </div>
                 </div>
               </div>

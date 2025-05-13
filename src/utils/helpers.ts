@@ -1,7 +1,5 @@
-"use client";
 import { ErrorType } from "@/types/response";
 import { format, lastDayOfMonth } from "date-fns";
-import { usePathname } from "next/navigation";
 
 const removeFromPlaylist = async (
   songSelected: {
@@ -103,14 +101,23 @@ const cleanClasses = (className = "", fallback = "") => {
 
   return merged.join(" ");
 };
-const isLightBg = (hexColor: string): boolean => {
-  const r = parseInt(hexColor.slice(1, 3), 16);
-  const g = parseInt(hexColor.slice(3, 5), 16);
-  const b = parseInt(hexColor.slice(5, 7), 16);
 
-  const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+function getFormattedDuration(seconds: number) {
+  const minutes = Math.floor(seconds / 60);
+  const remainingSeconds = seconds % 60;
 
-  return luminance > 0.5;
+  const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
+  const formattedSeconds = remainingSeconds < 10 ? `0${remainingSeconds}` : remainingSeconds;
+
+  return `${formattedMinutes}:${formattedSeconds}`;
+}
+
+export {
+  cleanClasses,
+  isValidDate,
+  getSongDuration,
+  updateUser,
+  isAvailable,
+  removeFromPlaylist,
+  getFormattedDuration,
 };
-
-export { cleanClasses, isValidDate, getSongDuration, updateUser, isAvailable, removeFromPlaylist, isLightBg };

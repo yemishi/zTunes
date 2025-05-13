@@ -8,7 +8,6 @@ import { useState } from "react";
 import { usePlayerContext } from "@/context/Provider";
 import { FaCheck, FaPlus } from "react-icons/fa";
 import { toast } from "react-toastify";
-import usePlayer from "@/hooks/usePlayer";
 
 type UrlValues = "album" | "artist" | "user" | "playlist";
 
@@ -45,7 +44,7 @@ export default function CardSearch({
   const [songSelected, setSongSelected] = useState<{ createAt: string; songId: string } | null>(
     data.songData?.songSelected || null
   );
-  const { isPlaying } = usePlayer();
+
   const handleHistoric = async (action?: string) => {
     if (!username) return;
     setIsLoading(true);

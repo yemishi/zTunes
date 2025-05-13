@@ -55,7 +55,7 @@ export default function RootLayout({
         <link rel="shortcut icon" href="#" />
       </head>
       <Provider session={session}>
-        <body className={`w-full h-full text-white bg-black-700 pt-4 overflow-x-hidden ${nunito.className}`}>
+        <body className={`w-full h-full text-white bg-black-700 overflow-x-hidden ${nunito.className}`}>
           <ToastContainer autoClose={3000} theme="dark" position="bottom-center" />
           <SkeletonTheme baseColor="#202020" highlightColor="#444">
             <div className="w-full h-screen">{children}</div>

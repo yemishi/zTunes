@@ -8,7 +8,6 @@ export default function Musics(props: { params: Promise<{ artistId: string }> })
   const params = use(props.params);
 
   const { artistId } = params;
-
   return (
     <div className="flex flex-col gap-3">
       <div className="flex flex-col p-2 pb-5">

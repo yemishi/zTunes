@@ -26,7 +26,6 @@ export default function SongsGridQuery({
 }) {
   const {
     values: songs,
-    isLoading,
     isFetchingNextPage,
     hasNextPage,
     ref,
@@ -57,13 +56,7 @@ export default function SongsGridQuery({
         </Button>
       )}
 
-      <SongsOrganizer
-        asOl={asOl}
-        isLoading={isLoading ? 10 : undefined}
-        songs={songs}
-        refetch={refetch}
-        playlistId={playlistId}
-      />
+      <SongsOrganizer asOl={asOl} songs={songs} refetch={refetch} playlistId={playlistId} />
       {isError && <ErrorWrapper className="ml-2 mt-2" error={!!error} message={error.message} />}
       {!isError && (
         <>

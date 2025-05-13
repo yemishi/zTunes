@@ -53,6 +53,7 @@ export default async function UserPage(props0: { params: Promise<{ userId: strin
     profileName: userInfo.name,
     profileId: userInfo.id,
     cover: userInfo.avatar,
+    vibrantColor: userInfo.VibrantColor,
   };
 
   return (

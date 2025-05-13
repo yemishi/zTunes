@@ -8,9 +8,10 @@ import SongGrid from "../albumSongsGrid/AlbumSongsGrid";
 import DeleteAlbum from "../deleteAlbum/DeleteAlbum";
 
 async function fetchData(albumId: string, artistName: string) {
-  const albumInfo: BundleType & { urlsSongs: string[] } = await fetch(
-    `${process.env.URL}/api/album?albumId=${albumId}`
-  ).then((res) => res.json());
+  const albumInfo: BundleType & {
+    vibrantColor: { color: string; isLight: boolean };
+    tracks: { url: string; duration: number }[];
+  } = await fetch(`${process.env.URL}/api/album?albumId=${albumId}`).then((res) => res.json());
 
   if (albumInfo.error || albumInfo.artistName !== artistName) {
     if (albumInfo.status === 404 || albumInfo.artistName !== artistName) return notFound();
@@ -26,7 +27,7 @@ export default async function ArtistPage(props: { params: Promise<{ albumId: str
   const { albumId } = params;
 
   const session = await getServerSession(authOptions);
-  const { artistId, artistName, avatar, coverPhoto, title, desc, urlsSongs, releasedDate } = await fetchData(
+  const { artistId, artistName, avatar, coverPhoto, title, desc, tracks, releasedDate, vibrantColor } = await fetchData(
     albumId,
     session?.user.name as string
   );
@@ -34,6 +35,7 @@ export default async function ArtistPage(props: { params: Promise<{ albumId: str
   return (
     <div className="flex flex-col relative">
       <GenericHeader
+        vibrantColor={vibrantColor}
         info={{
           avatar,
           title,
@@ -43,8 +45,9 @@ export default async function ArtistPage(props: { params: Promise<{ albumId: str
           coverPhoto,
           releasedDate,
           desc,
-          urlsSongs,
+          tracks,
         }}
+        extraBody={{ albumId }}
         updateUrl={`/api/album?albumId=${albumId}`}
       />
       <SongGrid albumId={albumId} artistId={artistId} url={`/api/song?albumId=${albumId}`} />

@@ -1,7 +1,6 @@
 "use client";
 
 import { HTMLAttributes, useEffect, useState } from "react";
-import { formatDuration } from "@/utils/formatting";
 
 import Image from "@/ui/custom/Image";
 import Link from "next/link";
@@ -11,58 +10,62 @@ import InputText from "../../ui/inputs/InputText";
 import EditableImage from "@/ui/custom/EditableImage";
 import EditPlaylist from "./editPlaylist/EditPlaylist";
 import ExpandableText from "@/ui/custom/ExpandableText";
-import { getSongDuration, isLightBg } from "@/utils/helpers";
 import getVibrantColor from "@/utils/getVibrantColor";
 import { useQueryClient } from "@tanstack/react-query";
+import { cleanClasses } from "@/utils/helpers";
+
 export default function GenericHeader({
   info,
   playlistId,
   updateUrl = "/api/playlist",
   username,
+  extraBody = { id: playlistId },
   onUpdateText,
+  vibrantColor,
   ...props
 }: DivProps) {
-  const { author, avatar, title, isOwner, coverPhoto, desc, releasedDate, isPublic, authorId, isUser, urlsSongs } =
-    info;
+  const { author, avatar, title, isOwner, coverPhoto, desc, releasedDate, isPublic, authorId, isUser, tracks } = info;
 
   const { className, ...rest } = props;
-  const [duration, setDuration] = useState<string>();
-  const durationPromises = urlsSongs.map((url) => getSongDuration(url));
-  const [vibrantColor, setVibrantColor] = useState<string>();
+  const [vibrant, setVibrant] = useState(vibrantColor);
 
-  useEffect(() => {
-    Promise.all(durationPromises)
-      .then((durations) => {
-        const totalInSeconds = durations.reduce((pre, curr) => Number(pre) + Number(curr), 0) as number;
-        const formattedDuration = formatDuration(totalInSeconds);
-        setDuration(formattedDuration);
-      })
-      .catch(() => setDuration("0s"));
-    getVibrantColor(coverPhoto).then((res) => setVibrantColor(res));
-  }, []);
   const queryClient = useQueryClient();
   const refetchUserPlaylists = async () => {
+    if (!playlistId) return;
     await queryClient.invalidateQueries({
       queryKey: ["User playlists", username],
     });
   };
+  const updateVibrantColor = async (img: string) => {
+    const vibrantColor = await getVibrantColor(img);
+    setVibrant(vibrantColor);
+    const body = {
+      ...extraBody,
+      vibrantColor,
+    };
 
+    await fetch(updateUrl, { method: "PATCH", body: JSON.stringify(body) });
+  };
+  useEffect(() => {
+    if (!vibrant) updateVibrantColor(coverPhoto);
+  }, []);
+
+  const totalDuration = tracks.reduce((pre, curr) => Number(pre) + Number(curr.duration), 0);
   return (
     <div
       {...rest}
       style={{
-        background: `linear-gradient(to bottom,${vibrantColor} 10%,transparent 100%)`,
+        background: `linear-gradient(to bottom,${vibrant?.color} 10%,transparent 100%)`,
       }}
-      className={`${
-        className ? className : ""
-      } flex flex-col gap-2 h-full items-center w-full p-4 pt-0 pb-10 md:min-h-[350px] md:items-start`}
+      className={cleanClasses(
+        className,
+        "flex flex-col gap-2 h-full items-center w-full p-4 pt-0 pb-10 md:min-h-[350px] md:items-start"
+      )}
     >
       <span
-        className={`flex items-center py-4 justify-between w-full ${
-          isLightBg(vibrantColor || "") ? "text-black" : "text-white"
-        }`}
+        className={`flex items-center py-4 justify-between w-full ${vibrant?.isLight ? "text-black" : "text-white"}`}
       >
-        <PreviousPage isLightBg={isLightBg(vibrantColor || "")} />
+        <PreviousPage isLightBg={vibrant?.isLight} />
         {isOwner && playlistId && (
           <EditPlaylist
             username={username as string}
@@ -78,17 +81,18 @@ export default function GenericHeader({
           className="rounded-lg size-44 md:size-52 self-center md:self-start"
           fieldUpload="coverPhoto"
           initialValue={coverPhoto}
+          updateVibrantColor={updateVibrantColor}
           onSuccess={refetchUserPlaylists}
           isOwner={isOwner}
           uploadUrl={updateUrl}
-          extraBody={{ id: playlistId }}
+          extraBody={extraBody}
         />
 
         <div className="md:mt-auto flex flex-col w-full md:w-auto">
           <span className="self-center text-center md:self-start max-w-56 md:max-w-full md:text-start md:pb-4 ">
             <InputText
               className="text-center md:text-left text-3xl md:text-5xl lg:text-6xl font-bold font-montserrat first-letter:uppercase"
-              extraBody={{ id: playlistId }}
+              extraBody={extraBody}
               initialValue={title}
               onSuccess={refetchUserPlaylists}
               fieldType="title"
@@ -107,7 +111,7 @@ export default function GenericHeader({
             </Link>
             <span className="hidden md:block">• {releasedDate?.split("/")[2]} •</span>
             <div className="flex gap-1 text-opacity-70 text-white md:text-opacity-100">
-              <span>{duration}</span>•<span>{urlsSongs.length} songs</span>
+              <span>{totalDuration}</span>•<span>{tracks.length} songs</span>
             </div>
           </span>
 
@@ -120,10 +124,12 @@ export default function GenericHeader({
 
 interface DivProps extends HTMLAttributes<HTMLDivElement> {
   info: InfoType;
+  vibrantColor: { color: string; isLight: boolean };
   username?: string;
   playlistId?: string;
   updateUrl?: string;
   onUpdateText?: () => void;
+  extraBody?: {};
 }
 
 type InfoType = {
@@ -139,5 +145,5 @@ type InfoType = {
   isUser?: Boolean;
   isOfficial?: boolean;
   releasedDate?: string;
-  urlsSongs: string[];
+  tracks: { url: string; duration: number }[];
 };

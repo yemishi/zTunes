@@ -13,7 +13,6 @@ const getPlaylists =
   };
 
 const getAlbums = async () => await fetch(`${process.env.URL}/api/album?take=10`).then((res) => res.json());
-
 const getArtists = async () => await fetch(`${process.env.URL}/api/artist?take=10`).then((res) => res.json());
 
 export default async function Home() {
@@ -27,11 +26,11 @@ export default async function Home() {
   return (
     <div className="w-full h-full flex flex-col">
       <ErrorWrapper error={albums.error} message={albums.message} className="ml-4 mt-4 self-center md:self-start">
-        {albums.length > 0 && <BundleGrid title="popular albums" baseUrl="/album" props={albums} />}
+        {albums?.length > 0 && <BundleGrid title="popular albums" baseUrl="/album" props={albums} />}
       </ErrorWrapper>
 
       <ErrorWrapper error={playlists.error} message={playlists.message} className="ml-4 mt-4 self-center md:self-start">
-        {playlists && playlists.length > 0 && (
+        {playlists && playlists?.length > 0 && (
           <BundleGrid title="You will like" baseUrl="/playlist" props={playlists} />
         )}
       </ErrorWrapper>

@@ -1,6 +1,7 @@
 "use client";
 
 import { usePlayerContext } from "@/context/Provider";
+import { SongType } from "@/types/response";
 import { useSession } from "next-auth/react";
 import { JSX, RefObject, useEffect, useRef, useState } from "react";
 import { IoIosPause, IoIosPlay } from "react-icons/io";
@@ -12,14 +13,14 @@ export default function usePlayer() {
   const username = session?.user.name;
 
   const audioRef = useRef<HTMLAudioElement>(null);
-  const [currentTime, setCurrentTime] = useState<number>(0);
-  const [duration, setDuration] = useState<number>();
+  const [currentTime, setCurrentTime] = useState(0);
   const [isPlaying, setIsPlaying] = useState<boolean>(true);
   const [volume, setVolume] = useState<number>(1);
 
   const togglePlayer = (justPlay?: "play" | React.MouseEvent<any, MouseEvent>) => {
     if (audioRef.current?.paused) {
-      audioRef.current.play(), setIsPlaying(true);
+      audioRef.current.play();
+      setIsPlaying(true);
     } else {
       justPlay !== "play" && (audioRef.current?.pause(), setIsPlaying(false));
     }
@@ -29,7 +30,6 @@ export default function usePlayer() {
     const handleTimeUpdate = () => {
       if (!audioRef.current) return;
       setCurrentTime(audioRef.current.currentTime);
-      setDuration(audioRef.current.duration);
     };
     if (!audioRef.current) return;
 
@@ -114,7 +114,6 @@ export default function usePlayer() {
     togglePlayer,
     PlayerControls,
     isPlaying,
-    duration,
     previous,
     audioRef,
     volume,
@@ -131,11 +130,10 @@ export interface UsePlayerType {
   togglePlayer: (justPlay?: "play" | React.MouseEvent<any, MouseEvent>) => void;
   PlayerControls: () => JSX.Element;
   isPlaying: boolean;
-  duration?: number;
   previous: () => void;
   audioRef: RefObject<HTMLAudioElement>;
   volume: number;
   onend: () => Promise<void>;
   next: () => void;
-  song: any | null;
+  song: SongType;
 }

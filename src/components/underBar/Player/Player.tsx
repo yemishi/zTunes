@@ -1,10 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Image from "@/ui/custom/Image";
 import PlayerDetails from "./playerDetails/PlayerDetails";
 import { UsePlayerType } from "../../../hooks/usePlayer";
-import getVibrantColor from "@/utils/getVibrantColor";
 import ProgressBar from "@/components/underBar/Player/progressBar/ProgressBar";
 import Link from "next/link";
 import ToggleLike from "@/ui/buttons/ToggleLike";
@@ -14,8 +13,7 @@ import Modal from "@/components/modal/Modal";
 import SongOptions from "@/components/songOptions/songOptions";
 
 export default function Player({ player }: { player: UsePlayerType }) {
-  const [vibrantColor, setVibrantColor] = useState<string>();
-  const [showDetails, setShowDetails] = useState<boolean>(false);
+  const [showDetails, setShowDetails] = useState(false);
   if (!player.song) return;
   const {
     currentTime,
@@ -23,7 +21,6 @@ export default function Player({ player }: { player: UsePlayerType }) {
     handleVolume,
     togglePlayer,
     previous,
-    duration,
     isPlaying,
     audioRef,
     onend,
@@ -32,12 +29,14 @@ export default function Player({ player }: { player: UsePlayerType }) {
     volume,
     next,
   } = player;
-
-  const { artistId, artistName, coverPhoto, id: songId, name: title, urlSong } = song;
-
-  useEffect(() => {
-    getVibrantColor(coverPhoto).then((res) => setVibrantColor(res));
-  }, [song, coverPhoto]);
+  const {
+    artistId,
+    artistName,
+    coverPhoto,
+    id: songId,
+    name: title,
+    track: { duration, url },
+  } = song;
 
   const [isModal, setIsModal] = useState(false);
   const closeModal = () => setIsModal(false);
@@ -45,7 +44,7 @@ export default function Player({ player }: { player: UsePlayerType }) {
   return (
     <div
       onClick={() => !showDetails && setShowDetails(true)}
-      style={{ background: vibrantColor || "rgb(33 33 33)" }}
+      style={{ background: "rgb(33 33 33)" }}
       className="w-[90%] h-14 rounded-lg flex items-center justify-between p-2 transition-all md:w-full md:h-20 md:rounded-lg md:grid grid-cols-[1fr_2fr_1fr] md:relative md:!bg-black"
     >
       {isModal && (
@@ -54,7 +53,7 @@ export default function Player({ player }: { player: UsePlayerType }) {
         </Modal>
       )}
       <ProgressBar
-        max={duration || 0}
+        max={duration}
         value={currentTime}
         onChange={handleProgress}
         onMouseUp={() => (audioRef.current ? (audioRef.current.muted = false) : null)}
@@ -91,7 +90,7 @@ export default function Player({ player }: { player: UsePlayerType }) {
         <RxDotsVertical className="h-10 w-6 ml-auto" onClick={() => setIsModal(true)} />
       </div>
 
-      <audio autoPlay={isPlaying} onEnded={onend} ref={audioRef} src={urlSong} />
+      <audio autoPlay={isPlaying} onEnded={onend} ref={audioRef} src={url} />
 
       <PlayerDetails
         isVisible={showDetails}
@@ -106,7 +105,7 @@ export default function Player({ player }: { player: UsePlayerType }) {
         next={next}
         audioRef={audioRef}
         previous={previous}
-        vibrantColor={vibrantColor as string}
+        vibrantColor={"rgb(33 33 33)"}
       />
     </div>
   );

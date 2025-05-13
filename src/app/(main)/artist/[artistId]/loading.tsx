@@ -8,7 +8,7 @@ import Skeleton from "react-loading-skeleton";
 
 export default function () {
   return (
-    <div className="flex flex-col gap-3 p-4 pb-32 md:pb-20 md:ml-64 lg:ml-72 2xl:ml-80 min-[2000px]:ml-96">
+    <div className="flex flex-col gap-3 p-4">
       <ArtistHeader />
       <Skeleton className="!w-20 !h-5 md:!h-8 !rounded-xl" />
       {Array.from({ length: 5 }).map((_, index) => (

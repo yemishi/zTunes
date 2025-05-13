@@ -15,7 +15,7 @@ import { PopConfirm } from "@/components";
 import { useState } from "react";
 
 export default function EditSong({ song }: { song: SongType }) {
-  const { name: initialName, albumId, id, artistId, urlSong } = song;
+  const { name: initialName, albumId, id, artistId, track } = song;
 
   const [name, setName] = useState(initialName);
   const [isEdit, setIsEdit] = useState(false);
@@ -56,7 +56,7 @@ export default function EditSong({ song }: { song: SongType }) {
       body: JSON.stringify(body),
     }).then((res) => res.json());
     if (response.error) return toast.error(response.message);
-    await deleteSong(urlSong);
+    await deleteSong(track.url);
     toast.success(response.message);
     refresh();
     setIsLoading(false);

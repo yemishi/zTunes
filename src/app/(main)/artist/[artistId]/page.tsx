@@ -40,7 +40,7 @@ export default async function Artist(props: { params: Promise<{ artistId: string
   ]);
 
   return (
-    <div className="flex flex-col gap-3 pb-32 md:pb-20 md:ml-64 lg:ml-72 2xl:ml-80  min-[2000px]:ml-96">
+    <div className="flex flex-col gap-3">
       <ProfileHeader
         username={session?.user.name as string}
         followersLength={followers.length}
@@ -50,14 +50,15 @@ export default async function Artist(props: { params: Promise<{ artistId: string
           profileId: artist.id,
           profileName: artist.name,
           cover: artist.cover,
+          vibrantColor: artist.vibrantColor,
         }}
         isArtist
       />
 
       <ErrorWrapper error={songsData.error} message={songsData.message}>
-        {songsData.songs.length > 0 && <SongsGrid songs={songsData.songs} title="Musics" />}
+        {songsData?.songs?.length > 0 && <SongsGrid songs={songsData.songs} title="Musics" />}
 
-        {songsData.hasMore && (
+        {songsData?.hasMore && (
           <Button href={`/artist/${artist.id}/musics`} className="bg-white rounded-lg self-start ml-4">
             See all
           </Button>
