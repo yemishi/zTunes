@@ -8,20 +8,21 @@ datasource db {
 }
 
 model User {
-  id         String       @id @default(auto()) @map("_id") @db.ObjectId
-  email      String       @unique
-  username   String       @unique
-  password   String?
-  isVerified Boolean?
-  profile    ProfileType?
-  isArtist   ArtistType?
-  isAdmin    Boolean?
-  createdAt  DateTime     @default(now())
-  Account    Account[]
-  updatedAt  DateTime     @updatedAt
-  Album      Album[]
-  LikedSongs LikedSongs[]
-  Followers  Followers[]
+  id           String        @id @default(auto()) @map("_id") @db.ObjectId
+  email        String        @unique
+  username     String        @unique
+  password     String
+  vibrantColor VibrantColor?
+  isVerified   Boolean?
+  profile      ProfileType?
+  isArtist     ArtistType?
+  isAdmin      Boolean?
+  createdAt    DateTime      @default(now())
+  Account      Account[]
+  updatedAt    DateTime      @updatedAt
+  Album        Album[]
+  LikedSongs   LikedSongs[]
+  Followers    Followers[]
 
   @@map("User")
 }
@@ -29,10 +30,10 @@ model User {
 model Songs {
   id         String   @id @default(auto()) @map("_id") @db.ObjectId
   name       String
-  urlSong    String
   artistId   String
   artistName String
   coverPhoto String
+  track      Track
   category   String[]
   album      Album    @relation(fields: [albumId], references: [id])
   albumName  String
@@ -58,6 +59,7 @@ model Playlist {
   desc               String?
   officialCategories String[]
   coverPhoto         String
+  vibrantColor       VibrantColor?
   updatedAt          DateTime           @updatedAt
   createdAt          DateTime           @default(now())
 
@@ -65,15 +67,16 @@ model Playlist {
 }
 
 model Album {
-  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  id           String        @id @default(auto()) @map("_id") @db.ObjectId
   title        String
-  type         String   @default("album")
+  type         String        @default("album")
   releasedDate String
-  artistId     String   @db.ObjectId
-  artist       User     @relation(fields: [artistId], references: [id])
+  artistId     String        @db.ObjectId
+  artist       User          @relation(fields: [artistId], references: [id])
   coverPhoto   String
+  vibrantColor VibrantColor?
   desc         String?
-  createdAt    DateTime @default(now())
+  createdAt    DateTime      @default(now())
   songs        Songs[]
 }
 
@@ -145,4 +148,14 @@ type HistoricType {
   title      String
   desc       String?
   createdAt  DateTime @default(now())
+}
+
+type Track {
+  url      String
+  duration Int?
+}
+
+type VibrantColor {
+  color   String
+  isLight Boolean
 }
