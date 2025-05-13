@@ -15,7 +15,7 @@ import { PopConfirm } from "@/components";
 import { useState } from "react";
 
 export default function EditSong({ song }: { song: SongType }) {
-  const { name: initialName, albumId, id, artistId, track } = song;
+  const { name: initialName, id, artistId, track, album } = song;
 
   const [name, setName] = useState(initialName);
   const [isEdit, setIsEdit] = useState(false);
@@ -30,7 +30,7 @@ export default function EditSong({ song }: { song: SongType }) {
     setIsLoading(true);
     const body = {
       songId: id,
-      albumId,
+      albumId: album.id,
       name,
     };
     const response: ErrorType = await fetch("/api/song", {
