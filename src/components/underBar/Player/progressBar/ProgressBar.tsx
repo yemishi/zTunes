@@ -33,7 +33,7 @@ export default function ProgressBar({
       ref={divRef}
       className={`${classContainer ? classContainer : ""} ${
         vertical ? "rotate-[270deg]" : ""
-      } hidden  md:flex items-center relative`}
+      } flex items-center relative`}
     >
       <input
         value={value}

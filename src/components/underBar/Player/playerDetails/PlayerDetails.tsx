@@ -15,7 +15,7 @@ import { IoPlaySkipBackSharp, IoPlaySkipForward } from "react-icons/io5";
 import { formatDuration } from "@/utils/formatting";
 
 import SongOptions from "@/components/songOptions/songOptions";
-import AddToPlaylist from "@/components/songOptions/addToPlaylist";
+
 import Image from "@/ui/custom/Image";
 import ProgressBar from "@/components/underBar/Player/progressBar/ProgressBar";
 import ToggleLike from "@/ui/buttons/ToggleLike";
@@ -41,6 +41,7 @@ type PropsType = {
   previous: () => void;
   onClose: () => void;
   audioRef: React.RefObject<HTMLAudioElement | null>;
+  username?: string;
 };
 
 export default function PlayerDetails({
@@ -53,8 +54,9 @@ export default function PlayerDetails({
   handlers,
   values,
   audioRef,
+  username,
 }: PropsType) {
-  const { coverPhoto, name, artistId, artistName, id, albumName } = song;
+  const { coverPhoto, name, artistId, artistName, id, album } = song;
 
   const [toPlaylist, setToPlaylist] = useState<{
     songSelected: { songId: string; createdAt: Date };
@@ -80,7 +82,7 @@ export default function PlayerDetails({
     <AnimatePresence>
       {isModal && (
         <Modal className="modal-container" onClose={closeModal}>
-          <SongOptions song={song} onclose={closeModal} />
+          <SongOptions username={username} song={song} />
         </Modal>
       )}
       {isVisible && (
@@ -99,7 +101,7 @@ export default function PlayerDetails({
             <button onClick={onClose} className="size-12 p-2">
               <IoIosArrowDown className="h-full w-full" />
             </button>
-            <span className="text-lg flex-1 text-center">{albumName}</span>
+            <span className="text-lg flex-1 text-center">{album.name}</span>
 
             <button onClick={() => setIsModal(true)} className="size-12 p-2">
               <TbDots className="h-full w-full" />
@@ -109,7 +111,7 @@ export default function PlayerDetails({
           <div className="flex flex-col flex-1 max-h-[500px] w-full justify-center gap-6 my-10">
             <Image src={coverPhoto} className="self-center !h-[400px] w-full object-cover" />
             <div className="flex w-full relative">
-              <ToggleLike songId={id} className="absolute right-0" />
+              <ToggleLike songId={id} username={username} className="absolute right-0" />
               <div className="max-w-[80%] w-auto mx-auto flex flex-col items-center self-center ">
                 <span className="text-2xl first-letter:uppercase">{name}</span>
                 <Link
@@ -123,9 +125,11 @@ export default function PlayerDetails({
             </div>
           </div>
 
-          <div className="w-full flex flex-col gap-2">
+          <div className="w-full flex flex-col gap-2 relative bg-">
             <div className="flex flex-col gap-2 px-3">
               <ProgressBar
+                className="rangeOrange bg-orange-600"
+                classContainer="!absolute top-0 w-full"
                 value={currentTime}
                 onChange={handleProgress}
                 onMouseUp={() => (audioRef.current ? (audioRef.current.muted = false) : null)}
@@ -162,15 +166,6 @@ export default function PlayerDetails({
               currentProgress={volume}
             />
           </div>
-
-          {toPlaylist && (
-            <AddToPlaylist
-              username={user?.name}
-              userAvatar={user?.picture}
-              options={toPlaylist}
-              onclose={() => setToPlaylist(null)}
-            />
-          )}
         </motion.div>
       )}
     </AnimatePresence>

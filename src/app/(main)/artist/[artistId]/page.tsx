@@ -32,17 +32,17 @@ export default async function Artist(props: { params: Promise<{ artistId: string
   const params = await props.params;
 
   const { artistId } = params;
-
   const session = await getServerSession(authOptions);
+  const username = session?.user?.name;
   const [[artist, followers], songsData] = await Promise.all([
-    artistData(artistId, session?.user.name as string),
+    artistData(artistId, username || ""),
     getSongs(artistId),
   ]);
 
   return (
     <div className="flex flex-col gap-3">
       <ProfileHeader
-        username={session?.user.name as string}
+        username={username}
         followersLength={followers.length}
         isInclude={followers.isInclude}
         artistAbout={artist.summary}
@@ -56,7 +56,7 @@ export default async function Artist(props: { params: Promise<{ artistId: string
       />
 
       <ErrorWrapper error={songsData.error} message={songsData.message}>
-        {songsData?.songs?.length > 0 && <SongsGrid songs={songsData.songs} title="Musics" />}
+        {songsData?.songs?.length > 0 && <SongsGrid username={username} songs={songsData.songs} title="Musics" />}
 
         {songsData?.hasMore && (
           <Button href={`/artist/${artist.id}/musics`} className="bg-white rounded-lg self-start ml-4">

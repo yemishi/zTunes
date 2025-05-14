@@ -32,10 +32,12 @@ export default function SongsGridQuery({
     error,
     refetch,
     isError,
+    isLoading,
   } = useScrollQuery<SongType>({
     queryKey,
     url,
   });
+
   const [isModal, setIsModal] = useState(false);
   const closeModal = () => setIsModal(false);
   return (
@@ -56,7 +58,14 @@ export default function SongsGridQuery({
         </Button>
       )}
 
-      <SongsOrganizer asOl={asOl} songs={songs} refetch={refetch} playlistId={playlistId} />
+      <SongsOrganizer
+        asOl={asOl}
+        songs={songs}
+        refetch={refetch}
+        isLoading={isLoading ? 5 : undefined}
+        playlistId={playlistId}
+        username={username as string}
+      />
       {isError && <ErrorWrapper className="ml-2 mt-2" error={!!error} message={error.message} />}
       {!isError && (
         <>

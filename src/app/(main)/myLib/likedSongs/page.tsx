@@ -19,5 +19,5 @@ export default async function LikedSongs() {
   const username = session.user.name;
   const songs = await fetchData(username);
 
-  return <div>{songs.length > 0 && <SongsGrid songs={songs} />}</div>;
+  return <div>{songs.length > 0 && <SongsGrid songs={songs} username={session.user.name} />}</div>;
 }

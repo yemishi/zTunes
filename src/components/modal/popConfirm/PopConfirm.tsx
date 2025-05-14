@@ -1,15 +1,16 @@
 import Button from "@/ui/buttons/Button";
-import Modal from "../modal/Modal";
+import Modal from "../Modal";
 
 type PropsType = {
   confirm: () => void;
   onClose: () => void;
   name?: string;
   isLoading?: boolean;
+  confirmDesc?: string;
   desc?: string;
 };
 
-export default function PopupDelete({ desc, onClose, confirm, name = "this?", isLoading }: PropsType) {
+export default function PopupDelete({ desc, onClose, confirm, name = "this?", isLoading, confirmDesc }: PropsType) {
   return (
     <Modal
       onClose={onClose}
@@ -41,7 +42,7 @@ export default function PopupDelete({ desc, onClose, confirm, name = "this?", is
           onClick={confirm}
           className="rounded-lg bg-red-400 text-white hover:bg-red-500 transition"
         >
-          {isLoading ? "Deleting..." : "Confirm"}
+          {isLoading ? "Deleting..." : confirmDesc || "Confirm"}
         </Button>
       </div>
     </Modal>

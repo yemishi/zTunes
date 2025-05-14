@@ -24,9 +24,9 @@ type ProfileInfo = {
 };
 
 interface ProfileHeaderProps {
-  username: string;
   profileInfo: ProfileInfo;
   followersLength: number;
+  username?: string;
   isArtist?: boolean;
   isInclude?: boolean;
   artistAbout?: string;
@@ -138,7 +138,9 @@ export default function ProfileHeader({
           />
         </div>
 
-        <div className={`flex flex-col items-center gap-2  md:mt-16 md:items-start md:p-4 text-center md:text-left`}>
+        <div
+          className={`flex flex-col items-center gap-2  md:mt-16 md:items-start md:p-4 text-center md:text-left z-0`}
+        >
           <InputText
             className="text-center md:text-left text-3xl md:text-5xl lg:text-6xl font-bold font-montserrat first-letter:uppercase"
             min={3}

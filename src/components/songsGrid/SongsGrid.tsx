@@ -1,20 +1,16 @@
 "use client";
 
 import { SongType } from "@/types/response";
-import { RxDotsVertical } from "react-icons/rx";
-import { lazy, useState } from "react";
-import { useSession } from "next-auth/react";
+import { lazy } from "react";
 import { usePlayerContext } from "@/context/Provider";
 
 import { Image, ToggleLike } from "@/ui";
 import Link from "next/link";
 import SongSkeleton from "../skeletons/SongSkeleton";
 import { dateFormat } from "@/utils/formatting";
-import Modal from "../modal/Modal";
 import { getFormattedDuration } from "@/utils/helpers";
 
-const SongOptions = lazy(() => import("../songOptions/songOptions"));
-const AddToPlaylist = lazy(() => import("../songOptions/addToPlaylist"));
+import SongOptions from "../songOptions/songOptions";
 
 export default function SongsGrid({
   songs,
@@ -22,9 +18,11 @@ export default function SongsGrid({
   title,
   playlistId,
   refetch,
+  username,
   isLoading,
 }: {
   songs: SongType[];
+  username?: string;
   asOl?: true;
   title?: string;
   isLoading?: number;
@@ -32,16 +30,7 @@ export default function SongsGrid({
   playlistId?: string;
 }) {
   const { setPlayer, setCurrSong, currSong, player } = usePlayerContext();
-  const [toPlaylist, setToPlaylist] = useState<{
-    songSelected: { songId: string; createdAt: Date };
-    coverPhoto: string;
-    title: string;
-  } | null>(null);
-  const [isModal, setIsModal] = useState(false);
-  const closeModal = () => setIsModal(false);
 
-  const { data } = useSession();
-  const user = data?.user;
   const turnOnPlayer = (index: number) => {
     setPlayer(songs), setCurrSong(index);
   };
@@ -62,7 +51,7 @@ export default function SongsGrid({
       {songs
         .sort((a, b) => a.name.trim().localeCompare(b.name.trim()))
         .map((song, index) => {
-          const { artistId, artistName, coverPhoto, name, id, albumId, albumName, createdAt, track } = song;
+          const { artistId, artistName, coverPhoto, name, id, createdAt, track, album } = song;
 
           return (
             <div
@@ -80,7 +69,7 @@ export default function SongsGrid({
                   <Image src={coverPhoto} className="size-12 rounded md:size-14" />
                 )}
                 <div className="flex flex-col">
-                  <span className="first-letter:uppercase text-lg md:text-xl ">{name}</span>
+                  <span className="first-letter:uppercase text-lg md:text-xl">{name}</span>
                   <Link
                     href={`/artist/${artistId}`}
                     onClick={(e) => e.stopPropagation()}
@@ -93,11 +82,11 @@ export default function SongsGrid({
               </div>
 
               <Link
-                href={`/album/${albumId}`}
+                href={`/album/${album.id}`}
                 onClick={(e) => e.stopPropagation()}
                 className="hidden md:block text-xl opacity-75 hover:underline hover:underline-offset-4 hover:opacity-100 duration-150 w-max "
               >
-                {albumName}
+                {album.name}
               </Link>
               <div
                 onClick={(e) => e.stopPropagation()}
@@ -105,29 +94,15 @@ export default function SongsGrid({
               >
                 {playlistId && <span className="mr-3 text-lg opacity-75">{dateFormat(createdAt)}</span>}
                 <div className="hidden md:flex gap-1 items-center">
-                  <ToggleLike songId={id} />
+                  <ToggleLike songId={id} username={username} />
                   <span className="text-lg">{getFormattedDuration(track.duration)}</span>
                 </div>
 
-                {isModal && (
-                  <Modal className="modal-container" onClose={closeModal}>
-                    <SongOptions refetch={refetch} song={song} playlistId={playlistId} onclose={closeModal} />
-                  </Modal>
-                )}
-                <RxDotsVertical className="h-full w-6 md:w-8" onClick={() => setIsModal(true)} />
+                <SongOptions refetch={refetch} song={song} playlistId={playlistId} username={username} />
               </div>
             </div>
           );
         })}
-
-      {toPlaylist && (
-        <AddToPlaylist
-          username={user?.name}
-          userAvatar={user?.picture}
-          options={toPlaylist}
-          onclose={() => setToPlaylist(null)}
-        />
-      )}
     </div>
   );
 }

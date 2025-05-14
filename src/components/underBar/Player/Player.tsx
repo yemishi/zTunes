@@ -7,13 +7,14 @@ import { UsePlayerType } from "../../../hooks/usePlayer";
 import ProgressBar from "@/components/underBar/Player/progressBar/ProgressBar";
 import Link from "next/link";
 import ToggleLike from "@/ui/buttons/ToggleLike";
-import { RxDotsVertical } from "react-icons/rx";
 import VolumeInput from "@/components/underBar/Player/progressBar/volumeHandler/VolumeHandler";
-import Modal from "@/components/modal/Modal";
 import SongOptions from "@/components/songOptions/songOptions";
+import { IoMdWater } from "react-icons/io";
+import { useSession } from "next-auth/react";
 
 export default function Player({ player }: { player: UsePlayerType }) {
   const [showDetails, setShowDetails] = useState(false);
+  const [isVibrant, setIsVibrant] = useState(true);
   if (!player.song) return;
   const {
     currentTime,
@@ -36,22 +37,18 @@ export default function Player({ player }: { player: UsePlayerType }) {
     id: songId,
     name: title,
     track: { duration, url },
+    album,
   } = song;
-
-  const [isModal, setIsModal] = useState(false);
-  const closeModal = () => setIsModal(false);
-
+  const { data: session } = useSession();
+  const username = session?.user?.name;
+  const bgColor = album.vibrantColor?.color;
   return (
     <div
       onClick={() => !showDetails && setShowDetails(true)}
-      style={{ background: "rgb(33 33 33)" }}
-      className="w-[90%] h-14 rounded-lg flex items-center justify-between p-2 transition-all md:w-full md:h-20 md:rounded-lg md:grid grid-cols-[1fr_2fr_1fr] md:relative md:!bg-black"
+      style={bgColor && isVibrant ? { background: bgColor } : {}}
+      className={`w-[90%] h-14 rounded-lg flex items-center justify-between p-2 md:w-full md:h-20 transition-colors md:rounded-lg md:grid grid-cols-[1fr_2fr_1fr]
+         bg-black-400 md:bg-black`}
     >
-      {isModal && (
-        <Modal className="modal-container" onClose={closeModal}>
-          <SongOptions onclose={closeModal} song={song} />
-        </Modal>
-      )}
       <ProgressBar
         max={duration}
         value={currentTime}
@@ -75,25 +72,30 @@ export default function Player({ player }: { player: UsePlayerType }) {
       </span>
 
       <div className="hidden md:flex justify-center gap-3 font-kanit">
+        <IoMdWater
+          onClick={() => setIsVibrant(!isVibrant)}
+          className={`size-9 hover:brightness-90 transition-all self-center mr-3 cursor-pointer ${!isVibrant && bgColor ? `text-[${bgColor}]` : "text-black-400"}`}
+        />
         <Image src={coverPhoto} className="size-13 rounded-lg" />
         <div className="flex flex-col">
           <Link href={`/artist/${artistId}`} className="first-letter:uppercase">
             {artistName}
           </Link>
-          <span className="text-white text-opacity-60">{title}</span>
+          <span className="text-white/80">{title}</span>
         </div>
-        <ToggleLike className="ml-4" songId={songId} />
+        <ToggleLike className="ml-4" songId={songId} username={username} />
       </div>
 
       <div className="hidden md:flex gap-3 ml-auto relative">
         <VolumeInput fixed onChange={handleVolume} value={volume} currentProgress={volume} />
-        <RxDotsVertical className="h-10 w-6 ml-auto" onClick={() => setIsModal(true)} />
+        <SongOptions className="-top-45 right-5" vibrantColor={album.vibrantColor} song={song} username={username} />
       </div>
 
-      <audio autoPlay={isPlaying} onEnded={onend} ref={audioRef} src={url} />
+      <audio autoPlay onEnded={onend} ref={audioRef} src={url} />
 
       <PlayerDetails
         isVisible={showDetails}
+        username={username}
         onClose={() => setShowDetails(false)}
         handlers={{
           handleProgress,
@@ -105,7 +107,7 @@ export default function Player({ player }: { player: UsePlayerType }) {
         next={next}
         audioRef={audioRef}
         previous={previous}
-        vibrantColor={"rgb(33 33 33)"}
+        vibrantColor={album.vibrantColor?.color || "#212121"}
       />
     </div>
   );
