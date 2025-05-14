@@ -19,8 +19,7 @@ export default function usePlayer() {
 
   const togglePlayer = (justPlay?: "play" | React.MouseEvent<any, MouseEvent>) => {
     if (audioRef.current?.paused) {
-      audioRef.current.play();
-      setIsPlaying(true);
+      audioRef.current.play(), setIsPlaying(true);
     } else {
       justPlay !== "play" && (audioRef.current?.pause(), setIsPlaying(false));
     }
