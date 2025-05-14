@@ -16,12 +16,23 @@ export async function GET(req: NextRequest) {
         db.songs.count({ where: albumId ? { albumId } : { artistId } }),
         db.songs.findMany({
           where: albumId ? { albumId } : { artistId },
+          include: { album: { select: { vibrantColor: true } } },
           orderBy: { name: "asc" },
           ...paginate(page, take),
         }),
       ]);
       return NextResponse.json({
-        songs,
+        songs: songs.map((song) => {
+          const { albumId, albumName, album, ...rest } = song;
+          return {
+            ...rest,
+            album: {
+              name: albumName,
+              id: albumId,
+              vibrantColor: album.vibrantColor,
+            },
+          };
+        }),
         hasMore: count > take * (page + 1),
       });
     }

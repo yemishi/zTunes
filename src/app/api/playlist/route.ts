@@ -34,7 +34,6 @@ export async function GET(req: NextRequest) {
           select: { track: true },
         })
         .then((res) => res.map((res) => res.track));
-
       const info = {
         authorId: author?.id,
         desc: playlist.desc,
@@ -44,7 +43,7 @@ export async function GET(req: NextRequest) {
         isUser: !author?.isArtist,
         isPublic: playlist.isPublic,
         coverPhoto: playlist.coverPhoto,
-        avatar: author?.profile?.avatar, 
+        avatar: author?.profile?.avatar,
         isOfficial: playlist.officialCategories,
         releasedDate: dateFormat(playlist.createdAt),
         vibrantColor: playlist.vibrantColor,

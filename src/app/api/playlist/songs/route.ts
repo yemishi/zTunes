@@ -43,11 +43,11 @@ export async function GET(req: NextRequest) {
           id: songId,
           createdAt: song.createdAt,
           artistId,
-          artistName,
-          albumName,
           coverPhoto,
           albumId,
           name,
+          artistName,
+          album: { name: albumName, id: albumId },
           track,
         };
       })
