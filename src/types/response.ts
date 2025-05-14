@@ -84,11 +84,14 @@ interface PlaylistType {
 interface SongType {
   id: string;
   createdAt: Date;
+  album: {
+    name: string;
+    id: string;
+    vibrantColor?: { color: string; isLight: boolean };
+  };
   artistId: string;
   artistName: string;
-  albumName: string;
   coverPhoto: string;
-  albumId: string;
   name: string;
   category?: string[];
   track: { url: string; duration: number };
