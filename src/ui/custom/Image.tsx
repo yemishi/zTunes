@@ -9,23 +9,15 @@ interface ImgProps extends HTMLAttributes<HTMLImageElement> {
   priority?: boolean;
 }
 
-export default function Image({
-  priority,
-  className,
-  src,
-  alt,
-  ...props
-}: ImgProps) {
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+export default function Image({ priority, className = "", src, alt, ...props }: ImgProps) {
+  const [isLoading, setIsLoading] = useState(true);
   const generateAltText = (imageUrl: string): string => {
-    const decoded = decodeURIComponent(imageUrl)
+    const decoded = decodeURIComponent(imageUrl);
     const filename = decoded.substring(decoded.lastIndexOf("/") + 1);
     const filenameWithoutExtension = filename.split(".").slice(0, -1).join(" ");
     const formattedText = filenameWithoutExtension.replace(/[-_]/g, " ");
 
-    return formattedText.replace(/\b\w/g, (char) =>
-      char.toUpperCase()
-    );
+    return formattedText.replace(/\b\w/g, (char) => char.toUpperCase());
   };
 
   return (
@@ -38,8 +30,7 @@ export default function Image({
       height={500}
       width={500}
       onLoad={() => setIsLoading(false)}
-      className={`${className ? className : ""} ${isLoading ? "brightness-50" : ""
-        }  duration-100`}
+      className={`${className} ${isLoading ? "brightness-50" : ""} duration-100`}
     />
   );
 }
