@@ -28,7 +28,6 @@ interface DivProps extends HTMLAttributes<HTMLDivElement> {
 
 export default function SongOptions({ song, playlistId, refetch, username, vibrantColor, ...props }: DivProps) {
   const { className = "", ...rest } = props;
-  const {} = useRouter();
   const { album, artistId, id, createdAt, name } = song;
   const { isLiked, isLoading, toggleLike } = useLike(id, username);
   const [isOptions, setIsOptions] = useState(false);
@@ -80,6 +79,7 @@ export default function SongOptions({ song, playlistId, refetch, username, vibra
       Icon: isLiked ? LuHeartCrack : LuHeart,
       onClick: () => {
         toggleLike(), closeOptions();
+        if (refetch) refetch();
       },
     },
   };

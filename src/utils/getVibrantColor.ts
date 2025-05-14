@@ -87,11 +87,11 @@ const getVibrantColor = async (img: string): Promise<{ color: string; isLight: b
         const a = data[i + 3];
 
         if (a < 128) continue;
-
+        if (r < 30 && g < 30 && b < 30) continue;
         const hex = rgbToHex(r, g, b);
         const [h, s, l] = rgbToHsl(r, g, b);
 
-        const vibrancy = Math.pow(s, 1.2) * 40 + (1 - Math.abs(0.5 - l)) * 100;
+        const vibrancy = Math.pow(s, 1.2) * 50 + (1 - Math.abs(0.5 - l)) * 100;
 
         if (!colorScores[hex]) {
           colorScores[hex] = { count: 1, vibrancy };

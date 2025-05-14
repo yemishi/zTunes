@@ -42,6 +42,7 @@ export default function Player({ player }: { player: UsePlayerType }) {
   const { data: session } = useSession();
   const username = session?.user?.name;
   const bgColor = album.vibrantColor?.color;
+
   return (
     <div
       onClick={() => !showDetails && setShowDetails(true)}

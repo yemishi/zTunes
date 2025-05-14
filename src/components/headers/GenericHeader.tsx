@@ -13,6 +13,7 @@ import ExpandableText from "@/ui/custom/ExpandableText";
 import getVibrantColor from "@/utils/getVibrantColor";
 import { useQueryClient } from "@tanstack/react-query";
 import { cleanClasses } from "@/utils/helpers";
+import { formatDuration } from "@/utils/formatting";
 
 export default function GenericHeader({
   info,
@@ -111,7 +112,7 @@ export default function GenericHeader({
             </Link>
             <span className="hidden md:block">• {releasedDate?.split("/")[2]} •</span>
             <div className="flex gap-1 text-opacity-70 text-white md:text-opacity-100">
-              <span>{totalDuration}</span>•<span>{tracks.length} songs</span>
+              <span>{formatDuration(totalDuration)}</span>•<span>{tracks.length} songs</span>
             </div>
           </span>
 
