@@ -138,9 +138,7 @@ export default function ProfileHeader({
           />
         </div>
 
-        <div
-          className={`flex flex-col items-center gap-2 md:z-10 md:mt-16 md:items-start md:p-4 text-center md:text-left`}
-        >
+        <div className={`flex flex-col items-center gap-2  md:mt-16 md:items-start md:p-4 text-center md:text-left`}>
           <InputText
             className="text-center md:text-left text-3xl md:text-5xl lg:text-6xl font-bold font-montserrat first-letter:uppercase"
             min={3}
@@ -174,7 +172,7 @@ export default function ProfileHeader({
               </span>
             )}
           </div>
-          {artistAbout && <ExpandableText className="hidden md:flex">{artistAbout}</ExpandableText>}
+          {artistAbout && <ExpandableText className="hidden md:flex z-0">{artistAbout}</ExpandableText>}
         </div>
       </div>
     </div>
