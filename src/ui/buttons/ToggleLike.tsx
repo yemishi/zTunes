@@ -6,10 +6,11 @@ import { FaHeart } from "react-icons/fa6";
 
 interface PropsType extends React.HTMLAttributes<HTMLButtonElement> {
   songId: string;
+  username?: string;
 }
 
-export default function ToggleLike({ songId, className, onClick, ...props }: PropsType) {
-  const { isLiked, isLoading, toggleLike } = useLike(songId);
+export default function ToggleLike({ songId, className, onClick, username, ...props }: PropsType) {
+  const { isLiked, isLoading, toggleLike } = useLike(songId, username);
   return (
     <button
       onClick={(e) => {
@@ -21,7 +22,7 @@ export default function ToggleLike({ songId, className, onClick, ...props }: Pro
       }`}
     >
       <FaHeart
-        className={`h-full w-full cursor-pointer duration-200 hover:opacity-70 active:scale-105 ${
+        className={`h-full w-full cursor-pointer transition-all hover:opacity-70 active:scale-105 ${
           isLiked ? "text-amber-600 " : "text-white opacity-55"
         }`}
       />

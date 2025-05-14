@@ -1,23 +1,20 @@
 "use client";
 
 import { ErrorType } from "@/types/response";
-import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
-export default function useLike(songId: string) {
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [isLiked, setIsLiked] = useState<boolean>();
+export default function useLike(songId: string, username?: string) {
+  const [isLoading, setIsLoading] = useState(false);
+  const [isLiked, setIsLiked] = useState(false);
 
   const { refresh, push } = useRouter();
-  const { data: session } = useSession();
-
-  const username = session?.user.name;
 
   useEffect(() => {
+    if (!username) return;
     const fetchData = async () => {
-      if (!username) return setIsLiked(false), setIsLoading(false);
+      setIsLoading(true);
       const data: boolean = await fetch(`/api/song/likedSong?username=${username}&songId=${songId}`).then((res) =>
         res.json()
       );
