@@ -27,6 +27,7 @@ export default function useScrollQuery<T>({ queryKey, url, stop }: PropsType<T>)
       return oldPage.hasMore && !stop ? allPages.length + 1 : undefined;
     },
     initialPageParam: 1,
+    refetchOnWindowFocus: false,
   });
 
   const values = useMemo(() => {
