@@ -142,7 +142,7 @@ export default function CardSearch({
               ? "text-green-400 border-green-400"
               : "active:text-orange-500 active:border-orange-500 hover:opacity-100"
           }
-       size-7 md:size-8 ml-auto mr-3 border-2 opacity-75 rounded-full flex items-center justify-center`}
+       size-7 md:size-8 ml-auto mr-3 border-2 opacity-75 rounded-full flex items-center justify-center cursor-pointer`}
         >
           {songSelected ? <FaCheck /> : <FaPlus />}
         </button>
