@@ -3,7 +3,6 @@
 import { GenericHeader, SongsGridQuery } from "@/components";
 
 import { authOptions } from "@/lib/auth";
-14;
 
 import { getServerSession } from "next-auth";
 import { notFound } from "next/navigation";

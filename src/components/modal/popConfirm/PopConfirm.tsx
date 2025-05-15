@@ -10,7 +10,7 @@ type PropsType = {
   desc?: string;
 };
 
-export default function PopupDelete({ desc, onClose, confirm, name = "this?", isLoading, confirmDesc }: PropsType) {
+export default function PopConfirm({ desc, onClose, confirm, name = "this?", isLoading, confirmDesc }: PropsType) {
   return (
     <Modal
       onClose={onClose}
