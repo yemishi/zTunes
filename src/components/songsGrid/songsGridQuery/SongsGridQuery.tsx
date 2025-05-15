@@ -16,11 +16,13 @@ export default function SongsGridQuery({
   playlistId,
   username,
   isOwner,
+  isScrollQuery = true,
 }: {
   asOl?: true;
   queryKey: string[];
   url: string;
   playlistId?: string;
+  isScrollQuery?: boolean;
   username?: string;
   isOwner?: boolean;
 }) {
@@ -31,6 +33,7 @@ export default function SongsGridQuery({
     ref,
     error,
     refetch,
+    fetchNextPage,
     isError,
     isLoading,
   } = useScrollQuery<SongType>({
@@ -40,7 +43,6 @@ export default function SongsGridQuery({
 
   const [isModal, setIsModal] = useState(false);
   const closeModal = () => setIsModal(false);
-  console.log(username)
   return (
     <div className="flex flex-col">
       {isModal && (
@@ -70,7 +72,18 @@ export default function SongsGridQuery({
       {isError && <ErrorWrapper className="ml-2 mt-2" error={!!error} message={error.message} />}
       {!isError && (
         <>
-          {!isFetchingNextPage && hasNextPage && <div ref={ref} />}
+          {!isFetchingNextPage &&
+            hasNextPage &&
+            (isScrollQuery ? (
+              <div ref={ref} />
+            ) : (
+              <Button
+                onClick={() => fetchNextPage()}
+                className="self-center mt-auto my-4 rounded-md bg-white font-semibold"
+              >
+                More
+              </Button>
+            ))}
           {isFetchingNextPage && <SongSkeleton />}
         </>
       )}
