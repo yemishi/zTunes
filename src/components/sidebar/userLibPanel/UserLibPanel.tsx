@@ -9,10 +9,12 @@ import Image from "@/ui//custom/Image";
 
 import { ErrorWrapper, Modal, PlaylistForm } from "@/components";
 import { useState } from "react";
+import { usePathname, useSearchParams } from "next/navigation";
 
 export default function UserLibPanel({ username = "" }: { username?: string }) {
   const [isPlaylistForm, setIsPlaylistForm] = useState(false);
-
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const {
     values: playlists,
     ref,
@@ -27,7 +29,10 @@ export default function UserLibPanel({ username = "" }: { username?: string }) {
   });
   if (!username)
     return (
-      <Button href="/login" className="bg-gray-200 text-black rounded-lg mt-2 text-xl flex ">
+      <Button
+        href={`/login?callbackUrl=${pathname}${searchParams.toString() ? "?" + searchParams.toString() : ""}`}
+        className="bg-gray-200 text-black rounded-lg mt-2 text-xl flex "
+      >
         Sign in
       </Button>
     );
