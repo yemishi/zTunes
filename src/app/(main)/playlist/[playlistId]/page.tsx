@@ -26,6 +26,7 @@ export default async function Playlist(props: { params: Promise<{ playlistId: st
   const session = await getServerSession(authOptions);
   const user = session?.user;
   const info = await getData(playlistId, user?.name as string);
+
   return (
     <div className="flex relative flex-col">
       <GenericHeader username={user?.name} info={info} vibrantColor={info?.vibrantColor} playlistId={playlistId} />
