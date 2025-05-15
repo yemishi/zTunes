@@ -38,7 +38,6 @@ export default async function Artist(props: { params: Promise<{ artistId: string
     artistData(artistId, username || ""),
     getSongs(artistId),
   ]);
-
   return (
     <div className="flex flex-col gap-3">
       <ProfileHeader
