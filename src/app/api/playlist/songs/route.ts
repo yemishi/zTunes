@@ -25,6 +25,7 @@ export async function GET(req: NextRequest) {
           in: songsId,
         },
       },
+      include: { album: { select: { vibrantColor: true } } },
       orderBy: { name: "asc" },
       skip: page * take,
       take,
@@ -37,7 +38,7 @@ export async function GET(req: NextRequest) {
         const songSelected = songsMap.get(song.songId);
         if (!songSelected) return null;
 
-        const { albumId, track, name, id: songId, artistId, artistName, coverPhoto, albumName } = songSelected;
+        const { albumId, track, name, id: songId, artistId, artistName, coverPhoto, albumName, album } = songSelected;
 
         return {
           id: songId,
@@ -47,7 +48,7 @@ export async function GET(req: NextRequest) {
           albumId,
           name,
           artistName,
-          album: { name: albumName, id: albumId },
+          album: { name: albumName, id: albumId, vibrantColor: album.vibrantColor },
           track,
         };
       })
