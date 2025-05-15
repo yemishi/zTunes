@@ -3,7 +3,7 @@ import useScrollQuery from "@/hooks/useScrollQuery";
 import SongsOrganizer from "../SongsGrid";
 import { SongType } from "@/types/response";
 import SongSkeleton from "../../skeletons/SongSkeleton";
-import AddSongToPlaylist from "@/app/(main)/playlist/[playlistId]/AddSongToPlaylist";
+import AddSongToPlaylist from "@/components/songsGrid/songsGridQuery/addSongToPlaylist/AddSongToPlaylist";
 import Button from "@/ui/buttons/Button";
 import ErrorWrapper from "../../errorWrapper/ErrorWrapper";
 import { useState } from "react";
@@ -40,10 +40,11 @@ export default function SongsGridQuery({
 
   const [isModal, setIsModal] = useState(false);
   const closeModal = () => setIsModal(false);
+  console.log(username)
   return (
     <div className="flex flex-col">
       {isModal && (
-        <Modal className="modal-container" onClose={closeModal}>
+        <Modal className="mx-auto my-auto" onClose={closeModal}>
           <AddSongToPlaylist
             refetch={refetch}
             onClose={closeModal}
@@ -64,7 +65,7 @@ export default function SongsGridQuery({
         refetch={refetch}
         isLoading={isLoading ? 5 : undefined}
         playlistId={playlistId}
-        username={username as string}
+        username={username}
       />
       {isError && <ErrorWrapper className="ml-2 mt-2" error={!!error} message={error.message} />}
       {!isError && (
