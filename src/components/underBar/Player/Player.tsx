@@ -42,13 +42,13 @@ export default function Player({ player }: { player: UsePlayerType }) {
   const { data: session } = useSession();
   const username = session?.user?.name;
   const bgColor = album.vibrantColor?.color;
-
+  const isLight = album.vibrantColor?.isLight;
   return (
     <div
       onClick={() => !showDetails && setShowDetails(true)}
       style={bgColor && isVibrant ? { background: bgColor } : {}}
-      className={`w-[90%] h-14 rounded-lg flex items-center justify-between p-2 md:w-full md:h-20 transition-colors md:rounded-lg md:grid grid-cols-[1fr_2fr_1fr]
-         bg-black-400 md:bg-black`}
+      className={`w-[90%] h-14 rounded-lg flex items-center justify-between p-2 md:w-full md:h-20 transition-colors md:rounded-none md:grid grid-cols-[1fr_2fr_1fr]
+         bg-black-400 md:bg-black ${isLight && isVibrant ? "text-black" : "text-white"}`}
     >
       <ProgressBar
         max={duration}
@@ -64,7 +64,7 @@ export default function Player({ player }: { player: UsePlayerType }) {
         <Image src={coverPhoto} className="size-10 rounded" />
         <div className="flex flex-col">
           <span>{title}</span>
-          <span className="first-letter:uppercase text-sm text-gray-400">{artistName}</span>
+          <span className="first-letter:uppercase text-sm">{artistName}</span>
         </div>
       </div>
 
@@ -78,18 +78,29 @@ export default function Player({ player }: { player: UsePlayerType }) {
           className={`size-9 hover:brightness-90 transition-all self-center mr-3 cursor-pointer ${!isVibrant && bgColor ? `text-[${bgColor}]` : "text-black-400"}`}
         />
         <Image src={coverPhoto} className="size-13 rounded-lg" />
-        <div className="flex flex-col">
+        <div className="flex flex-col font-medium">
           <Link href={`/artist/${artistId}`} className="first-letter:uppercase">
             {artistName}
           </Link>
-          <span className="text-white/80">{title}</span>
+          <span className="">{title}</span>
         </div>
         <ToggleLike className="ml-4" songId={songId} username={username} />
       </div>
 
       <div className="hidden md:flex gap-3 ml-auto relative">
-        <VolumeInput fixed onChange={handleVolume} value={volume} currentProgress={volume} />
-        <SongOptions className="-top-45 right-5" vibrantColor={album.vibrantColor} song={song} username={username} />
+        <VolumeInput
+          barClass={isVibrant && isLight ? "bg-black" : ""}
+          fixed
+          onChange={handleVolume}
+          value={volume}
+          currentProgress={volume}
+        />
+        <SongOptions
+          className="-top-45 right-5"
+          vibrantColor={isVibrant ? album.vibrantColor : undefined}
+          song={song}
+          username={username}
+        />
       </div>
 
       <audio autoPlay onEnded={onend} ref={audioRef} src={url} />
