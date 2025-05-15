@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 
 import Button from "@/ui/buttons/Button";
 import Input from "@/ui/inputs/Input";
@@ -11,6 +11,7 @@ import ProgressStep from "@/ui/custom/ProgressStep";
 
 export default function SignInForm({ resetPass }: { resetPass: () => void }) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [callbackUrl, setCallbackUrl] = useState("/");
 
   const { push } = useRouter();
   const {
@@ -24,6 +25,10 @@ export default function SignInForm({ resetPass }: { resetPass: () => void }) {
     password: { value: "", min: 6, minMessage: "This field must have at least 6 characters" },
   });
 
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    setCallbackUrl(params.get("callbackUrl") || "/");
+  }, []);
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!validateAll()) return;
@@ -36,7 +41,8 @@ export default function SignInForm({ resetPass }: { resetPass: () => void }) {
     if (response && !response.ok) {
       setError("name", "Incorrect username or password.");
       setError("password", "Incorrect username or password.");
-    } else push("/");
+    }
+    push(callbackUrl);
     setIsLoading(false);
   };
 
