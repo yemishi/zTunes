@@ -24,7 +24,7 @@ export default function Sidebar() {
   return (
     <div className="hidden fixed md:flex flex-col left-0 top-0 w-64 lg:w-72 2xl:w-80 min-3xl:w-96 h-full pb-20 p-2 gap-2 bg-black">
       <Suspense fallback={<div className="spinner" />}>
-        <UserSessionPanel />
+        <UserSessionPanel user={user} />
       </Suspense>
       <ul className="flex flex-col gap-2 p-2 bg-black-700 rounded-lg">
         {liMapped.map(({ Icon, to, name }, i) => {
