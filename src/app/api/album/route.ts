@@ -9,7 +9,6 @@ export async function GET(req: NextRequest) {
   const albumId = req.nextUrl.searchParams.get("albumId") as string;
   const take = Number(req.nextUrl.searchParams.get("take")) || 10;
   const page = Number(req.nextUrl.searchParams.get("page")) || 0;
-
   try {
     if (albumId) {
       const album = await db.album.findUnique({
@@ -29,8 +28,17 @@ export async function GET(req: NextRequest) {
     }
 
     if (artistId) {
-      const albums = await db.album.findMany({ where: { artistId }, ...paginate(page, take) });
-      return NextResponse.json(albums);
+      const albums = await db.album.findMany({
+        where: { artistId },
+        include: { artist: { select: { username: true } } },
+        ...paginate(page, take),
+      });
+
+      return NextResponse.json(
+        albums.map((a) => {
+          return { ...a, artistName: a.artist.username };
+        })
+      );
     }
 
     const albums = await db.album.findMany({
@@ -39,10 +47,15 @@ export async function GET(req: NextRequest) {
           contains: query || "",
         },
       },
+      include: { artist: { select: { username: true } } },
       orderBy: { coverPhoto: "asc" },
       ...paginate(page, take),
     });
-    return NextResponse.json(albums);
+    return NextResponse.json(
+      albums.map((a) => {
+        return { ...a, artistName: a.artist.username };
+      })
+    );
   } catch (error) {
     return jsonError("We had a problem trying to recover the albums.");
   }
