@@ -28,7 +28,6 @@ interface BundleType {
   id: string;
   title: string;
   type: string;
-  releasedDate?: string;
   artistName: string;
   artistId: string;
   coverPhoto: string;
@@ -36,6 +35,8 @@ interface BundleType {
   error: boolean;
   message: string;
   status: number;
+  releasedDate?: string;
+  vibrantColor?: { color: string; isLight: boolean };
   isOfficial?: boolean;
   desc?: string;
   tracks?: { url: string; duration: number }[];
