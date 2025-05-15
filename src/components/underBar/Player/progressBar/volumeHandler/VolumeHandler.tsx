@@ -16,7 +16,7 @@ export default function VolumeHandler({
   className,
   value,
   fixed,
-  barClass,
+  barClass = "",
   ...props
 }: InputType) {
   const [showInput, setShowInput] = useState<boolean>(false);
@@ -36,7 +36,7 @@ export default function VolumeHandler({
           step={0.01}
           value={value}
           vertical={vertical}
-          classContainer={`${barClass ? barClass : ""}`}
+          className={barClass}
           currentProgress={currentProgress}
           {...props}
         />
