@@ -28,22 +28,23 @@ interface DivProps extends HTMLAttributes<HTMLDivElement> {
 
 export default function SongOptions({ song, playlistId, refetch, username, vibrantColor, ...props }: DivProps) {
   const { className = "", ...rest } = props;
-  const { album, artistId, id, createdAt, name } = song;
+  const { album, artistId, id, createdAt } = song;
   const { isLiked, isLoading, toggleLike } = useLike(id, username);
   const [isOptions, setIsOptions] = useState(false);
   const [isAddPlaylist, setIsAddPlaylist] = useState(false);
   const selected = { songId: id, createdAt };
   const optionsRef = useRef<HTMLDivElement | null>(null);
 
+  const closeOptions = () => {
+    setIsOptions(false), setIsAddPlaylist(false);
+  };
   useEffect(() => {
     const handleClickOutside = (event: Event) => {
       const target = event.target as HTMLElement;
 
       if (target.closest("#modal")) return;
-
       if (isOptions && optionsRef.current && !optionsRef.current.contains(target)) {
-        setIsOptions(false);
-        setIsAddPlaylist(false);
+        closeOptions();
       }
     };
 
@@ -53,7 +54,6 @@ export default function SongOptions({ song, playlistId, refetch, username, vibra
     };
   }, [isOptions]);
 
-  const closeOptions = () => setIsOptions(false);
   const toRemove = () => {
     removeFromPlaylist(selected, playlistId as string).then((res) => {
       if (res.error) return toast.error(res.message);
@@ -125,13 +125,12 @@ export default function SongOptions({ song, playlistId, refetch, username, vibra
     : {};
 
   return (
-    <div className="relative">
+    <div ref={optionsRef} className="relative">
       <RxDotsVertical onClick={() => setIsOptions(!isOptions)} className="h-10 w-6 cursor-pointer" />
 
       {isOptions && (
         <div
           {...props}
-          ref={optionsRef}
           style={{ background: vibrantColor ? vibrantColor.color : "#2f2f2f " }}
           className={`${className} absolute ${className.includes("right-") ? "" : "right-2"} z-10 `}
         >
