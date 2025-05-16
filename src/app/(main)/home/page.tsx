@@ -6,14 +6,16 @@ const getPlaylists =
   (username: string): any =>
   async () => {
     if (!username) return;
-    const playlists = await fetch(`${process.env.URL}/api/playlist/recommended?username=${username}`).then((res) =>
-      res.json()
-    );
+    const playlists = await fetch(`${process.env.URL}/api/playlist/recommended?username=${username}`, {
+      next: { revalidate: 3600 },
+    }).then((res) => res.json());
     return playlists;
   };
 
-const getAlbums = async () => await fetch(`${process.env.URL}/api/album?take=10`).then((res) => res.json());
-const getArtists = async () => await fetch(`${process.env.URL}/api/artist?take=10`).then((res) => res.json());
+const getAlbums = async () =>
+  await fetch(`${process.env.URL}/api/album?take=10`, { next: { revalidate: 3600 } }).then((res) => res.json());
+const getArtists = async () =>
+  await fetch(`${process.env.URL}/api/artist?take=10`, { next: { revalidate: 3600 } }).then((res) => res.json());
 
 export default async function Home() {
   const session = await getServerSession(authOptions);

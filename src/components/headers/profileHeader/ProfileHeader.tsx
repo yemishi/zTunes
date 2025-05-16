@@ -134,7 +134,7 @@ export default function ProfileHeader({
             onblur={(currValue: string) => onchange(currValue)}
           />
 
-          <div className="flex flex-col gap-1 md:flex-row md:items-center">
+          <div className="flex flex-col gap-1 items-center md:flex-row">
             {!isOwner && (
               <ToggleFollow
                 artistId={profileId}
