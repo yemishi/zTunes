@@ -2,7 +2,6 @@ import { db } from "@/lib/db";
 import { NextRequest, NextResponse } from "next/server";
 import { jsonError } from "../../helpers";
 
-
 export async function GET(req: NextRequest) {
   const playlistId = req.nextUrl.searchParams.get("playlistId") as string;
   const username = req.nextUrl.searchParams.get("username") as string;
@@ -17,8 +16,7 @@ export async function GET(req: NextRequest) {
       where: { id: playlistId },
       select: { songs: true, isPublic: true, userId: true },
     });
-    if (!playlist || (!playlist.isPublic && playlist.userId !== user?.id))
-      return jsonError("playlist not found.", 404)
+    if (!playlist || (!playlist.isPublic && playlist.userId !== user?.id)) return jsonError("playlist not found.", 404);
 
     const songsId = playlist?.songs.map((obj) => obj.songId);
     const songs = await db.songs.findMany({
@@ -26,48 +24,42 @@ export async function GET(req: NextRequest) {
         id: {
           in: songsId,
         },
-      }, orderBy: { name: "asc" },
+      },
+      include: { album: { select: { vibrantColor: true } } },
+      orderBy: { name: "asc" },
       skip: page * take,
       take,
     });
-  
+
     const songsMap = new Map(songs.map((song) => [song.id, song]));
 
-    const songsInfo = playlist.songs.map((song) => {
-      const songSelected = songsMap.get(song.songId);
-      if (!songSelected) return null
+    const songsInfo = playlist.songs
+      .map((song) => {
+        const songSelected = songsMap.get(song.songId);
+        if (!songSelected) return null;
 
-      const {
-        albumId,
-        urlSong,
-        name,
-        id: songId,
-        artistId,
-        artistName,
-        coverPhoto,
-        albumName,
-      } = songSelected;
+        const { albumId, track, name, id: songId, artistId, artistName, coverPhoto, albumName, album } = songSelected;
 
-      return {
-        id: songId,
-        createdAt: song.createdAt,
-        artistId,
-        artistName,
-        albumName,
-        coverPhoto,
-        albumId,
-        name,
-        urlSong,
-      };
-    }).filter(Boolean);
-
+        return {
+          id: songId,
+          createdAt: song.createdAt,
+          artistId,
+          coverPhoto,
+          albumId,
+          name,
+          artistName,
+          album: { name: albumName, id: albumId, vibrantColor: album.vibrantColor },
+          track,
+        };
+      })
+      .filter(Boolean);
 
     return NextResponse.json({
       songs: songsInfo,
       hasMore: playlist.songs.length > take * (page + 1),
     });
   } catch (error) {
-    console.log(error)
-    return jsonError("We had a problem trying to get the playlist songs.")
+    console.log(error);
+    return jsonError("We had a problem trying to get the playlist songs.");
   }
 }

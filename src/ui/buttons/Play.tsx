@@ -25,7 +25,7 @@ export default function Play({ songs, ...props }: ButtonProps) {
       }}
       className={cleanClasses(
         className,
-        "size-10 text-yellow-600  flex items-center hover:scale-105 active:opacity-80 duration-150"
+        "size-10 text-yellow-600 flex items-center hover:scale-105 active:opacity-80 duration-150"
       )}
     >
       <Icon className="h-full w-full" />

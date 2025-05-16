@@ -15,8 +15,7 @@ export async function GET(req: NextRequest) {
           AND: { isArtist: { isSet: true } },
         },
       });
-      if (!artistResponse || !artistResponse.isArtist)
-        return jsonError("Artist not found.", 404)
+      if (!artistResponse || !artistResponse.isArtist) return jsonError("Artist not found.", 404);
 
       const artist = {
         id: artistResponse.id,
@@ -24,6 +23,7 @@ export async function GET(req: NextRequest) {
         summary: artistResponse.isArtist?.summary,
         cover: artistResponse.isArtist.cover,
         profile: artistResponse.profile,
+        vibrantColor: artistResponse.vibrantColor,
       };
       return NextResponse.json(artist);
     }
@@ -49,7 +49,7 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json(organizeArtists || []);
   } catch (error) {
-    return jsonError("We had a problem retrieving artist information.")
+    return jsonError("We had a problem retrieving artist information.");
   }
 }
 
@@ -58,8 +58,7 @@ export async function PATCH(req: NextRequest) {
     const { userId, cover, summary } = await req.json();
     const user = await db.user.findFirst({ where: { id: userId } });
 
-    if (!user || !user.isArtist)
-      return jsonError("artist not found.", 404)
+    if (!user || !user.isArtist) return jsonError("artist not found.", 404);
 
     await db.user.update({
       where: { id: user?.id },
@@ -73,6 +72,6 @@ export async function PATCH(req: NextRequest) {
 
     return NextResponse.json({ message: "Artist updated with successfully" });
   } catch (error) {
-    return jsonError("We had a problem trying to updated artist information.")
+    return jsonError("We had a problem trying to updated artist information.");
   }
 }

@@ -1,3 +1,4 @@
+"use client";
 import { DivMotionProps } from "@/types/uiTypes";
 import { motion } from "framer-motion";
 import { useMemo } from "react";

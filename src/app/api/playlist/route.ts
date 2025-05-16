@@ -16,27 +16,24 @@ export async function GET(req: NextRequest) {
       where: authorId ? { id: authorId } : { username: authorName },
     });
 
-    if (!author && !playlistId)
-      return jsonError("Author not found.", 404)
+    if (!author && !playlistId) return jsonError("Author not found.", 404);
 
     const user = await db.user.findFirst({ where: { username } });
     if (playlistId) {
       const playlist = await db.playlist.findFirst({
         where: { id: playlistId },
       });
-      if (!playlist)
-        return jsonError("Playlist not found.", 404)
+      if (!playlist) return jsonError("Playlist not found.", 404);
       const author = await db.user.findFirst({
         where: { id: playlist.userId },
       });
       const songsId = playlist.songs.map((song) => song.songId);
-      const urlsSongs = await db.songs
+      const tracks = await db.songs
         .findMany({
           where: { id: { in: songsId } },
-          select: { urlSong: true },
+          select: { track: true },
         })
-        .then((res) => res.map((res) => res.urlSong));
-
+        .then((res) => res.map((res) => res.track));
       const info = {
         authorId: author?.id,
         desc: playlist.desc,
@@ -49,7 +46,8 @@ export async function GET(req: NextRequest) {
         avatar: author?.profile?.avatar,
         isOfficial: playlist.officialCategories,
         releasedDate: dateFormat(playlist.createdAt),
-        urlsSongs,
+        vibrantColor: playlist.vibrantColor,
+        tracks,
       };
       return NextResponse.json(info);
     }
@@ -75,32 +73,23 @@ export async function GET(req: NextRequest) {
       hasMore,
     });
   } catch (error) {
-    return jsonError("We had a problem trying to get the playlist songs.")
+    return jsonError("We had a problem trying to get the playlist songs.");
   }
 }
 
 export async function POST(req: NextRequest) {
   try {
-    const {
-      title,
-      username,
-      isPublic,
-      desc,
-      coverPhoto,
-      officialCategories,
-      songs,
-    } = await req.json();
+    const { title, username, isPublic, desc, coverPhoto, officialCategories, songs } = await req.json();
 
     const user = await db.user.findFirst({ where: { username } });
-    if (!user)
-      return jsonError("user not found", 404);
+    if (!user) return jsonError("user not found", 404);
 
     const existingPlaylist = await db.playlist.findFirst({
       where: { title, userId: user.id },
     });
 
     if (existingPlaylist) {
-      return jsonError("Playlist with this name already exists.")
+      return jsonError("Playlist with this name already exists.");
     }
 
     await db.playlist.create({
@@ -117,37 +106,28 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ message: "playlist created successfully" });
   } catch (error) {
-    return jsonError("we had a problem trying to create the playlist.")
+    return jsonError("we had a problem trying to create the playlist.");
   }
 }
 
 export async function PATCH(req: NextRequest) {
   try {
-    const {
-      id,
-      isPublic,
-      officialCategories,
-      title,
-      coverPhoto,
-      force,
-      toRemove,
-      songSelected,
-    } = await req.json();
+    const { id, isPublic, officialCategories, title, coverPhoto, force, toRemove, songSelected, vibrantColor } =
+      await req.json();
 
     const playlist = await db.playlist.findUnique({ where: { id } });
-    const songs = toRemove ? playlist?.songs?.filter(
-      (song) => String(song.createdAt) !==
-        String(new Date(songSelected.createdAt)) &&
-        song.songId !== songSelected.songId
-    ) : playlist?.songs;
+    const songs = toRemove
+      ? playlist?.songs?.filter(
+          (song) =>
+            String(song.createdAt) !== String(new Date(songSelected.createdAt)) && song.songId !== songSelected.songId
+        )
+      : playlist?.songs;
 
-
-    if (!playlist)
-      return jsonError("Playlist not found.", 404)
+    if (!playlist) return jsonError("Playlist not found.", 404);
     const newSong = {
       createdAt: new Date(),
       songId: songSelected,
-    }
+    };
     if (songSelected && typeof songSelected === "string") {
       if (!force && songs?.some((song) => song.songId === songSelected))
         return NextResponse.json({
@@ -166,8 +146,7 @@ export async function PATCH(req: NextRequest) {
           id: { not: { equals: playlist.id } },
         },
       });
-      if (existingTitle)
-        return jsonError("Playlist with this name already exists.")
+      if (existingTitle) return jsonError("Playlist with this name already exists.");
     }
 
     await db.playlist.update({
@@ -178,11 +157,15 @@ export async function PATCH(req: NextRequest) {
         officialCategories,
         songs,
         title: title || playlist?.title,
+        vibrantColor: vibrantColor ?? playlist?.vibrantColor,
       },
     });
-    return NextResponse.json({ newSong: songSelected && !toRemove && newSong, message: "playlist updated with successfully" });
+    return NextResponse.json({
+      newSong: songSelected && !toRemove && newSong,
+      message: "playlist updated with successfully",
+    });
   } catch (error) {
-    return jsonError("we had a problem trying to update the playlist.")
+    return jsonError("we had a problem trying to update the playlist.");
   }
 }
 
@@ -192,6 +175,6 @@ export async function DELETE(req: NextRequest) {
     await db.playlist.delete({ where: { id: playlistId } });
     return NextResponse.json({ message: "playlist deleted with success" });
   } catch (error) {
-    return jsonError("We had a problem trying to delete the playlists.")
+    return jsonError("We had a problem trying to delete the playlists.");
   }
 }

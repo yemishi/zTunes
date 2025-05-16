@@ -2,7 +2,7 @@ import Link from 'next/link';
 
 export default function NotFound() {
     return (
-        <div className="h-screen flex items-center justify-center text-center bg-gradient-to-br from-black via-black-550 to-[#5a3825] text-white md:ml-64 lg:ml-72 2xl:ml-80 min-[2000px]:ml-96">
+        <div className="h-screen flex items-center justify-center text-center bg-gradient-to-br from-black via-black-550 to-[#5a3825] text-white">
             <div className="px-6 py-8 rounded-lg shadow-lg bg-[#5a3825] bg-opacity-90">
                 <h1 className="text-4xl lg:text-5xl font-bold font-lato text-[#ff8c42]">
                     🎵 Offbeat and Out of Tune: 404 Error 🎶

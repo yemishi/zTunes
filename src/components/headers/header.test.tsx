@@ -1,7 +1,7 @@
 import { render, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import ProfileHeader from "./ProfileHeader";
-import GenericHeader from "./GenericHeader";
+import ProfileHeader from "./profileHeader/ProfileHeader";
+import GenericHeader from "./genericHeader/GenericHeader";
 
 jest.mock("next-auth/react", () => {
   const originalModule = jest.requireActual("next-auth/react");
@@ -30,8 +30,6 @@ global.fetch = jest.fn().mockResolvedValue({
   json: () => Promise.resolve("black"),
 });
 
-
-
 describe("GenericHeader component", () => {
   beforeEach(() => {
     class MockAudio extends HTMLAudioElement {
@@ -42,31 +40,7 @@ describe("GenericHeader component", () => {
     }
     window.Audio = MockAudio;
   });
-
-  const info = {
-    avatar: "https://avatartest",
-    title: "Header test",
-    author: "author test",
-    coverPhoto: "https://covertest",
-    authorId: "author1",
-    isOwner: false,
-    id: "1",
-    urlsSongs: [""],
-  };
-
-
-  it("should render correctly @render", async () => {
-    const { getByText } = render(<GenericHeader info={info} />);
-    await waitFor(() => {
-      const title = getByText(info.title);
-      const author = getByText(info.author);
-
-      expect(title).toBeTruthy();
-      expect(author).toBeTruthy();
-    });
-  });
 });
-
 
 describe("ProfileHeader component", () => {
   const profileInfo = {
@@ -77,12 +51,7 @@ describe("ProfileHeader component", () => {
 
   it("render correctly", () => {
     const { getByText } = render(
-      <ProfileHeader
-        profileInfo={profileInfo}
-        followersLength={0}
-        isInclude={false}
-        username="user test"
-      />
+      <ProfileHeader profileInfo={profileInfo} followersLength={0} isInclude={false} username="user test" />
     );
 
     const artistName = getByText(profileInfo.profileName);

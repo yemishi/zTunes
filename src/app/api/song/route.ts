@@ -1,6 +1,7 @@
 import { db } from "@/lib/db";
 import { NextRequest, NextResponse } from "next/server";
 import { jsonError, paginate } from "../helpers";
+import { getAudioDuration } from "./getAudioDuration";
 
 export async function GET(req: NextRequest) {
   const albumId = req.nextUrl.searchParams.get("albumId") as string;
@@ -15,12 +16,23 @@ export async function GET(req: NextRequest) {
         db.songs.count({ where: albumId ? { albumId } : { artistId } }),
         db.songs.findMany({
           where: albumId ? { albumId } : { artistId },
+          include: { album: { select: { vibrantColor: true } } },
           orderBy: { name: "asc" },
           ...paginate(page, take),
         }),
       ]);
       return NextResponse.json({
-        songs,
+        songs: songs.map((song) => {
+          const { albumId, albumName, album, ...rest } = song;
+          return {
+            ...rest,
+            album: {
+              name: albumName,
+              id: albumId,
+              vibrantColor: album.vibrantColor,
+            },
+          };
+        }),
         hasMore: count > take * (page + 1),
       });
     }
@@ -28,7 +40,9 @@ export async function GET(req: NextRequest) {
     const song = await db.songs.findUnique({ where: { id: songId } });
     return NextResponse.json(song);
   } catch (error) {
-    return jsonError("We had a problem trying recover the songs.")
+    console.log(error);
+
+    return jsonError("We had a problem trying recover the songs.");
   }
 }
 
@@ -47,8 +61,7 @@ export async function POST(req: NextRequest) {
       });
 
     const album = await db.album.findFirst({ where: { id: albumId } });
-    if (!album)
-      return NextResponse.json({ error: true, message: "Album not found" });
+    if (!album) return NextResponse.json({ error: true, message: "Album not found" });
 
     const availableName = await db.songs.findFirst({
       where: { albumId, name: { equals: name, mode: "insensitive" } },
@@ -59,6 +72,8 @@ export async function POST(req: NextRequest) {
         error: true,
         message: "Name is not available",
       });
+    const duration = await getAudioDuration(urlSong);
+    if (!duration) return NextResponse.json({ error: true, message: "Couldn't determine audio duration" });
 
     const newSong = await db.songs.create({
       data: {
@@ -66,7 +81,7 @@ export async function POST(req: NextRequest) {
         name,
         albumId,
         albumName: album.title,
-        urlSong,
+        track: { duration, url: urlSong },
         category,
         artistName: artist.username,
         coverPhoto: album.coverPhoto,
@@ -91,8 +106,7 @@ export async function POST(req: NextRequest) {
 export async function PATCH(req: NextRequest) {
   try {
     const { songId, albumId, name } = await req.json();
-    if (!name)
-      return NextResponse.json({ error: true, message: "Invalid name" });
+    if (!name) return NextResponse.json({ error: true, message: "Invalid name" });
 
     const availableName = await db.songs.findFirst({
       where: { albumId, name: { equals: name, mode: "insensitive" } },

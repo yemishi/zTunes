@@ -28,7 +28,6 @@ interface BundleType {
   id: string;
   title: string;
   type: string;
-  releasedDate?: string;
   artistName: string;
   artistId: string;
   coverPhoto: string;
@@ -36,9 +35,11 @@ interface BundleType {
   error: boolean;
   message: string;
   status: number;
+  releasedDate?: string;
+  vibrantColor?: { color: string; isLight: boolean };
   isOfficial?: boolean;
   desc?: string;
-  urlsSongs?: string[];
+  tracks?: { url: string; duration: number }[];
 }
 
 interface FollowersType {
@@ -49,9 +50,7 @@ interface FollowersType {
 interface ArtistType {
   id: string;
   name: string;
-
   summary: string;
-
   cover: string;
   profile: {
     avatar: string;
@@ -86,13 +85,17 @@ interface PlaylistType {
 interface SongType {
   id: string;
   createdAt: Date;
+  album: {
+    name: string;
+    id: string;
+    vibrantColor?: { color: string; isLight: boolean };
+  };
   artistId: string;
   artistName: string;
-  albumName: string;
   coverPhoto: string;
-  albumId: string;
   name: string;
-  urlSong: string;
+  category?: string[];
+  track: { url: string; duration: number };
   error: false;
 }
 

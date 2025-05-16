@@ -9,29 +9,36 @@ export async function GET(req: NextRequest) {
   const albumId = req.nextUrl.searchParams.get("albumId") as string;
   const take = Number(req.nextUrl.searchParams.get("take")) || 10;
   const page = Number(req.nextUrl.searchParams.get("page")) || 0;
-
   try {
     if (albumId) {
       const album = await db.album.findUnique({
         where: { id: albumId },
         include: {
-          songs: { select: { urlSong: true }, ...paginate(page, take) },
+          songs: { select: { track: true }, ...paginate(page, take) },
           artist: { select: { profile: { select: { avatar: true } }, username: true } },
         },
       });
-      if (!album)
-        return jsonError("Album not found.", 404);
+      if (!album) return jsonError("Album not found.", 404);
       return NextResponse.json({
         ...album,
         avatar: album.artist.profile?.avatar,
-        urlsSongs: album.songs.map((s) => s.urlSong),
-        artistName: album.artist.username
+        tracks: album.songs.map((s) => s.track),
+        artistName: album.artist.username,
       });
     }
 
     if (artistId) {
-      const albums = await db.album.findMany({ where: { artistId }, ...paginate(page, take) });
-      return NextResponse.json(albums);
+      const albums = await db.album.findMany({
+        where: { artistId },
+        include: { artist: { select: { username: true } } },
+        ...paginate(page, take),
+      });
+
+      return NextResponse.json(
+        albums.map((a) => {
+          return { ...a, artistName: a.artist.username };
+        })
+      );
     }
 
     const albums = await db.album.findMany({
@@ -40,31 +47,34 @@ export async function GET(req: NextRequest) {
           contains: query || "",
         },
       },
-      orderBy: { coverPhoto: "asc" }, ...paginate(page, take)
+      include: { artist: { select: { username: true } } },
+      orderBy: { coverPhoto: "asc" },
+      ...paginate(page, take),
     });
-    return NextResponse.json(albums);
+    return NextResponse.json(
+      albums.map((a) => {
+        return { ...a, artistName: a.artist.username };
+      })
+    );
   } catch (error) {
-    return jsonError("We had a problem trying to recover the albums.")
+    return jsonError("We had a problem trying to recover the albums.");
   }
 }
 
 export async function POST(req: NextRequest) {
   try {
-    const { title, releasedDate, coverPhoto, artistId, type, desc } =
-      await req.json();
+    const { title, releasedDate, coverPhoto, artistId, type, desc } = await req.json();
 
     const artist = await db.user.findUnique({
       where: { id: artistId },
     });
-    if (!artist || !artist.isArtist)
-      return jsonError("Artist not found");
+    if (!artist || !artist.isArtist) return jsonError("Artist not found");
 
     const unavailableName = await db.album.findFirst({
       where: { artistId, title: { contains: title, mode: "insensitive" } },
     });
 
-    if (unavailableName)
-      return jsonError(`You already have an album named ${title}`);
+    if (unavailableName) return jsonError(`You already have an album named ${title}`);
     await db.album.create({
       data: {
         artistId: artist.id,
@@ -78,29 +88,25 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ message: "Your album was successfully created." });
   } catch (error) {
-    return jsonError('We had a problem trying to create the album')
+    return jsonError("We had a problem trying to create the album");
   }
 }
 
 export async function PATCH(req: NextRequest) {
   const albumId = req.nextUrl.searchParams.get("albumId") as string;
   try {
-    const { title, coverPhoto } = await req.json();
+    const { title, coverPhoto, vibrantColor } = await req.json();
     const album = await db.album.findFirst({ where: { id: albumId } });
-    if (!album)
-      return jsonError("Album not found")
+    if (!album) return jsonError("Album not found");
 
     if (title || coverPhoto)
-      return await updateAlbum(
-        albumId,
-        title ? "title" : "coverPhoto",
-        title || coverPhoto,
-        album.artistId
-      );
-
+      return await updateAlbum(albumId, title ? "title" : "coverPhoto", title || coverPhoto, album.artistId);
+    if (vibrantColor) {
+      await db.album.update({ where: { id: album.id }, data: { vibrantColor } });
+    }
     return NextResponse.json({ message: "Album updated with success" });
   } catch (error) {
-    return jsonError("We had a problem trying to updated the album")
+    return jsonError("We had a problem trying to updated the album");
   }
 }
 
@@ -108,8 +114,7 @@ export async function DELETE(req: NextRequest) {
   try {
     const { albumId } = await req.json();
     const album = await db.album.findFirst({ where: { id: albumId } });
-    if (!album)
-      return jsonError("Album not found")
+    if (!album) return jsonError("Album not found");
 
     const songs = await db.songs.findMany({ where: { albumId } });
     const songIds = songs.map((song) => song.id);
@@ -144,23 +149,17 @@ export async function DELETE(req: NextRequest) {
     await db.album.delete({ where: { id: albumId } });
     return NextResponse.json({ message: "Album deleted with success" });
   } catch (error) {
-    return jsonError("We had a error trying to delete the album")
+    return jsonError("We had a error trying to delete the album");
   }
 }
 
-async function updateAlbum(
-  albumId: string,
-  field: string,
-  value: string,
-  artistId: string
-) {
+async function updateAlbum(albumId: string, field: string, value: string, artistId: string) {
   try {
     if (field === "title") {
       const existingTitle = await db.album.findFirst({
         where: { id: { not: albumId }, artistId, title: value },
       });
-      if (existingTitle)
-        return jsonError("Title is not available")
+      if (existingTitle) return jsonError("Title is not available");
     }
     await db.album.update({
       where: { id: albumId },
@@ -176,6 +175,6 @@ async function updateAlbum(
 
     return NextResponse.json({ message: "Album updated with success" });
   } catch (error) {
-    return jsonError("We had a problem trying to update the album")
+    return jsonError("We had a problem trying to update the album");
   }
 }

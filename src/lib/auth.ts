@@ -58,7 +58,12 @@ export const authOptions: NextAuthOptions = {
   ],
 
   callbacks: {
-    async jwt({ token, trigger, session }) {
+    async jwt({ token, trigger, session, user }) {
+      if (user) {
+        token.name = user.name;
+        token.email = user.email;
+        token.picture = user.image;
+      }
       if (trigger === "update" && session) {
         token.name = session.name || token.name;
         token.picture = session.picture || token.picture;
@@ -75,7 +80,8 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
     redirect({ baseUrl, url }) {
-      return `${baseUrl}/login`;
+      if (url.startsWith("http")) return url;
+      return `${baseUrl}${url}`;
     },
   },
 };

@@ -1,3 +1,5 @@
+"use client";
+
 import { IoIosArrowBack } from "react-icons/io";
 import { AnimatePresence, motion } from "framer-motion";
 

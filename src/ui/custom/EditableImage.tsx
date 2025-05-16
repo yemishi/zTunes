@@ -1,3 +1,4 @@
+"use client";
 import { useState } from "react";
 import Image from "./Image";
 import InputFileImg from "../inputs/InputFileImg";
@@ -13,6 +14,7 @@ interface InputProps extends React.HTMLAttributes<HTMLElement> {
   uploadUrl: string;
   fieldUpload: string;
   updateSession?: boolean;
+  updateVibrantColor?: (img: string) => Promise<void>;
   extraBody?: object;
   method?: string;
   onSuccess?: () => Promise<void>;
@@ -26,6 +28,7 @@ export default function EditableImage({
   fieldUpload,
   onSuccess,
   method,
+  updateVibrantColor,
   updateSession,
   ...props
 }: InputProps) {
@@ -60,6 +63,7 @@ export default function EditableImage({
     }).then((res) => res.json());
     if (update.error) return toast.error(update.message);
     await deleteImage(oldUrl);
+    if (updateVibrantColor) await updateVibrantColor(upload.url);
     if (onSuccess) await onSuccess();
     refresh(), setIsLoading(false);
   };

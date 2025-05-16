@@ -15,8 +15,19 @@ export async function GET(req: NextRequest) {
 
     const songs = await db.songs.findMany({
       where: { id: { in: likedSongs?.songs } },
+      include: { album: { select: { vibrantColor: true } } },
     });
-    return NextResponse.json(songs);
+    return NextResponse.json(
+      songs.map((song) => {
+        const {
+          albumName,
+          albumId,
+          album: { vibrantColor },
+          ...rest
+        } = song;
+        return { ...rest, album: { name: albumName, id: albumId, vibrantColor } };
+      })
+    );
   } catch (error) {
     return NextResponse.json({
       error: true,
@@ -65,7 +76,7 @@ export async function PATCH(req: NextRequest) {
     });
     return NextResponse.json({ message: "Song added to your library" });
   } catch (error) {
-    console.log(error)
+    console.log(error);
     return NextResponse.json({
       error: true,
       message: "We had a problem trying to change your library.",

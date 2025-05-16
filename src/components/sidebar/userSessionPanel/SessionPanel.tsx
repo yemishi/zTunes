@@ -1,11 +1,8 @@
-import { useSession } from "next-auth/react";
 import Link from "next/link";
 import Image from "@/ui/custom/Image";
 import Logout from "@/ui/buttons/Logout";
 
-export default function UserSessionPanel() {
-  const { data: session } = useSession();
-  const user = session?.user;
+export default function UserSessionPanel({ user }: { user?: { name: string; picture: string } }) {
   if (!user) return;
   return (
     <div className="flex flex-col w-full gap-4 p-2 rounded-lg bg-black-700 ">
