@@ -2,26 +2,23 @@
 
 import { ErrorType } from "@/types/response";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
-import { toast } from "react-toastify";
 
 export default function useLike(songId: string, username?: string) {
-  const [isLiked, setIsLiked] = useState(false);
   const queryClient = useQueryClient();
+  const likeQueryKey = ["likedSong", songId, username];
 
-  const fetchData = async () => {
-    if (!username) return;
-    const data = await fetch(`/api/song/likedSong?username=${username}&songId=${songId}`).then((res) => res.json());
-    setIsLiked(data);
-  };
-  const { isLoading } = useQuery({
-    queryKey: ["likedSong", songId, username],
-    queryFn: async () => await fetchData(),
+  const { data: isLiked = false, isLoading } = useQuery({
+    queryKey: likeQueryKey,
+    queryFn: async () => {
+      const res = await fetch(`/api/song/likedSong?username=${username}&songId=${songId}`);
+      return await res.json();
+    },
+    enabled: !!username,
   });
 
   const toggleLike = async () => {
     const optimisticValue = !isLiked;
-    queryClient.setQueryData(["likedSong", songId, username], optimisticValue);
+    queryClient.setQueryData(likeQueryKey, optimisticValue);
 
     const data: ErrorType = await fetch(`/api/song/likedSong`, {
       method: "PATCH",
@@ -29,12 +26,13 @@ export default function useLike(songId: string, username?: string) {
     }).then((res) => res.json());
 
     if (data.error) {
-      queryClient.setQueryData(["likedSong", songId, username], isLiked);
-      return toast.error(data.message);
+      queryClient.setQueryData(likeQueryKey, isLiked);
+      return;
     }
 
-    queryClient.refetchQueries({ queryKey: ["likedSong", songId, username] });
+    queryClient.invalidateQueries({ queryKey: likeQueryKey });
   };
+
   return {
     toggleLike,
     isLiked,
