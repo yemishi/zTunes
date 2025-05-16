@@ -32,7 +32,6 @@ export default async function ArtistPage(props: { params: Promise<{ albumId: str
     albumId,
     session?.user.name as string
   );
-console.log(vibrantColor)
   return (
     <div className="flex flex-col relative">
       <GenericHeader

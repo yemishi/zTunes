@@ -77,7 +77,7 @@ export default function PlayerDetails({
           style={{
             background: `linear-gradient(to bottom,${vibrantColor?.color || "rgb(33 33 33)"} 0% ,#121212 100%)`,
           }}
-          className={`fixed md:hidden overflow-y-auto top-0 left-0 w-full h-screen z-40 p-3 gap-3 font-kanit flex flex-col 
+          className={`fixed md:hidden overflow-y-auto top-0 left-0 w-full h-full z-40 p-3 gap-3 font-kanit flex flex-col 
             ${vibrantColor?.isLight ? "text-black" : "text-white"}`}
         >
           <div className="grid grid-cols-[.5fr_1fr_.5fr] items-center">

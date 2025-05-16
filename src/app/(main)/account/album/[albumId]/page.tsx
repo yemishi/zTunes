@@ -50,7 +50,7 @@ export default async function ArtistPage(props: { params: Promise<{ albumId: str
         extraBody={{ albumId }}
         updateUrl={`/api/album?albumId=${albumId}`}
       />
-      <SongGrid albumId={albumId} artistId={artistId} url={`/api/song?albumId=${albumId}`} />
+      <SongGrid albumId={albumId} artistId={artistId}  url={`/api/song?albumId=${albumId}`} />
       <DeleteAlbum albumId={albumId} title={title} />
     </div>
   );
