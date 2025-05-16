@@ -34,6 +34,7 @@ export default async function Artist(props: { params: Promise<{ artistId: string
   const { artistId } = params;
   const session = await getServerSession(authOptions);
   const username = session?.user?.name;
+
   const [[artist, followers], songsData] = await Promise.all([
     artistData(artistId, username || ""),
     getSongs(artistId),
