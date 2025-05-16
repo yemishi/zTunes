@@ -37,13 +37,15 @@ export default function SignInForm({ resetPass }: { resetPass: () => void }) {
     const response = await signIn("credentials", {
       name,
       password,
-      callbackUrl,
+      redirect: false,
     });
+    setIsLoading(false);
     if (response && !response.ok) {
       setError("name", "Incorrect username or password.");
       setError("password", "Incorrect username or password.");
+      return;
     }
-    setIsLoading(false);
+    push(callbackUrl);
   };
 
   return (
