@@ -112,30 +112,6 @@ export default function Component() {
 }
   ```
 
-### [useObject](https://github.com/yemishi/zTunes/blob/main/src/hooks/useObject.tsx)
-This custom hook returns an object with state, typed with the specified type provided as a generic or by props like initialState, and a function to update the object.
-
-```tsx
-// Usage example
-import useObject from "/hooks"
-
-export default function Component() {
-  const { state: { title, count }, updateObject } = useObject<{ title: string, count: number }>();
-
-  const increment = () => updateObject("count", count + 1);
-  const decrement = () => updateObject("count", count - 1); 
-
-  return (
-    <div>
-      <h1>{title}</h1>
-      <input type="text" value={title} onChange={(e) => updateObject("title", e.target.value)} />
-      <button onClick={increment}>+</button>
-      <button onClick={decrement}>-</button> 
-      <span>{count}</span>
-    </div>
-  );
-}
-```
 ## Setup 
 
 Follow the intrutions bellow to config and run in your local ambient
