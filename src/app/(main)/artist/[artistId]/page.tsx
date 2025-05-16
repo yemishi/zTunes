@@ -66,7 +66,7 @@ export default async function Artist(props: { params: Promise<{ artistId: string
       </ErrorWrapper>
       <Link
         href={`/artist/${artist.id}/discography`}
-        className="self-end mr-4 font-kanit text-lg text-white text-opacity-50 underline underline-offset-[6px] hover:text-opacity-100 duration-100"
+        className="self-end mr-4 font-kanit text-lg text-white hover:text-orange-500 text-opacity-50 underline underline-offset-[6px] hover:text-opacity-100 duration-100"
       >
         See discography
       </Link>

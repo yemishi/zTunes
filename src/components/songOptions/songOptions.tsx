@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import { MdPlaylistAdd } from "react-icons/md";
 import { CgPlayListRemove } from "react-icons/cg";
 import { toast } from "react-toastify";
-import { removeFromPlaylist } from "@/utils/helpers";
+import { cleanClasses, removeFromPlaylist } from "@/utils/helpers";
 import { GoPerson } from "react-icons/go";
 
 import Link from "next/link";
@@ -24,9 +24,18 @@ interface DivProps extends HTMLAttributes<HTMLDivElement> {
   refetch?: () => void;
   username?: string;
   vibrantColor?: { color: string; isLight: boolean };
+  iconClassName?: string;
 }
 
-export default function SongOptions({ song, playlistId, refetch, username, vibrantColor, ...props }: DivProps) {
+export default function SongOptions({
+  song,
+  playlistId,
+  refetch,
+  username,
+  vibrantColor,
+  iconClassName = "",
+  ...props
+}: DivProps) {
   const { className = "", ...rest } = props;
   const { album, artistId, id, createdAt } = song;
   const { isLiked, isLoading, toggleLike } = useLike(id, username);
@@ -126,7 +135,10 @@ export default function SongOptions({ song, playlistId, refetch, username, vibra
 
   return (
     <div ref={optionsRef} className="relative">
-      <RxDotsVertical onClick={() => setIsOptions(!isOptions)} className="h-10 w-6 cursor-pointer" />
+      <RxDotsVertical
+        onClick={() => setIsOptions(!isOptions)}
+        className={cleanClasses(iconClassName, "h-10 w-6 cursor-pointer")}
+      />
 
       {isOptions && (
         <div
