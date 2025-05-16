@@ -26,7 +26,7 @@ export default async function Discography(props: { params: Promise<{ artistId: s
   const albums = await fetchData(artistId);
   return (
     <div className="flex flex-col">
-      <div className="flex w-full sticky top-0 z-20 bg-black-500">
+      <div className="flex w-full top-0 z-20 bg-black-500">
         <span className="flex gap-4 items-center">
           <PreviousPage className="" />
           <h1 className="text-xl md:text-2xl font-montserrat font-semibold"> {albums[0].artistName}</h1>
@@ -39,15 +39,18 @@ export default async function Discography(props: { params: Promise<{ artistId: s
               <div
                 style={
                   vibrantColor
-                    ? { background: vibrantColor.color, boxShadow: `0px 10px 90px -21px ${vibrantColor.color}` }
+                    ? {
+                        background: `linear-gradient(to bottom,${vibrantColor.color} 10%,transparent 100%)`,
+                        boxShadow: `0px -10px 90px -50px ${vibrantColor.color}`,
+                      }
                     : {}
                 }
-                className="w-full flex gap-2 p-4 z-0"
+                className={`w-full flex gap-2 p-4 z-0 ${vibrantColor?.isLight ? "text-black" : "text-white"}`}
               >
-                <Image src={coverPhoto} className="size-32  rounded md:size-52" />
+                <Image src={coverPhoto} className="size-32 rounded md:size-52" />
                 <div className="flex flex-col gap-2 font-kanit">
                   <span className="text-2xl md:text-4xl">{title}</span>
-                  <div className="flex gap-1 text-gray-300 font-light md:text-xl">
+                  <div className="flex gap-1 font-light md:text-xl">
                     <span className="first-letter:uppercase">{type}</span>•<span>{releasedDate?.split("/")[2]}</span>•
                     <span>{tracks?.length} songs</span>
                   </div>
