@@ -3,7 +3,7 @@ import { notFound, redirect } from "next/navigation";
 
 import { authOptions } from "@/lib/auth";
 
-import ProfileHeader from "../../../components/headers/ProfileHeader";
+import { ProfileHeader } from "@/components";
 import AlbumsGrid from "./albumsGrid/AlbumsGrid";
 import DeleteAcc from "./deleteAcc/DeleteAcc";
 import UpgradeToArtist from "./upgradeToArtist/UpgradeToArtist";
