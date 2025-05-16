@@ -3,7 +3,7 @@ import { BundleType } from "@/types/response";
 import { getServerSession } from "next-auth";
 import { notFound } from "next/navigation";
 
-import GenericHeader from "@/components/headers/GenericHeader";
+import { GenericHeader } from "@/components";
 import SongGrid from "../albumSongsGrid/AlbumSongsGrid";
 import DeleteAlbum from "../deleteAlbum/DeleteAlbum";
 
