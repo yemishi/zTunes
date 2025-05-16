@@ -8,6 +8,7 @@ interface InputType extends React.HTMLAttributes<HTMLInputElement> {
   value?: number;
   fixed?: boolean;
   barClass?: string;
+  barContainerClass?: string;
 }
 
 export default function VolumeHandler({
@@ -16,6 +17,7 @@ export default function VolumeHandler({
   className,
   value,
   fixed,
+  barContainerClass = "",
   barClass = "",
   ...props
 }: InputType) {
@@ -28,7 +30,7 @@ export default function VolumeHandler({
       onMouseLeave={() => (!fixed ? setShowInput(false) : null)}
       onMouseEnter={() => (!fixed ? setShowInput(true) : null)}
     >
-      <Icon className="size-8" />
+      <Icon className="size-8 " />
       {(showInput || fixed) && (
         <ProgressBar
           max={1}
@@ -36,6 +38,7 @@ export default function VolumeHandler({
           step={0.01}
           value={value}
           vertical={vertical}
+          classContainer={barContainerClass}
           className={barClass}
           currentProgress={currentProgress}
           {...props}
