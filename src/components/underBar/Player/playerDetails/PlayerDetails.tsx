@@ -20,7 +20,6 @@ import Image from "@/ui/custom/Image";
 import ProgressBar from "@/components/underBar/Player/progressBar/ProgressBar";
 import ToggleLike from "@/ui/buttons/ToggleLike";
 import VolumeInput from "@/components/underBar/Player/progressBar/volumeHandler/VolumeHandler";
-import Modal from "@/components/modal/Modal";
 
 type PropsType = {
   song: SongType;
@@ -33,12 +32,13 @@ type PropsType = {
   handlers: {
     handleProgress: (e: React.ChangeEvent<HTMLInputElement>) => void;
     handleVolume: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    next: () => void;
+    previous: () => void;
     togglePlayer: () => void;
   };
-  vibrantColor: string;
+  vibrantColor?: { color: string; isLight: boolean };
   isVisible: boolean;
-  next: () => void;
-  previous: () => void;
+
   onClose: () => void;
   audioRef: React.RefObject<HTMLAudioElement | null>;
   username?: string;
@@ -47,9 +47,7 @@ type PropsType = {
 export default function PlayerDetails({
   song,
   isVisible,
-  next,
   onClose,
-  previous,
   vibrantColor,
   handlers,
   values,
@@ -58,33 +56,17 @@ export default function PlayerDetails({
 }: PropsType) {
   const { coverPhoto, name, artistId, artistName, id, album } = song;
 
-  const [toPlaylist, setToPlaylist] = useState<{
-    songSelected: { songId: string; createdAt: Date };
-    coverPhoto: string;
-    title: string;
-  } | null>(null);
-
-  const { handleProgress, handleVolume, togglePlayer } = handlers;
+  const { handleProgress, handleVolume, togglePlayer, next, previous } = handlers;
 
   const { currentTime, duration, volume, isPlaying } = values;
-  const { data: session } = useSession();
-  const user = session?.user;
   const pathname = usePathname();
 
   useEffect(() => {
     onClose();
   }, [pathname]);
 
-  const [isModal, setIsModal] = useState(false);
-  const closeModal = () => setIsModal(false);
-
   return (
     <AnimatePresence>
-      {isModal && (
-        <Modal className="modal-container" onClose={closeModal}>
-          <SongOptions username={username} song={song} />
-        </Modal>
-      )}
       {isVisible && (
         <motion.div
           key="song-detail-modal"
@@ -93,31 +75,37 @@ export default function PlayerDetails({
           exit={{ y: "100%" }}
           transition={{ duration: 0.2 }}
           style={{
-            background: `linear-gradient(to bottom,${vibrantColor || "rgb(33 33 33)"} 0% ,#121212 100%)`,
+            background: `linear-gradient(to bottom,${vibrantColor?.color || "rgb(33 33 33)"} 0% ,#121212 100%)`,
           }}
-          className={`fixed md:hidden overflow-auto top-0 left-0 w-full h-full z-40 p-3 gap-3 font-kanit flex flex-col`}
+          className={`fixed md:hidden overflow-auto top-0 left-0 w-full h-full z-40 p-3 gap-3 font-kanit flex flex-col 
+            ${vibrantColor?.isLight ? "text-black" : "text-white"}`}
         >
-          <div className="flex justify-between items-center ">
+          <div className="grid grid-cols-[.5fr_1fr_.5fr] items-center">
             <button onClick={onClose} className="size-12 p-2">
               <IoIosArrowDown className="h-full w-full" />
             </button>
-            <span className="text-lg flex-1 text-center">{album.name}</span>
-
-            <button onClick={() => setIsModal(true)} className="size-12 p-2">
-              <TbDots className="h-full w-full" />
-            </button>
+            <div className="flex flex-col items-center text-lg">
+              <span className="text-sm brightness-75">From the album</span>
+              <span className="font-medium text-center">{album.name}</span>
+            </div>
+            <SongOptions
+              iconClassName="rotate-90 w-8 ml-auto "
+              song={song}
+              username={username}
+              vibrantColor={vibrantColor}
+            />
           </div>
 
           <div className="flex flex-col flex-1 max-h-[500px] w-full justify-center gap-6 my-10">
-            <Image src={coverPhoto} className="self-center !h-[400px] w-full object-cover" />
-            <div className="flex w-full relative">
-              <ToggleLike songId={id} username={username} className="absolute right-0" />
-              <div className="max-w-[80%] w-auto mx-auto flex flex-col items-center self-center ">
+            <Image src={coverPhoto} className="mx-auto !h-[400px] w-full object-cover" />
+            <div className="grid grid-cols-[.5fr_1fr_.5fr] ">
+              <ToggleLike songId={id} username={username} className="w-fit" />
+              <div className=" flex flex-col text-center items-center self-center">
                 <span className="text-2xl first-letter:uppercase">{name}</span>
                 <Link
                   onClick={onClose}
                   href={`/artist/${artistId}`}
-                  className="text-gray-400 first-letter:uppercase font-light"
+                  className="first-letter:uppercase w-fit font-light brightness-75 "
                 >
                   {artistName}
                 </Link>
@@ -125,11 +113,11 @@ export default function PlayerDetails({
             </div>
           </div>
 
-          <div className="w-full flex flex-col gap-2 relative bg-">
-            <div className="flex flex-col gap-2 px-3">
+          <div className="w-full flex flex-col gap-2">
+            <div className="flex flex-col gap-2 px-3 relative">
               <ProgressBar
                 className="rangeOrange bg-orange-600"
-                classContainer="!absolute top-0 w-full"
+                classContainer="absolute top-0 w-full"
                 value={currentTime}
                 onChange={handleProgress}
                 onMouseUp={() => (audioRef.current ? (audioRef.current.muted = false) : null)}
@@ -138,7 +126,7 @@ export default function PlayerDetails({
                 currentProgress={currentTime / Number(duration)}
               />
 
-              <div className="flex w-full font-poppins justify-between text-xs font-light text-white text-opacity-65">
+              <div className="flex w-full font-poppins justify-between text-xs">
                 <span>{formatDuration(currentTime || 0, true)}</span>
                 <span>{formatDuration(duration || 0, true)}</span>
               </div>
@@ -158,8 +146,8 @@ export default function PlayerDetails({
               </button>
             </div>
             <VolumeInput
-              className="w-full px-3 "
-              barClass="w-full"
+              className="w-full px-3"
+              barContainerClass={`w-full ${vibrantColor?.isLight ? "bg-black" : ""}`}
               fixed
               onChange={handleVolume}
               value={volume}
