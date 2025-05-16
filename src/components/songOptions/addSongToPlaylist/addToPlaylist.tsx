@@ -78,7 +78,7 @@ export default function AddSongToPlaylist({
   return (
     <li
       style={{ background: vibrantColor ? vibrantColor.color : "#2f2f2f " }}
-      className={` flex flex-col p-2 gap-2 md:text-lg max-h-80 rounded-md w-52 absolute z-10 right-50 -top-1 shadow-lg shadow-black`}
+      className={` flex flex-col p-2 gap-2 md:text-lg max-h-80 rounded w-32 md:w-52 absolute z-10 right-50 -top-1 shadow-lg shadow-black`}
     >
       <ErrorWrapper error={isError || !!error} message={error?.message}>
         <ul className="overflow-y-auto">
