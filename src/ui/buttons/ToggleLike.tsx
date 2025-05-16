@@ -4,8 +4,7 @@ import useLike from "@/hooks/useLike";
 import { cleanClasses } from "@/utils/helpers";
 import { FaHeart } from "react-icons/fa6";
 import { BiSolidLogInCircle } from "react-icons/bi";
-import Button from "./Button";
-import { MouseEvent, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 
