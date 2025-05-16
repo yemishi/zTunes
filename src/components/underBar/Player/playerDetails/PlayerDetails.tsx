@@ -77,7 +77,7 @@ export default function PlayerDetails({
           style={{
             background: `linear-gradient(to bottom,${vibrantColor?.color || "rgb(33 33 33)"} 0% ,#121212 100%)`,
           }}
-          className={`fixed md:hidden overflow-auto top-0 left-0 w-full h-full z-40 p-3 gap-3 font-kanit flex flex-col 
+          className={`fixed md:hidden overflow-y-auto top-0 left-0 w-full h-screen z-40 p-3 gap-3 font-kanit flex flex-col 
             ${vibrantColor?.isLight ? "text-black" : "text-white"}`}
         >
           <div className="grid grid-cols-[.5fr_1fr_.5fr] items-center">
@@ -126,13 +126,13 @@ export default function PlayerDetails({
                 currentProgress={currentTime / Number(duration)}
               />
 
-              <div className="flex w-full font-poppins justify-between text-xs">
+              <div className="flex w-full font-poppins justify-between text-xs text-white">
                 <span>{formatDuration(currentTime || 0, true)}</span>
                 <span>{formatDuration(duration || 0, true)}</span>
               </div>
             </div>
 
-            <div className="flex gap-3 mx-auto">
+            <div className="flex gap-3 mx-auto text-white">
               <button onClick={previous}>
                 <IoPlaySkipBackSharp className="size-7" />
               </button>
@@ -146,8 +146,8 @@ export default function PlayerDetails({
               </button>
             </div>
             <VolumeInput
-              className="w-full px-3"
-              barContainerClass={`w-full ${vibrantColor?.isLight ? "bg-black" : ""}`}
+              className="w-full px-3 text-white"
+              barContainerClass="w-full"
               fixed
               onChange={handleVolume}
               value={volume}
