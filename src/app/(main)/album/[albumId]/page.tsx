@@ -1,4 +1,6 @@
 import { SongsGridQuery, GenericHeader } from "@/components";
+import { authOptions } from "@/lib/auth";
+import { getServerSession } from "next-auth";
 
 import { notFound } from "next/navigation";
 
@@ -14,7 +16,7 @@ async function fetchData(albumId: string) {
 
 export default async function Album(props: { params: Promise<{ albumId: string }> }) {
   const params = await props.params;
-
+  const session = await getServerSession(authOptions);
   const { albumId } = params;
 
   const albumInfo = await fetchData(albumId);
@@ -38,7 +40,12 @@ export default async function Album(props: { params: Promise<{ albumId: string }
           releasedDate,
         }}
       />
-      <SongsGridQuery asOl queryKey={["Songs", id]} url={`/api/song?albumId=${albumId}`} />
+      <SongsGridQuery
+        username={session?.user.name}
+        asOl
+        queryKey={["Songs", id]}
+        url={`/api/song?albumId=${albumId}`}
+      />
     </div>
   );
 }
