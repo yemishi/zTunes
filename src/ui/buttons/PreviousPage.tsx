@@ -14,7 +14,7 @@ function PreviousPage({ className = "", isLightBg, ...props }: DivProps) {
   const { back } = useRouter();
 
   return (
-    <div {...props} className={cleanClasses(className, "mr-auto py-4 pl-2")}>
+    <div {...props} className={cleanClasses(className, `mr-auto py-4 pl-2 ${isLightBg ? "text-black" : ""}`)}>
       <IoArrowBackOutline
         onClick={() => (hasPrevious ? back() : null)}
         className="size-7 cursor-pointer active:text-amber-600 transition-all"

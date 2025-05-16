@@ -62,7 +62,7 @@ export default async function Dashboard() {
 
         <Logout className="ml-auto rounded-lg mr-5" />
       </div>
-      <DeleteAcc userId={id} />
+      <DeleteAcc isLightBg={vibrantColor.isLight} userId={id} />
     </div>
   );
 }

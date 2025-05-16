@@ -1,5 +1,5 @@
 "use client";
-import { BiSolidAlbum } from "react-icons/bi";
+
 import { BundleType } from "@/types/response";
 import CardAcc from "../cardAcc/CardAcc";
 import { useState } from "react";

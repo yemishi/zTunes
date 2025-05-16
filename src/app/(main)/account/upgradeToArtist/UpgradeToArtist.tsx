@@ -6,7 +6,6 @@ import uploadImg from "@/firebase/handleImage";
 
 import { ErrorType } from "@/types/response";
 import { useRouter } from "next/navigation";
-import { GiMicrophone } from "react-icons/gi";
 import { useMemo, useState } from "react";
 
 import { toast } from "react-toastify";
