@@ -29,6 +29,7 @@ export default function SignInForm({ resetPass }: { resetPass: () => void }) {
     const params = new URLSearchParams(window.location.search);
     setCallbackUrl(params.get("callbackUrl") || "/");
   }, []);
+
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!validateAll()) return;
@@ -36,13 +37,12 @@ export default function SignInForm({ resetPass }: { resetPass: () => void }) {
     const response = await signIn("credentials", {
       name,
       password,
-      redirect: false,
+      callbackUrl,
     });
     if (response && !response.ok) {
       setError("name", "Incorrect username or password.");
       setError("password", "Incorrect username or password.");
     }
-    push(callbackUrl);
     setIsLoading(false);
   };
 
