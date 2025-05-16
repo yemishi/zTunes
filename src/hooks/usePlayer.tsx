@@ -14,8 +14,8 @@ export default function usePlayer() {
 
   const audioRef = useRef<HTMLAudioElement>(null);
   const [currentTime, setCurrentTime] = useState(0);
-  const [isPlaying, setIsPlaying] = useState<boolean>(true);
-  const [volume, setVolume] = useState<number>(1);
+  const [isPlaying, setIsPlaying] = useState(true);
+  const [volume, setVolume] = useState(1);
 
   const togglePlayer = (justPlay?: "play" | React.MouseEvent<any, MouseEvent>) => {
     if (audioRef.current?.paused) {
@@ -38,7 +38,7 @@ export default function usePlayer() {
 
       audioRef.current.removeEventListener("timeupdate", handleTimeUpdate);
     };
-  }, []);
+  }, [currSong]);
 
   useEffect(() => {
     togglePlayer("play");
