@@ -7,7 +7,11 @@ export async function GET(req: NextRequest) {
   try {
     const user = await db.user.findFirst({ where: { username } });
     if (!user) {
-      return NextResponse.json([]);
+      const playlists = await db.playlist.findMany({
+        where: { officialCategories: { isEmpty: false }, isPublic: true },
+        take: 10,
+      });
+      return NextResponse.json(playlists);
     }
 
     const historicPlayed = await db.playCount.findMany({
@@ -25,15 +29,11 @@ export async function GET(req: NextRequest) {
       take: 10,
     });
 
-    if (!playlists.length)
-      return NextResponse.json([]);
+    if (!playlists.length) return NextResponse.json([]);
 
     const filteredBundle = playlists.filter((playlist) => {
-      return playlist.officialCategories.some((category) =>
-        categories.includes(category)
-      );
+      return playlist.officialCategories.some((category) => categories.includes(category));
     });
-
     const playlistsMapped = filteredBundle.map((playlist) => {
       const { title, id, coverPhoto } = playlist;
       return {
@@ -46,6 +46,6 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json(playlistsMapped);
   } catch (error) {
-    return jsonError("we had a problem trying to get some playlists")
+    return jsonError("we had a problem trying to get some playlists");
   }
 }

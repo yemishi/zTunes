@@ -2,15 +2,12 @@ import { authOptions } from "@/lib/auth";
 import { getServerSession } from "next-auth";
 import { ErrorWrapper, ProfileGrid, BundleGrid } from "@/components";
 
-const getPlaylists =
-  (username: string): any =>
-  async () => {
-    if (!username) return;
-    const playlists = await fetch(`${process.env.URL}/api/playlist/recommended?username=${username}`, {
-      next: { revalidate: 3600 },
-    }).then((res) => res.json());
-    return playlists;
-  };
+const getPlaylists = async (username: string): Promise<any> => {
+  const playlists = await fetch(`${process.env.URL}/api/playlist/recommended?username=${username}`).then((res) =>
+    res.json()
+  );
+  return playlists;
+};
 
 const getAlbums = async () =>
   await fetch(`${process.env.URL}/api/album?take=10`, { next: { revalidate: 3600 } }).then((res) => res.json());
