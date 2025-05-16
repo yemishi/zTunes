@@ -90,7 +90,7 @@ export default function ProfileHeader({
   );
 
   const containerClasses = clsx(
-    "w-full  relative md:flex flex-col items-center gap-3 md:items-start !bg-cover !bg-center",
+    "w-full  relative md:flex flex-col items-center gap-3 md:items-start !bg-cover !bg-center p-4",
     isArtist ? "md:min-h-[440px] lg:min-h-[480px]" : "md:min-h-[350px]"
   );
 
@@ -98,7 +98,7 @@ export default function ProfileHeader({
     "size-44 rounded-full",
     isArtist && "md:rounded-none md:w-full md:h-full md:brightness-75"
   );
-
+  console.log(vibrant?.isLight);
   return (
     <div
       style={{
@@ -106,7 +106,7 @@ export default function ProfileHeader({
       }}
       className={containerClasses}
     >
-      <PreviousPage className="p-4 md:z-10" />
+      <PreviousPage isLightBg={vibrant?.isLight} />
 
       <div className={`flex flex-col items-center mt-auto ${isArtist ? "" : "md:p-4 md:flex-row"}`}>
         <div className={isArtist ? "md:absolute md:w-full md:top-0 md:left-0 md:h-full" : "mt-auto"}>

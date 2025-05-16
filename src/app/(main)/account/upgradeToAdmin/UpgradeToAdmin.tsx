@@ -1,10 +1,9 @@
 "use client";
-import { GrUserAdmin } from "react-icons/gr";
 
 import { ErrorType } from "@/types/response";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
-import { CardAcc } from "../cardAcc/CardAcc";
+import CardAcc from "../cardAcc/CardAcc";
 import { useState } from "react";
 import { PopConfirm } from "@/components";
 
@@ -23,12 +22,7 @@ export default function UpgradeToAdmin({ userId }: { userId: string }) {
 
   return (
     <>
-      <CardAcc
-        onClick={() => setIsPopUp(true)}
-        Icon={GrUserAdmin}
-        title="Join us"
-        subTitle="Upgrade to admin account"
-      />
+      <CardAcc onClick={() => setIsPopUp(true)} title="Join us" subTitle="Upgrade to admin account" />
       {isPopUp && (
         <PopConfirm desc="Your really want to be a admin?" onClose={() => setIsPopUp(false)} confirm={upgrade} />
       )}

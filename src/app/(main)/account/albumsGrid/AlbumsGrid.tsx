@@ -1,7 +1,7 @@
 "use client";
-import { BiSolidAlbum } from "react-icons/bi";
+
 import { BundleType } from "@/types/response";
-import { CardAcc } from "../cardAcc/CardAcc";
+import CardAcc from "../cardAcc/CardAcc";
 import { useState } from "react";
 import { AnimatePresence } from "framer-motion";
 
@@ -17,7 +17,6 @@ export default function AlbumsGrid({ props, artistId }: { props: BundleType[]; a
     <div className="flex flex-col overflow-hidden">
       <CardAcc
         onClick={() => setShow(!show)}
-        Icon={BiSolidAlbum}
         title="Albums"
         subTitle="see your albums"
         subTitleSimple

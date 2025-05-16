@@ -36,13 +36,13 @@ export default async function Dashboard() {
   if (!session) return redirect("/login");
 
   const { name: username } = session.user;
-  const [{ avatar, id, name, isArtist, isAdmin }, albums] = await fetchData(username);
+  const [{ avatar, id, name, isArtist, isAdmin, vibrantColor }, albums] = await fetchData(username);
 
   return (
     <div className="flex flex-col gap-4 relative">
       <ProfileHeader
         followersLength={0}
-        profileInfo={{ cover: avatar, profileId: id, profileName: name }}
+        profileInfo={{ cover: avatar, profileId: id, profileName: name, vibrantColor }}
         username={name}
       />
 
@@ -62,7 +62,7 @@ export default async function Dashboard() {
 
         <Logout className="ml-auto rounded-lg mr-5" />
       </div>
-      <DeleteAcc userId={id} />
+      <DeleteAcc isLightBg={vibrantColor.isLight} userId={id} />
     </div>
   );
 }

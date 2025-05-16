@@ -4,9 +4,8 @@ import { getServerSession } from "next-auth";
 import { notFound } from "next/navigation";
 
 import { GenericHeader } from "@/components";
-
-import DeleteAlbum from "../deleteAlbum/DeleteAlbum";
-import AlbumSongsGrid from "../albumSongsGrid/AlbumSongsGrid";
+import SongGrid from "../../albumSongsGrid/AlbumSongsGrid";
+import DeleteAlbum from "../../deleteAlbum/DeleteAlbum";
 
 async function fetchData(albumId: string, artistName: string) {
   const albumInfo: BundleType & {
@@ -32,7 +31,7 @@ export default async function ArtistPage(props: { params: Promise<{ albumId: str
     albumId,
     session?.user.name as string
   );
-console.log(vibrantColor)
+
   return (
     <div className="flex flex-col relative">
       <GenericHeader
@@ -51,7 +50,7 @@ console.log(vibrantColor)
         extraBody={{ albumId }}
         updateUrl={`/api/album?albumId=${albumId}`}
       />
-      <AlbumSongsGrid albumId={albumId} artistId={artistId} url={`/api/song?albumId=${albumId}`} />
+      <SongGrid albumId={albumId} artistId={artistId} url={`/api/song?albumId=${albumId}`} />
       <DeleteAlbum albumId={albumId} title={title} />
     </div>
   );

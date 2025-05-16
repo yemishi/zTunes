@@ -12,8 +12,8 @@ import { Modal } from "@/components";
 
 export default function AlbumSongsGrid({ albumId, artistId, url }: { artistId: string; albumId: string; url: string }) {
   const { turnOnPlayer, currSong, player } = usePlayerContext();
-  const [name, setName] = useState<string>("");
-  const [isNewSong, setIsNewSong] = useState<boolean>(false);
+  const [name, setName] = useState("");
+  const [isNewSong, setIsNewSong] = useState(false);
   const {
     values: songs,
     hasNextPage,
@@ -21,7 +21,7 @@ export default function AlbumSongsGrid({ albumId, artistId, url }: { artistId: s
     isLoading,
     isFetchingNextPage,
   } = useScrollQuery<SongType>({
-    queryKey: ["Songs"],
+    queryKey: ["Songs", artistId],
     url,
   });
   return (

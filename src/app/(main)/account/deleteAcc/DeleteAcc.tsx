@@ -9,14 +9,17 @@ import { toast } from "react-toastify";
 import { useState } from "react";
 import { Modal } from "@/components";
 
-export default function DeleteAcc({ userId }: { userId: string }) {
+export default function DeleteAcc({ userId, isLightBg }: { userId: string; isLightBg: boolean }) {
   const [isModal, setIsModal] = useState(false);
   const closeModal = () => setIsModal(false);
   return (
     <>
-      <RiDeleteBin6Line onClick={() => setIsModal(true)} className="size-7 absolute top-4 right-4 cursor-pointer" />
+      <RiDeleteBin6Line
+        onClick={() => setIsModal(true)}
+        className={`size-7 absolute top-6 right-6 cursor-pointer ${isLightBg ? "text-black" : "text-white"}`}
+      />
       {isModal && (
-        <Modal onClose={closeModal} className="modal-container">
+        <Modal onClose={closeModal} className="mx-auto my-auto">
           <Component onClose={closeModal} userId={userId} />
         </Modal>
       )}
@@ -43,7 +46,7 @@ const Component = ({ onClose, userId }: { onClose: () => void; userId: string })
   };
 
   return (
-    <form onSubmit={onSubmit} className="p-4 flex flex-col gap-4 items-center">
+    <form onSubmit={onSubmit} className="p-6 flex flex-col gap-7 items-center bg-black-500 rounded-lg">
       <div className="flex flex-col font-kanit px-5 text-center">
         <span className="text-2xl">Are you sure you want to delete your account?</span>
         <span className="text-orange-300">We will not be able to recover your information</span>

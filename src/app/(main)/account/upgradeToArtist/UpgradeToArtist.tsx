@@ -6,12 +6,14 @@ import uploadImg from "@/firebase/handleImage";
 
 import { ErrorType } from "@/types/response";
 import { useRouter } from "next/navigation";
-import { GiMicrophone } from "react-icons/gi";
-import { CardAcc } from "../cardAcc/CardAcc";
-import { toast } from "react-toastify";
 import { useMemo, useState } from "react";
 
+import { toast } from "react-toastify";
+import CardAcc from "../cardAcc/CardAcc";
+
 export default function UpgradeToArtist({ userId }: { userId: string }) {
+  const { refresh } = useRouter();
+
   const [isArtist, setIsArtist] = useState(false);
   const [coverPhoto, setCoverPhoto] = useState<FileList | null>();
   const [isLoading, setIsLoading] = useState(false);
@@ -21,8 +23,6 @@ export default function UpgradeToArtist({ userId }: { userId: string }) {
     if (coverPhoto) return URL.createObjectURL(coverPhoto[0]);
     return "";
   }, [coverPhoto]);
-
-  const { refresh } = useRouter();
 
   const onSubmit = async (e: any) => {
     e.preventDefault();
@@ -41,13 +41,15 @@ export default function UpgradeToArtist({ userId }: { userId: string }) {
       body: JSON.stringify(body),
     }).then((res) => res.json());
     if (response.error) return toast.error(response.message), setIsLoading(false);
-    return refresh(), toast.success(response.message);
+    toast.success(response.message);
+    refresh();
+    return;
   };
   return (
     <>
       <CardAcc
         onClick={() => setIsArtist(true)}
-        Icon={GiMicrophone}
+        artistIcon
         title="I'm an artist"
         subTitle="Upgrade to artist account"
       />
