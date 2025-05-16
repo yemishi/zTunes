@@ -1,7 +1,6 @@
 "use client";
 
 import { SongType } from "@/types/response";
-import { lazy } from "react";
 import { usePlayerContext } from "@/context/Provider";
 
 import { Image, ToggleLike } from "@/ui";
@@ -57,9 +56,9 @@ export default function SongsGrid({
             <div
               onClick={() => turnOnPlayer(index)}
               className={`w-full flex font-kanit font-light items-center gap-3 px-3 py-2 hover:bg-black-400 rounded-lg active:bg-black
-             hover:bg-opacity-35 duration-150 md:grid md:grid-cols-3 md:max-w-[1900px] cursor-pointer md:font-medium ${
-               currSong === index && player?.some((song) => song.id === id) ? "bg-neutral-900" : ""
-             }`}
+               duration-150 md:grid md:grid-cols-3 md:max-w-[1900px] cursor-pointer md:font-medium ${
+                 currSong === index && player?.some((song) => song.id === id) ? "bg-neutral-900" : ""
+               }`}
               key={`${id}_${index}`}
             >
               <div className="flex gap-2">
@@ -88,15 +87,10 @@ export default function SongsGrid({
               >
                 {album.name}
               </Link>
-              <div
-                onClick={(e) => e.stopPropagation()}
-                className={`flex md:grid-cols-3 gap-2 justify-items-end items-center ml-auto `}
-              >
+              <div onClick={(e) => e.stopPropagation()} className={`flex gap-2 justify-items-end items-center ml-auto`}>
                 {playlistId && <span className="mr-3 text-lg opacity-75">{dateFormat(createdAt)}</span>}
-                <div className="hidden md:flex gap-1 items-center">
-                  <ToggleLike songId={id} username={username} />
-                  <span className="text-lg">{getFormattedDuration(track.duration)}</span>
-                </div>
+                <ToggleLike className="hidden md:flex" songId={id} username={username} />
+                <span className="text-lg min-w-12 hidden md:flex">{getFormattedDuration(track.duration)}</span>
 
                 <SongOptions refetch={refetch} song={song} playlistId={playlistId} username={username} />
               </div>
