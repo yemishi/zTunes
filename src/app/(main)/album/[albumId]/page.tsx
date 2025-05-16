@@ -1,5 +1,4 @@
-import GenericHeader from "@/components/headers/GenericHeader";
-import SongsQueryOrganizer from "@/components/songsGrid/songsGridQuery/SongsGridQuery";
+import { SongsGridQuery, GenericHeader } from "@/components";
 
 import { notFound } from "next/navigation";
 
@@ -39,7 +38,7 @@ export default async function Album(props: { params: Promise<{ albumId: string }
           releasedDate,
         }}
       />
-      <SongsQueryOrganizer asOl queryKey={["Songs", id]} url={`/api/song?albumId=${albumId}`} />
+      <SongsGridQuery asOl queryKey={["Songs", id]} url={`/api/song?albumId=${albumId}`} />
     </div>
   );
 }
