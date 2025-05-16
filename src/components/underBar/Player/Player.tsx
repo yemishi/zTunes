@@ -43,6 +43,7 @@ export default function Player({ player }: { player: UsePlayerType }) {
   const username = session?.user?.name;
   const bgColor = album.vibrantColor?.color;
   const isLight = album.vibrantColor?.isLight;
+
   return (
     <div
       onClick={() => !showDetails && setShowDetails(true)}
@@ -58,7 +59,7 @@ export default function Player({ player }: { player: UsePlayerType }) {
         onMouseDown={() => (audioRef.current ? (audioRef.current.muted = true) : null)}
         currentProgress={currentTime / Number(duration)}
         className="rangeOrange bg-orange-600"
-        classContainer="!absolute top-0 w-full"
+        classContainer="!absolute hidden md:flex top-0 w-full"
       />
       <div className="flex gap-2 font-kanit items-center md:hidden">
         <Image src={coverPhoto} className="size-10 rounded" />
@@ -113,13 +114,13 @@ export default function Player({ player }: { player: UsePlayerType }) {
           handleProgress,
           handleVolume,
           togglePlayer,
+          next,
+          previous,
         }}
-        values={{ isPlaying, volume, duration: Number(duration), currentTime }}
+        values={{ isPlaying, volume, duration, currentTime }}
         song={song}
-        next={next}
         audioRef={audioRef}
-        previous={previous}
-        vibrantColor={album.vibrantColor?.color || "#212121"}
+        vibrantColor={album.vibrantColor}
       />
     </div>
   );
