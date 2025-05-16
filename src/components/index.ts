@@ -11,5 +11,5 @@ export { default as ProfileGrid } from "./profileGrid/ProfileGrid";
 export { default as BundleGrid } from "./bundleGrid/BundleGrid";
 export { default as Card } from "./card/Card";
 
-export { default as ProfileHeader } from "./headers/ProfileHeader";
-export { default as GenericHeader } from "./headers/GenericHeader";
+export { default as ProfileHeader } from "./headers/profileHeader/ProfileHeader";
+export { default as GenericHeader } from "./headers/genericHeader/GenericHeader";
