@@ -7,6 +7,7 @@ import useScrollQuery from "@/hooks/useScrollQuery";
 import { PlaylistType } from "@/types/response";
 import ErrorWrapper from "../../errorWrapper/ErrorWrapper";
 import { PopConfirm } from "../..";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function AddSongToPlaylist({
   songId,
@@ -26,7 +27,7 @@ export default function AddSongToPlaylist({
     username: string;
     songSelected: string;
   } | null>(null);
-
+  const queryClient = useQueryClient();
   const {
     values: playlists,
     ref,
@@ -45,6 +46,9 @@ export default function AddSongToPlaylist({
       body: JSON.stringify({ id, songSelected: songId }),
     }).then((res) => res.json());
     if (!data.error) {
+      queryClient.invalidateQueries({
+        queryKey: ["User playlists", username],
+      });
       if (refresh) refresh();
       onClose();
       toast.success(data.message);
@@ -65,13 +69,16 @@ export default function AddSongToPlaylist({
     }).then((res) => res.json());
     if (refresh) refresh();
     if (data.error) return toast.error(data.message);
+    queryClient.invalidateQueries({
+      queryKey: ["User playlists", username],
+    });
     toast.success(data.message);
     onClose();
   };
   return (
     <li
       style={{ background: vibrantColor ? vibrantColor.color : "#2f2f2f " }}
-      className={` flex flex-col p-2 gap-2 md:text-lg max-h-80  rounded-md w-52 absolute z-10 right-50 -top-1 shadow-lg shadow-black`}
+      className={` flex flex-col p-2 gap-2 md:text-lg max-h-80 rounded-md w-52 absolute z-10 right-50 -top-1 shadow-lg shadow-black`}
     >
       <ErrorWrapper error={isError || !!error} message={error?.message}>
         <ul className="overflow-y-auto">
