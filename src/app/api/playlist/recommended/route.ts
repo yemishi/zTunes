@@ -11,6 +11,7 @@ export async function GET(req: NextRequest) {
         where: { officialCategories: { isEmpty: false }, isPublic: true },
         take: 10,
       });
+      console.log(playlists);
       return NextResponse.json(playlists);
     }
 
@@ -21,7 +22,11 @@ export async function GET(req: NextRequest) {
     const categories = historicPlayed.flatMap((song) => song.category);
 
     if (categories.length === 0) {
-      return NextResponse.json([]);
+      const playlists = await db.playlist.findMany({
+        where: { officialCategories: { isEmpty: false }, isPublic: true },
+        take: 10,
+      });
+      return NextResponse.json(playlists);
     }
 
     const playlists = await db.playlist.findMany({
