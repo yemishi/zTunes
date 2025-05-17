@@ -15,7 +15,7 @@ export default function UnderBar() {
       {player.song ? (
         <Player player={player as UsePlayerType} />
       ) : (
-        <div className="hidden rounded-lg md:flex items-center justify-between p-2 w-full h-20  md:bg-black">
+        <div className=" bg-black-400/50 w-[90%] h-14 rounded-lg flex items-center justify-between p-2 md:w-full md:h-20 md:bg-black">
           <div className="flex ml-auto items-center gap-3 p-2 md:mr-auto md:ml-0">
             <IoPlaySkipBackSharp className="size-4 text-gray-500 md:size-6 " />
             <IoIosPlay className="size-8 text-gray-500 md:size-10" />
