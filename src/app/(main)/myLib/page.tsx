@@ -1,17 +1,14 @@
 import { authOptions } from "@/lib/auth";
 import { ManyPlaylistType } from "@/types/response";
 import { getServerSession } from "next-auth";
-import { notFound, redirect } from "next/navigation";
-import { Card } from "@/components";
+import { redirect } from "next/navigation";
+import { Card, ErrorWrapper } from "@/components";
 
 async function fetchData(username: string) {
   const playlistsData = await fetch(`${process.env.URL}/api/playlist?username=${username}&authorName=${username}`).then(
     (res) => res.json()
   );
-  if (playlistsData.error) {
-    if (playlistsData.status === 404) return notFound();
-    throw new Error(playlistsData.message);
-  }
+
   return playlistsData as ManyPlaylistType;
 }
 
@@ -19,7 +16,7 @@ export default async function MyLib() {
   const session = await getServerSession(authOptions);
   if (!session?.user) return redirect("/login");
   const username = session.user.name;
-  const { playlists } = await fetchData(username);
+  const data = await fetchData(username);
 
   return (
     <div className="w-full flex flex-col gap-2">
@@ -31,19 +28,21 @@ export default async function MyLib() {
           isOfficial={false}
         />
 
-        {playlists.map((item, index) => {
-          const { coverPhoto, id, title, officialCategories } = item;
+        <ErrorWrapper error={data.error}>
+          {data?.playlists.map((item, index) => {
+            const { coverPhoto, id, title, officialCategories } = item;
 
-          return (
-            <Card
-              key={`${id}/${index}`}
-              coverPhoto={coverPhoto}
-              title={title}
-              url={`/playlist/${id}`}
-              isOfficial={!!officialCategories.length}
-            />
-          );
-        })}
+            return (
+              <Card
+                key={`${id}/${index}`}
+                coverPhoto={coverPhoto}
+                title={title}
+                url={`/playlist/${id}`}
+                isOfficial={!!officialCategories.length}
+              />
+            );
+          })}
+        </ErrorWrapper>
       </div>
     </div>
   );

@@ -30,7 +30,7 @@ export default async function Home() {
 
       <ErrorWrapper error={playlists.error} message={playlists.message} className="ml-4 mt-4 self-center md:self-start">
         {playlists && playlists?.length > 0 && (
-          <BundleGrid title="You will like" baseUrl="/playlist" props={playlists} />
+          <BundleGrid title="You May like" baseUrl="/playlist" props={playlists} />
         )}
       </ErrorWrapper>
 
