@@ -65,6 +65,7 @@ export default function SongsGridQuery({
         asOl={asOl}
         songs={songs}
         refetch={refetch}
+        isOwner={isOwner}
         isLoading={isLoading ? 5 : undefined}
         playlistId={playlistId}
         username={username}
