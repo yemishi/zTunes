@@ -16,7 +16,7 @@ export default function AddCategories({ setCategories, categories, label, placeH
   const remove = (category: string) => setCategories(categories.filter((item) => item !== category));
 
   const add = () => {
-    if (categories.includes(value)) return;
+    if (categories.includes(value) || !value) return;
     setCategories([...categories, value]);
     setValue("");
   };
