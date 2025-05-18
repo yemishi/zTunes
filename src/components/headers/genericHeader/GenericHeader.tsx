@@ -25,7 +25,20 @@ export default function GenericHeader({
   vibrantColor,
   ...props
 }: DivProps) {
-  const { author, avatar, title, isOwner, coverPhoto, desc, releasedDate, isPublic, authorId, isUser, tracks } = info;
+  const {
+    author,
+    avatar,
+    title,
+    isOwner,
+    coverPhoto,
+    desc,
+    releasedDate,
+    isPublic,
+    authorId,
+    categories,
+    isUser,
+    tracks,
+  } = info;
 
   const { className, ...rest } = props;
   const [vibrant, setVibrant] = useState(vibrantColor);
@@ -69,10 +82,14 @@ export default function GenericHeader({
         <PreviousPage isLightBg={vibrant?.isLight} />
         {isOwner && playlistId && (
           <EditPlaylist
+            name={title}
+            desc={desc}
             username={username as string}
             playlistId={playlistId as string}
             playlistName={title}
             isPublic={isPublic}
+            categories={categories}
+            coverPhoto={coverPhoto}
           />
         )}
       </span>
@@ -128,6 +145,7 @@ interface DivProps extends HTMLAttributes<HTMLDivElement> {
   vibrantColor: { color: string; isLight: boolean };
   username?: string;
   playlistId?: string;
+
   updateUrl?: string;
   onUpdateText?: () => void;
   extraBody?: {};
@@ -145,6 +163,7 @@ type InfoType = {
   desc?: string;
   isUser?: Boolean;
   isOfficial?: boolean;
+  categories?: string[];
   releasedDate?: string;
   tracks: { url: string; duration: number }[];
 };
