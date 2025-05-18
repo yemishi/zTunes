@@ -9,7 +9,7 @@ interface InputProps extends React.HTMLAttributes<HTMLInputElement> {
 }
 
 export default function InputFileImg({ error, demoPhoto, isLoading, onChange, ...props }: InputProps) {
-  const { className, onMouseEnter, onMouseLeave, ...rest } = props;
+  const { className = "", onMouseEnter, onMouseLeave, ...rest } = props;
 
   const defaultSize = className?.includes("h-") || className?.includes("size") ? "" : "h-52";
   const defaultRadius = className?.includes("rounded") ? "" : "rounded-lg";
@@ -20,9 +20,7 @@ export default function InputFileImg({ error, demoPhoto, isLoading, onChange, ..
       }}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
-      className={`${
-        className ? className : ""
-      } ${defaultSize} ${defaultRadius} !bg-center !bg-cover flex items-center justify-center ${
+      className={`${className} ${defaultSize} ${defaultRadius} !bg-center bg-black !bg-cover flex items-center justify-center ${
         error ? "border border-red-500" : ""
       }`}
     >
