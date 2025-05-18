@@ -25,6 +25,7 @@ interface DivProps extends HTMLAttributes<HTMLDivElement> {
   username?: string;
   vibrantColor?: { color: string; isLight: boolean };
   iconClassName?: string;
+  isOwner?: boolean;
 }
 
 export default function SongOptions({
@@ -33,6 +34,7 @@ export default function SongOptions({
   refetch,
   username,
   vibrantColor,
+  isOwner,
   iconClassName = "",
   ...props
 }: DivProps) {
@@ -92,7 +94,7 @@ export default function SongOptions({
       },
     },
   };
-  const isPlaylist = playlistId
+  const ownerOption = isOwner
     ? {
         Remove: {
           href: "",
@@ -147,7 +149,7 @@ export default function SongOptions({
           className={`${className} absolute ${className.includes("right-") ? "" : "right-2"} z-10 `}
         >
           <ul className={`flex flex-col gap-2 md:text-lg p-2 rounded-md relative w-52 shadow-md shadow-black`}>
-            {Object.entries({ ...firstItem, ...lis, ...isPlaylist, ...addToPlaylist }).map(
+            {Object.entries({ ...firstItem, ...lis, ...ownerOption, ...addToPlaylist }).map(
               ([desc, { Icon, isLoading, onClick, href }], i) => {
                 const className = `${isLoading ? "animate-pulse pointer-events-none" : ""} flex gap-2 items-center p-2 hover:backdrop-brightness-150
              rounded-md active:backdrop-brightness-50 w-full cursor-pointer`;
