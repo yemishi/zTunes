@@ -18,6 +18,7 @@ export default function SongsGrid({
   playlistId,
   refetch,
   username,
+  isOwner,
   isLoading,
 }: {
   songs: SongType[];
@@ -26,6 +27,7 @@ export default function SongsGrid({
   title?: string;
   isLoading?: number;
   refetch?: () => void;
+  isOwner?: boolean;
   playlistId?: string;
 }) {
   const { setPlayer, setCurrSong, currSong, player } = usePlayerContext();
@@ -92,7 +94,7 @@ export default function SongsGrid({
                 <ToggleLike className="hidden md:flex" songId={id} username={username} />
                 <span className="text-lg min-w-12 hidden md:flex">{getFormattedDuration(track.duration)}</span>
 
-                <SongOptions refetch={refetch} song={song} playlistId={playlistId} username={username} />
+                <SongOptions isOwner={isOwner} refetch={refetch} song={song} playlistId={playlistId} username={username} />
               </div>
             </div>
           );
