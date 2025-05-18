@@ -47,6 +47,7 @@ export async function GET(req: NextRequest) {
         isOfficial: playlist.officialCategories,
         releasedDate: dateFormat(playlist.createdAt),
         vibrantColor: playlist.vibrantColor,
+        categories: playlist.officialCategories,
         tracks,
       };
       return NextResponse.json(info);
@@ -99,7 +100,7 @@ export async function POST(req: NextRequest) {
         isPublic,
         coverPhoto,
         desc: desc,
-        songs,
+        songs: songs || [],
         ...(officialCategories && { officialCategories }),
       },
     });
@@ -112,7 +113,7 @@ export async function POST(req: NextRequest) {
 
 export async function PATCH(req: NextRequest) {
   try {
-    const { id, isPublic, officialCategories, title, coverPhoto, force, toRemove, songSelected, vibrantColor } =
+    const { id, isPublic, officialCategories, title, coverPhoto, force, toRemove, songSelected, vibrantColor, desc } =
       await req.json();
 
     const playlist = await db.playlist.findUnique({ where: { id } });
@@ -154,8 +155,9 @@ export async function PATCH(req: NextRequest) {
       data: {
         coverPhoto: coverPhoto || playlist.coverPhoto,
         isPublic: isPublic !== undefined ? isPublic : playlist.isPublic,
-        officialCategories,
+        officialCategories: officialCategories || [],
         songs,
+        desc: desc || playlist.desc,
         title: title || playlist?.title,
         vibrantColor: vibrantColor ?? playlist?.vibrantColor,
       },
@@ -165,6 +167,7 @@ export async function PATCH(req: NextRequest) {
       message: "playlist updated with successfully",
     });
   } catch (error) {
+    console.log(error);
     return jsonError("we had a problem trying to update the playlist.");
   }
 }
