@@ -5,12 +5,14 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
 
+import { LuExpand } from "react-icons/lu";
 import { MdPublic, MdPublicOff } from "react-icons/md";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
-import { PopConfirm } from "@/components";
+import { Modal, PlaylistForm, PopConfirm } from "@/components";
 import { cleanClasses } from "@/utils/helpers";
 import { useQueryClient } from "@tanstack/react-query";
+import { ErrorType } from "@/types/response";
 
 interface WithoutClickProps<T> extends Omit<React.HTMLProps<T>, "onClick"> {
   playlistId: string;
@@ -20,6 +22,10 @@ interface WithoutClickProps<T> extends Omit<React.HTMLProps<T>, "onClick"> {
 }
 interface DivProps extends WithoutClickProps<HTMLDivElement> {
   onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  coverPhoto: string;
+  name: string;
+  categories?: string[];
+  desc?: string;
 }
 
 export default function EditPlaylist({
@@ -27,14 +33,18 @@ export default function EditPlaylist({
   playlistName,
   isPublic: isPlaylistPublic,
   username,
+  name,
+  coverPhoto,
+  categories,
+  desc,
   ...props
 }: DivProps) {
   const { onClick, className, ...rest } = props;
-  const [isEdit, setIsEdit] = useState<boolean>(false);
-  const [isDelete, setIsDelete] = useState<boolean>(false);
+  const [isEdit, setIsEdit] = useState(false);
+  const [isDelete, setIsDelete] = useState(false);
   const [isPublic, setIsPublic] = useState(isPlaylistPublic);
+  const [isForm, setIsForm] = useState(false);
   const queryClient = useQueryClient();
-
   const { refresh, back } = useRouter();
 
   const deletePlaylist = async () => {
@@ -72,6 +82,16 @@ export default function EditPlaylist({
   };
   return (
     <div {...rest} className={cleanClasses(className, "flex gap-2 h-7")}>
+      {isForm && (
+        <Modal className="modal-container !overflow-y-auto" onClose={() => setIsForm(false)}>
+          <PlaylistForm
+            formInfo={{ coverPhoto, desc, isPublic, name, categories }}
+            id={playlistId}
+            username={username}
+            onClose={() => setIsForm(false)}
+          />
+        </Modal>
+      )}
       <AnimatePresence mode="wait">
         {isEdit && (
           <>
@@ -96,6 +116,17 @@ export default function EditPlaylist({
               onClick={toggleVisible}
             >
               {isPublic ? <MdPublic className="size-full" /> : <MdPublicOff className="size-full" />}
+            </motion.button>
+            <motion.button
+              className="size-full cursor-pointer"
+              initial="initial"
+              animate="animate"
+              exit="exit"
+              transition={transition}
+              variants={variants}
+              onClick={() => setIsForm(true)}
+            >
+              <LuExpand className="size-full" />
             </motion.button>
           </>
         )}
