@@ -11,7 +11,6 @@ export async function GET(req: NextRequest) {
         where: { officialCategories: { isEmpty: false }, isPublic: true },
         take: 10,
       });
-      console.log(playlists);
       return NextResponse.json(playlists);
     }
 
