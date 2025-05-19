@@ -48,7 +48,8 @@ export default function Player({ player }: { player: UsePlayerType }) {
     <div
       onClick={() => !showDetails && setShowDetails(true)}
       style={bgColor && isVibrant ? { background: bgColor } : {}}
-      className={`w-[90%] h-14 rounded-lg flex items-center justify-between p-2 md:w-full md:h-20 transition-colors md:rounded-none md:grid grid-cols-[1fr_2fr_1fr]
+      className={`w-[90%] h-14 rounded-lg flex items-center justify-between p-2 md:w-full  md:h-20 transition-colors md:rounded-none 
+        md:grid grid-cols-[1fr_2fr_1fr]
          bg-black-400 md:bg-black ${isLight && isVibrant ? "text-black" : "text-white"}`}
     >
       <ProgressBar
