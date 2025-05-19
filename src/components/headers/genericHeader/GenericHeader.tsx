@@ -119,15 +119,21 @@ export default function GenericHeader({
             {releasedDate && <span className="font-light text-orange-300 md:hidden font-kanit">{releasedDate}</span>}
           </span>
 
-          <span className="flex flex-col gap-1 md:flex-row  md:items-center md:gap-2 font-kanit text-sm md:text-base ">
-            <Link href={`${`${isUser ? "/user" : "/artist"}`}/${authorId}`} className="flex items-center gap-2 ">
-              <span>
-                <Image src={isOfficial ? "/favIcon.svg" : avatar} className="size-7  md:size-10 rounded-full" />
-              </span>
-              <p className={`${isOfficial ? "" : "first-letter:uppercase"} md:font-semibold`}>
-                {isOfficial ? "zTunes" : author}
-              </p>
-            </Link>
+          <span className="flex flex-col gap-1 md:flex-row  md:items-center md:gap-2 font-kanit text-sm md:text-base">
+            {isOfficial ? (
+              <div className="flex items-center gap-2 ">
+                <Image src="/favIcon.svg" className="size-7  md:size-10 rounded-full" />
+                <p className="md:font-semibold">zTunes</p>
+              </div>
+            ) : (
+              <Link href={`${`${isUser ? "/user" : "/artist"}`}/${authorId}`} className="flex items-center gap-2">
+                <span>
+                  <Image src={avatar} className="size-7  md:size-10 rounded-full" />
+                </span>
+                <p className="first-letter:uppercase md:font-semibold">{author}</p>
+              </Link>
+            )}
+
             <span className="hidden md:block">• {releasedDate?.split("/")[2]} •</span>
             <div className="flex gap-1 text-opacity-70 text-white md:text-opacity-100">
               <span>{formatDuration(totalDuration)}</span>•<span>{tracks.length} songs</span>
