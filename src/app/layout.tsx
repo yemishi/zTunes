@@ -52,10 +52,11 @@ export default function RootLayout({
       className={`${poppins.variable} overflow-hidden  ${kanit.variable} ${playFair.variable} ${montserrat.variable}`}
     >
       <head>
+        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
         <link rel="shortcut icon" href="#" />
       </head>
       <Provider session={session}>
-        <body className={`w-full h-full text-white bg-black overflow-x-hidden md:p-2 ${nunito.className}`}>
+        <body className={`w-full h-full text-white bg-black overflow-x-hidden ${nunito.className}`}>
           <ToastContainer autoClose={3000} theme="dark" position="bottom-center" />
           <SkeletonTheme baseColor="#202020" highlightColor="#444">
             <div className="w-full h-screen">{children}</div>
