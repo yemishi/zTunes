@@ -44,7 +44,7 @@ export async function GET(req: NextRequest) {
         isPublic: playlist.isPublic,
         coverPhoto: playlist.coverPhoto,
         avatar: author?.profile?.avatar,
-        isOfficial: !!playlist.officialCategories,
+        isOfficial: !!playlist.officialCategories && playlist.officialCategories.length,
         releasedDate: dateFormat(playlist.createdAt),
         vibrantColor: playlist.vibrantColor,
         categories: playlist.officialCategories,
