@@ -52,7 +52,7 @@ export default function ToggleLike({ songId, className, onClick: extraFunction, 
     >
       {isLogin ? (
         <Link href={`/login?callbackUrl=${pathname}${searchParams.toString() ? "?" + searchParams.toString() : ""}`}>
-          <BiSolidLogInCircle className="size-10 hover:brightness-90 active:scale-90 active:brightness-125 transition-all cursor-pointer" />
+          <BiSolidLogInCircle className="size-8 hover:brightness-90 active:scale-90 active:brightness-125 transition-all cursor-pointer" />
         </Link>
       ) : (
         <FaHeart
