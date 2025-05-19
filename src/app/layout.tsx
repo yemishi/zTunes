@@ -52,7 +52,7 @@ export default function RootLayout({
       className={`${poppins.variable} overflow-hidden  ${kanit.variable} ${playFair.variable} ${montserrat.variable}`}
     >
       <head>
-        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+        <link rel="icon" href="/favIcon.svg" type="image/svg+xml" />
         <link rel="shortcut icon" href="#" />
       </head>
       <Provider session={session}>
