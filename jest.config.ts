@@ -9,5 +9,4 @@ const config: Config = {
   coverageProvider: "v8",
   testEnvironment: "jsdom",
 };
-
 export default createJestConfig(config);
