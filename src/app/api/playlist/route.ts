@@ -155,7 +155,7 @@ export async function PATCH(req: NextRequest) {
       data: {
         coverPhoto: coverPhoto || playlist.coverPhoto,
         isPublic: isPublic !== undefined ? isPublic : playlist.isPublic,
-        officialCategories: officialCategories || [],
+        officialCategories: officialCategories || playlist.officialCategories,
         songs,
         desc: desc || playlist.desc,
         title: title || playlist?.title,
