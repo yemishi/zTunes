@@ -106,7 +106,7 @@ export default function GenericHeader({
         />
 
         <div className="md:mt-auto flex flex-col w-full md:w-auto">
-          <span className="self-center text-center md:self-start max-w-56 md:max-w-full md:text-start md:pb-4 ">
+          <span className="self-center bg- text-center md:self-start max-w-56 md:max-w-full md:text-start md:pb-4 ">
             <InputText
               className="text-center md:text-left text-3xl md:text-5xl lg:text-6xl font-bold font-montserrat first-letter:uppercase"
               extraBody={extraBody}

@@ -69,7 +69,7 @@ export default function InputText({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
       }).then((res) => res.json());
-
+      console.log(response);
       if (response.error) {
         setHasError(true);
         setIsEditing(true);
@@ -97,7 +97,7 @@ export default function InputText({
           autoFocus
           rows={rows}
           maxLength={max}
-          className="bg-transparent w-fit overflow-hidden line-clamp-2 whitespace-pre-wrap outline-none resize-none text-center md:text-start"
+          className="w-full overflow-hidden line-clamp-2 whitespace-pre-wrap outline-none resize-none text-center md:text-start"
         />
       ) : (
         <span
