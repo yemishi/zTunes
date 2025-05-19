@@ -14,7 +14,6 @@ import getVibrantColor from "@/utils/getVibrantColor";
 import { useQueryClient } from "@tanstack/react-query";
 import { cleanClasses } from "@/utils/helpers";
 import { formatDuration } from "@/utils/formatting";
-
 export default function GenericHeader({
   info,
   playlistId,
@@ -35,11 +34,11 @@ export default function GenericHeader({
     releasedDate,
     isPublic,
     authorId,
+    isOfficial,
     categories,
     isUser,
     tracks,
   } = info;
-
   const { className, ...rest } = props;
   const [vibrant, setVibrant] = useState(vibrantColor);
 
@@ -73,7 +72,7 @@ export default function GenericHeader({
       }}
       className={cleanClasses(
         className,
-        "flex flex-col gap-2 h-full items-center w-full p-4 pt-0 pb-10 md:min-h-[350px] md:items-start"
+        "flex flex-col gap-2 md:rounded-t-xl h-full items-center w-full p-4 pt-0 pb-10 md:min-h-[350px] md:items-start"
       )}
     >
       <span
@@ -123,9 +122,11 @@ export default function GenericHeader({
           <span className="flex flex-col gap-1 md:flex-row  md:items-center md:gap-2 font-kanit text-sm md:text-base ">
             <Link href={`${`${isUser ? "/user" : "/artist"}`}/${authorId}`} className="flex items-center gap-2 ">
               <span>
-                <Image src={avatar} className="size-7 md:size-10 rounded-full" />
+                <Image src={isOfficial ? "/favIcon.svg" : avatar} className="size-7  md:size-10 rounded-full" />
               </span>
-              <p className="first-letter:uppercase md:font-semibold">{author}</p>
+              <p className={`${isOfficial ? "" : "first-letter:uppercase"} md:font-semibold`}>
+                {isOfficial ? "zTunes" : author}
+              </p>
             </Link>
             <span className="hidden md:block">• {releasedDate?.split("/")[2]} •</span>
             <div className="flex gap-1 text-opacity-70 text-white md:text-opacity-100">

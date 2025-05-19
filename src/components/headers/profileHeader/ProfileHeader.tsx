@@ -90,7 +90,7 @@ export default function ProfileHeader({
   );
 
   const containerClasses = clsx(
-    "w-full  relative md:flex flex-col items-center gap-3 md:items-start !bg-cover !bg-center p-4",
+    "w-full  relative md:flex flex-col items-center gap-3 md:items-start !bg-cover !bg-center p-4 md:rounded-t-xl",
     isArtist ? "md:min-h-[440px] lg:min-h-[480px]" : "md:min-h-[350px]"
   );
 
@@ -108,7 +108,7 @@ export default function ProfileHeader({
     >
       <PreviousPage isLightBg={vibrant?.isLight} />
 
-      <div className={`flex flex-col items-center mt-auto ${isArtist ? "" : "md:p-4 md:flex-row"}`}>
+      <div className={`flex flex-col items-center mt-auto  ${isArtist ? "" : "md:p-4 md:flex-row"}`}>
         <div className={isArtist ? "md:absolute md:w-full md:top-0 md:left-0 md:h-full" : "mt-auto"}>
           <EditableImage
             className={profileImgClass}
