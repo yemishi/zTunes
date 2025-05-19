@@ -90,11 +90,17 @@ export default function SongsGrid({
                 {album.name}
               </Link>
               <div onClick={(e) => e.stopPropagation()} className={`flex gap-2 justify-items-end items-center ml-auto`}>
-                {playlistId && <span className="mr-3 text-lg opacity-75">{dateFormat(createdAt)}</span>}
+                {playlistId && <span className="md:mr-3 md:text-lg max-md:text-orange-300">{dateFormat(createdAt)}</span>}
                 <ToggleLike className="hidden md:flex" songId={id} username={username} />
                 <span className="text-lg min-w-12 hidden md:flex">{getFormattedDuration(track.duration)}</span>
 
-                <SongOptions isOwner={isOwner} refetch={refetch} song={song} playlistId={playlistId} username={username} />
+                <SongOptions
+                  isOwner={isOwner}
+                  refetch={refetch}
+                  song={song}
+                  playlistId={playlistId}
+                  username={username}
+                />
               </div>
             </div>
           );
