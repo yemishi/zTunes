@@ -1,11 +1,12 @@
 "use client";
 
-import Button from "@/ui//buttons/Button";
 import Link from "next/link";
 import useScrollQuery from "@/hooks/useScrollQuery";
 import { PlaylistType } from "@/types/response";
 import { GoPlus } from "react-icons/go";
-import Image from "@/ui//custom/Image";
+import { Image, Button } from "@/ui";
+
+import purpleHeartImage from "../../../app/(main)/myLib/assets/purple_heart.jpg";
 
 import { ErrorWrapper, Modal, PlaylistForm } from "@/components";
 import { useState } from "react";
@@ -56,11 +57,7 @@ export default function UserLibPanel({ username = "" }: { username?: string }) {
           href="/myLib/likedSongs"
           className="flex gap-2 hover:bg-black-450 duration-150 rounded-lg p-2 items-center mt-4 active:bg-black"
         >
-          <Image
-            src="https://c4.wallpaperflare.com/wallpaper/617/416/921/heart-purple-plexus-wallpaper-preview.jpg"
-            alt="Liked songs cover photo"
-            className="size-12 rounded-md"
-          />
+          <Image src={purpleHeartImage as unknown as string} alt="Liked songs icon" className="size-12 rounded-md" />
           <div className="flex flex-col">
             <span className="line-clamp-1">Liked songs</span>
           </div>

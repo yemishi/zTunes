@@ -3,7 +3,7 @@ import { ManyPlaylistType } from "@/types/response";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import { Card, ErrorWrapper } from "@/components";
-
+import purpleHeartImage from "./assets/purple_heart.jpg";
 async function fetchData(username: string) {
   const playlistsData = await fetch(`${process.env.URL}/api/playlist?username=${username}&authorName=${username}`).then(
     (res) => res.json()
@@ -22,7 +22,7 @@ export default async function MyLib() {
     <div className="w-full flex flex-col gap-2">
       <div className="flex flex-wrap w-full gap-4 justify-center">
         <Card
-          coverPhoto="https://c4.wallpaperflare.com/wallpaper/617/416/921/heart-purple-plexus-wallpaper-preview.jpg"
+          coverPhoto={purpleHeartImage as unknown as string}
           title="Liked songs"
           url="/myLib/likedSongs"
           isOfficial={false}
