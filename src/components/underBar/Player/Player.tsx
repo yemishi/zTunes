@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Image from "@/ui/custom/Image";
 import PlayerDetails from "./playerDetails/PlayerDetails";
-import { UsePlayerType } from "../../../hooks/usePlayer";
+import { UsePlayerType } from "../../../hooks/usePlayer/usePlayer";
 import ProgressBar from "@/components/underBar/Player/progressBar/ProgressBar";
 import Link from "next/link";
 import ToggleLike from "@/ui/buttons/ToggleLike";

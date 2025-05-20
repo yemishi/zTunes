@@ -3,7 +3,6 @@
 import { SongType } from "@/types/response";
 
 import { RiAlbumLine } from "react-icons/ri";
-import { useRouter } from "next/navigation";
 import { MdPlaylistAdd } from "react-icons/md";
 import { CgPlayListRemove } from "react-icons/cg";
 import { toast } from "react-toastify";
@@ -13,7 +12,7 @@ import { GoPerson } from "react-icons/go";
 import Link from "next/link";
 import { HTMLAttributes, useEffect, useRef, useState } from "react";
 import { RxDotsVertical } from "react-icons/rx";
-import useLike from "@/hooks/useLike";
+import useLike from "@/hooks/useLike/useLike";
 import { AiOutlineLogin } from "react-icons/ai";
 import { LuHeart, LuHeartCrack } from "react-icons/lu";
 import AddToPlaylist from "./addSongToPlaylist/addToPlaylist";
@@ -137,10 +136,13 @@ export default function SongOptions({
 
   return (
     <div ref={optionsRef} className="relative">
-      <RxDotsVertical
+      <button
         onClick={() => setIsOptions(!isOptions)}
+        aria-label="Toggle"
         className={cleanClasses(iconClassName, "h-10 w-6 cursor-pointer")}
-      />
+      >
+        <RxDotsVertical />
+      </button>
 
       {isOptions && (
         <div

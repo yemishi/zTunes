@@ -5,7 +5,7 @@ import NavBarMobile from "./navBarMobile";
 import Player from "./Player/Player";
 import { IoIosPlay } from "react-icons/io";
 
-import usePlayer, { UsePlayerType } from "@/hooks/usePlayer";
+import usePlayer, { UsePlayerType } from "@/hooks/usePlayer/usePlayer";
 
 export default function UnderBar() {
   const player = usePlayer();

@@ -1,6 +1,6 @@
 "use client";
 
-import useLike from "@/hooks/useLike";
+import useLike from "@/hooks/useLike/useLike";
 import { cleanClasses } from "@/utils/helpers";
 import { FaHeart } from "react-icons/fa6";
 import { BiSolidLogInCircle } from "react-icons/bi";
