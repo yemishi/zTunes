@@ -7,7 +7,7 @@ import Input from "@/ui/inputs/Input";
 import Button from "@/ui/buttons/Button";
 import { useState } from "react";
 import CreateSong from "./createSong/CreateSong";
-import useScrollQuery from "@/hooks/useScrollQuery";
+import useScrollQuery from "@/hooks/useScrollQuery/useScrollQuery";
 import { Modal } from "@/components";
 
 export default function AlbumSongsGrid({ albumId, artistId, url }: { artistId: string; albumId: string; url: string }) {

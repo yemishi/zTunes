@@ -5,11 +5,8 @@ import { HTMLAttributes, useEffect, useState } from "react";
 import Image from "@/ui/custom/Image";
 import Link from "next/link";
 
-import PreviousPage from "@/ui/buttons/PreviousPage";
-import { InputText } from "@/ui";
-import EditableImage from "@/ui/custom/EditableImage";
+import { InputText, EditableImage, PreviousPage, ExpandableText } from "@/ui";
 import EditPlaylist from "./editPlaylist/EditPlaylist";
-import ExpandableText from "@/ui/custom/ExpandableText";
 import getVibrantColor from "@/utils/getVibrantColor";
 import { useQueryClient } from "@tanstack/react-query";
 import { cleanClasses } from "@/utils/helpers";
