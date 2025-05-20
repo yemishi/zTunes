@@ -6,7 +6,7 @@ import { ErrorType } from "@/types/response";
 import { FormEvent, useState } from "react";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
-import useForm from "@/hooks/useForm";
+import useForm from "@/hooks/useForm/useForm";
 
 interface Props {
   title: string;

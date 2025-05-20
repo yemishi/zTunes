@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Image from "@/ui/custom/Image";
 import { toast } from "react-toastify";
-import useScrollQuery from "@/hooks/useScrollQuery";
+import useScrollQuery from "@/hooks/useScrollQuery/useScrollQuery";
 import { PlaylistType } from "@/types/response";
 import ErrorWrapper from "../../errorWrapper/ErrorWrapper";
 import { PopConfirm } from "../..";

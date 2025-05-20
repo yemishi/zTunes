@@ -1,4 +1,4 @@
-import ResetPassForm from "@/components/form/ResetPassForm";
+import ResetPassForm from "./resetPassForm/ResetPassForm";
 import InvalidToken from "@/app/(auth)/invalidToken/invalidToken";
 import Jwt from "jsonwebtoken";
 

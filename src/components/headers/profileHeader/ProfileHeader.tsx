@@ -1,19 +1,14 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import Button from "@/ui/buttons/Button";
 import { useRouter } from "next/navigation";
 
 import clsx from "clsx";
-import PreviousPage from "@/ui/buttons/PreviousPage";
-import EditableImage from "@/ui/custom/EditableImage";
-import { InputText } from "@/ui";
+import { InputText, ExpandableText, EditableImage, PreviousPage } from "@/ui";
 
 import { useSession } from "next-auth/react";
 import { isAvailable, updateUser } from "@/utils/helpers";
 import { toast } from "react-toastify";
-import { FaHeart } from "react-icons/fa6";
-import ExpandableText from "@/ui/custom/ExpandableText";
 import getVibrantColor from "@/utils/getVibrantColor";
 import ToggleFollow from "./toggleFollow/ToggleFollow";
 
@@ -98,7 +93,7 @@ export default function ProfileHeader({
     "size-44 rounded-full",
     isArtist && "md:rounded-none md:w-full md:h-full md:brightness-75"
   );
-  console.log(vibrant?.isLight);
+
   return (
     <div
       style={{

@@ -6,7 +6,7 @@ import { FormEvent, useEffect, useState } from "react";
 
 import Button from "@/ui/buttons/Button";
 import Input from "@/ui/inputs/Input";
-import useForm from "@/hooks/useForm";
+import useForm from "@/hooks/useForm/useForm";
 import ProgressStep from "@/ui/custom/ProgressStep";
 
 export default function SignInForm({ resetPass }: { resetPass: () => void }) {

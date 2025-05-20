@@ -9,7 +9,7 @@ const SignUpSummary = lazy(() => import("./signUpSummary/SignUpSummary"));
 import { ErrorType } from "@/types/response";
 import Button from "@/ui/buttons/Button";
 import { isValidDate } from "@/utils/helpers";
-import useForm from "@/hooks/useForm";
+import useForm from "@/hooks/useForm/useForm";
 import DivAnimated from "@/ui/custom/DivAnimated";
 import Input from "@/ui/inputs/Input";
 import ProgressStep from "@/ui/custom/ProgressStep";

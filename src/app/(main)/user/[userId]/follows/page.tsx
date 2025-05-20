@@ -3,7 +3,7 @@ import { use } from "react";
 
 import ProfileCard from "@/components/card/ProfileCard";
 import PreviousPage from "@/ui/buttons/PreviousPage";
-import useScrollQuery from "@/hooks/useScrollQuery";
+import useScrollQuery from "@/hooks/useScrollQuery/useScrollQuery";
 import UserFollowsLoading from "./loading";
 
 export default function FollowsPage(props0: { params: Promise<{ userId: string }> }) {

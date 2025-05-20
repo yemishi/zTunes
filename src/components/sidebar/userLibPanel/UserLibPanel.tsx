@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import useScrollQuery from "@/hooks/useScrollQuery";
+import useScrollQuery from "@/hooks/useScrollQuery/useScrollQuery";
 import { PlaylistType } from "@/types/response";
 import { GoPlus } from "react-icons/go";
 import { Image, Button } from "@/ui";

@@ -1,12 +1,12 @@
 "use client";
 
 import Button from "@/ui/buttons/Button";
-import Input from "../../ui/inputs/Input";
+import Input from "../../../../ui/inputs/Input";
 import { ChangeEvent, useState } from "react";
 import { AnimatePresence } from "framer-motion";
 import DivAnimated from "@/ui/custom/DivAnimated";
 import Link from "next/link";
-import useForm from "@/hooks/useForm";
+import useForm from "@/hooks/useForm/useForm";
 
 export default function ResetPassForm({ userId }: { userId: string }) {
   const [response, setResponse] = useState<{

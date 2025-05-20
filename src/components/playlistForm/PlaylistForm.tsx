@@ -9,7 +9,7 @@ import uploadImage, { deleteImage } from "@/firebase/handleImage";
 import Input from "../../ui/inputs/Input";
 import InputFileImg from "../../ui/inputs/InputFileImg";
 import AddCategories from "../../ui/inputs/AddCategories";
-import useForm from "@/hooks/useForm";
+import useForm from "@/hooks/useForm/useForm";
 import ToggleCheck from "./toggleCheck/ToggleCheck";
 import { createPlaylist, updatePlaylist } from "./playlistFormActions";
 

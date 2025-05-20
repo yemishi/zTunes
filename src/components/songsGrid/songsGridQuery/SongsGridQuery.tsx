@@ -1,5 +1,5 @@
 "use client";
-import useScrollQuery from "@/hooks/useScrollQuery";
+import useScrollQuery from "@/hooks/useScrollQuery/useScrollQuery";
 import SongsOrganizer from "../SongsGrid";
 import { SongType } from "@/types/response";
 import SongSkeleton from "../../skeletons/SongSkeleton";

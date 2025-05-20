@@ -2,7 +2,7 @@
 import { use } from "react";
 import Card from "@/components/card/Card";
 import PreviousPage from "@/ui/buttons/PreviousPage";
-import useScrollQuery from "@/hooks/useScrollQuery";
+import useScrollQuery from "@/hooks/useScrollQuery/useScrollQuery";
 import { BundleType } from "@/types/response";
 import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";

@@ -3,7 +3,7 @@ import CardSearch from "../../../../app/(main)/search/components/cardSearch";
 import { SearchType } from "../../../../app/(main)/search/page";
 import ErrorWrapper from "@/components/errorWrapper/ErrorWrapper";
 import { Button } from "@/ui";
-import useScrollQuery from "@/hooks/useScrollQuery";
+import useScrollQuery from "@/hooks/useScrollQuery/useScrollQuery";
 import { useState } from "react";
 import { IoArrowBackCircleOutline } from "react-icons/io5";
 
