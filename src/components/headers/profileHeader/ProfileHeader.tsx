@@ -25,6 +25,7 @@ interface ProfileHeaderProps {
   username?: string;
   isArtist?: boolean;
   isInclude?: boolean;
+  disableFollow?: boolean;
   artistAbout?: string;
 }
 
@@ -35,6 +36,7 @@ export default function ProfileHeader({
   isInclude,
   profileInfo,
   followersLength,
+  disableFollow,
 }: ProfileHeaderProps) {
   const { update } = useSession();
   const { refresh } = useRouter();
@@ -42,20 +44,19 @@ export default function ProfileHeader({
 
   const [follows, setFollows] = useState(followersLength);
   const [vibrant, setVibrant] = useState(vibrantColor);
-  useEffect(() => {
-    if (!vibrantColor) {
-      const fetchVibrantColor = async () => {
-        const vibrantColor = await getVibrantColor(cover);
-        setVibrant(vibrantColor);
-        const body = {
-          userId: profileId,
-          vibrantColor,
-        };
 
-        await fetch(`/api/user`, { method: "PATCH", body: JSON.stringify(body) });
-      };
-      fetchVibrantColor();
-    }
+  const fetchVibrantColor = async (newImg?: string) => {
+    const vibrantColor = await getVibrantColor(newImg || cover);
+    setVibrant(vibrantColor);
+    const body = {
+      userId: profileId,
+      vibrantColor,
+    };
+
+    await fetch(`/api/user`, { method: "PATCH", body: JSON.stringify(body) });
+  };
+  useEffect(() => {
+    if (!vibrantColor) fetchVibrantColor();
   }, []);
 
   const isOwner = username === profileName;
@@ -108,6 +109,7 @@ export default function ProfileHeader({
           <EditableImage
             className={profileImgClass}
             updateSession={!isArtist}
+            updateVibrantColor={fetchVibrantColor}
             uploadUrl={isArtist ? "/api/artist" : `/api/user`}
             extraBody={{ userId: profileId }}
             fieldUpload={isArtist ? "cover" : "avatar"}
@@ -129,21 +131,23 @@ export default function ProfileHeader({
             onblur={(currValue: string) => onchange(currValue)}
           />
 
-          <div className="flex flex-col gap-1 items-center md:flex-row">
-            {!isOwner && (
-              <ToggleFollow
-                artistId={profileId}
-                handleFollows={(isFollowing: boolean) => {
-                  setFollows((old) => (isFollowing ? old + 1 : old - 1));
-                }}
-                username={username}
-                initialValue={isInclude}
-              />
-            )}
-            <span className="font-montserrat text-orange-300 md:font-semibold md:text-white md:text-lg lg:text-xl">
-              {follows > 0 ? `${follows} ${follows > 1 ? "Follows" : "Follow"}` : "Be the first to follow"}
-            </span>
-          </div>
+          {!disableFollow && (
+            <div className="flex flex-col gap-1 items-center md:flex-row">
+              {!isOwner && (
+                <ToggleFollow
+                  artistId={profileId}
+                  handleFollows={(isFollowing: boolean) => {
+                    setFollows((old) => (isFollowing ? old + 1 : old - 1));
+                  }}
+                  username={username}
+                  initialValue={isInclude}
+                />
+              )}
+              <span className="font-montserrat text-orange-300 md:font-semibold md:text-white md:text-lg lg:text-xl">
+                {follows > 0 ? `${follows} ${follows > 1 ? "Follows" : "Follow"}` : "Be the first to follow"}
+              </span>
+            </div>
+          )}
           {artistAbout && <ExpandableText className="hidden md:flex z-0">{artistAbout}</ExpandableText>}
         </div>
       </div>
