@@ -102,7 +102,7 @@ export default function ProfileHeader({
       }}
       className={containerClasses}
     >
-      <PreviousPage isLightBg={vibrant?.isLight} />
+      <PreviousPage className={`md:z-10 ${isArtist ? "md:text-white" : ""}`} isLightBg={vibrant?.isLight} />
 
       <div className={`flex flex-col items-center mt-auto  ${isArtist ? "" : "md:p-4 md:flex-row"}`}>
         <div className={isArtist ? "md:absolute md:w-full md:top-0 md:left-0 md:h-full" : "mt-auto"}>
@@ -132,7 +132,7 @@ export default function ProfileHeader({
           />
 
           {!disableFollow && (
-            <div className="flex flex-col gap-1 items-center md:flex-row">
+            <div className="flex flex-col-reverse gap-1 items-center md:flex-row-reverse">
               {!isOwner && (
                 <ToggleFollow
                   artistId={profileId}
