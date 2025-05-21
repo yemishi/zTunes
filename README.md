@@ -71,7 +71,7 @@ function Component({ img }: { img: string }) {
 }
 ```
 
-Demo
+Demo powered by [GenericHeader](https://github.com/yemishi/zTunes/blob/main/src/components/headers/genericHeader/GenericHeader.tsx)
 
 ![Vibrant Color extract Demo](public/getVibrantColorDemo.gif)
 
