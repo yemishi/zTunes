@@ -1,5 +1,4 @@
 "use client";
-type RGB = { r: number; g: number; b: number };
 
 const rgbToHex = (r: number, g: number, b: number): string => {
   return (
