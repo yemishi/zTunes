@@ -89,7 +89,8 @@ export default function PlayerDetails({
               <span className="font-medium text-center">{album.name}</span>
             </div>
             <SongOptions
-              iconClassName="rotate-90 w-8 ml-auto "
+              iconClassName="rotate-90 w-8"
+              containerClass="ml-auto"
               song={song}
               username={username}
               vibrantColor={vibrantColor}
