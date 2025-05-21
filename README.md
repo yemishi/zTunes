@@ -64,7 +64,7 @@ function Component({ img }: { img: string }) {
         color: vibrant?.isLight ? "#000" : "#fff",
       }}
     >
-      <img src={img} alt="a peak image" style={{ maxWidth: "100%", borderRadius: "4px" }} />
+      <img src={img} alt="a peak image" style={{ borderRadius: "4px" }} />
       <p>This color theme is dynamically based on the image above!</p>
     </div>
   );
