@@ -5,11 +5,11 @@ import { HTMLAttributes, useState } from "react";
 interface ImgProps extends HTMLAttributes<HTMLImageElement> {
   src: string;
   alt?: string;
-  className?: string;
   priority?: boolean;
 }
 
-export default function Image({ priority, className = "", src, alt, ...props }: ImgProps) {
+export default function Image({ priority, src, alt, ...props }: ImgProps) {
+  const { className = "", ...rest } = props;
   const [isLoading, setIsLoading] = useState(true);
   const generateAltText = (imageUrl: string): string => {
     const decoded = decodeURIComponent(imageUrl);
@@ -22,7 +22,7 @@ export default function Image({ priority, className = "", src, alt, ...props }: 
 
   return (
     <NextImage
-      {...props}
+      {...rest}
       src={src}
       alt={alt || generateAltText(src)}
       priority={priority}
