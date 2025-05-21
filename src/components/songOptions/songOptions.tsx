@@ -24,6 +24,7 @@ interface DivProps extends HTMLAttributes<HTMLDivElement> {
   username?: string;
   vibrantColor?: { color: string; isLight: boolean };
   iconClassName?: string;
+  containerClass?: string;
   isOwner?: boolean;
 }
 
@@ -34,6 +35,7 @@ export default function SongOptions({
   username,
   vibrantColor,
   isOwner,
+  containerClass = "",
   iconClassName = "",
   ...props
 }: DivProps) {
@@ -135,13 +137,13 @@ export default function SongOptions({
     : {};
 
   return (
-    <div ref={optionsRef} className="relative">
+    <div ref={optionsRef} className={`relative ${containerClass}`}>
       <button
         onClick={() => setIsOptions(!isOptions)}
         aria-label="Toggle"
         className={cleanClasses(iconClassName, "h-10 w-6 cursor-pointer")}
       >
-        <RxDotsVertical />
+        <RxDotsVertical className="size-full" />
       </button>
 
       {isOptions && (
