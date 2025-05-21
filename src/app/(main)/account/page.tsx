@@ -42,8 +42,10 @@ export default async function Dashboard() {
     <div className="flex flex-col gap-4 relative">
       <ProfileHeader
         followersLength={0}
+        disableFollow
         profileInfo={{ cover: avatar, profileId: id, profileName: name, vibrantColor }}
         username={name}
+        
       />
 
       <div className="flex flex-col max-w-7xl">
