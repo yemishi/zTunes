@@ -6,14 +6,13 @@ export async function GET(req: NextRequest) {
   const q = req.nextUrl.searchParams.get("q") as string;
   const username = req.nextUrl.searchParams.get("username") as string;
   const getHistory = req.nextUrl.searchParams.get("getHistory") as string;
-  const onlySongs = req.nextUrl.searchParams.get("onlySongs") as string
-  const playlistId = req.nextUrl.searchParams.get("playlistId") as string
-  const take = Number(req.nextUrl.searchParams.get("take")) || 5
-  const page = Number(req.nextUrl.searchParams.get("page")) || 0
+  const onlySongs = req.nextUrl.searchParams.get("onlySongs") as string;
+  const playlistId = req.nextUrl.searchParams.get("playlistId") as string;
+  const take = Number(req.nextUrl.searchParams.get("take")) || 5;
+  const page = Number(req.nextUrl.searchParams.get("page")) || 0;
   try {
     const user = username ? await db.user.findFirst({ where: { username } }) : null;
     if (getHistory) {
-
       const searchHistory = await db.searchHistory.findFirst({
         where: { userId: user?.id },
       });
@@ -26,14 +25,15 @@ export async function GET(req: NextRequest) {
           where: { name: { contains: q, mode: "insensitive" } },
         }),
         db.songs.findMany({
-          where: { name: { contains: q, mode: "insensitive" } }, ...paginate(page, take)
+          where: { name: { contains: q, mode: "insensitive" } },
+          ...paginate(page, take),
         }),
-        playlistId ? db.playlist.findFirst({ where: { id: playlistId } }) : null
-      ])
+        playlistId ? db.playlist.findFirst({ where: { id: playlistId } }) : null,
+      ]);
       const songsMapped = songs.map((song) => {
         const inPlaylist = playlist?.songs.find(({ songId }) => {
-          return songId === song.id
-        })
+          return songId === song.id;
+        });
         return {
           title: song.name,
           songData: { ...song, songSelected: inPlaylist && inPlaylist },
@@ -43,8 +43,7 @@ export async function GET(req: NextRequest) {
           desc: `Music • ${song.albumName}`,
         };
       });
-      return NextResponse.json({ songs: songsMapped, hasMore: count > take * (page + 1) })
-
+      return NextResponse.json({ songs: songsMapped, hasMore: count > take * (page + 1) });
     }
     const [users, songs, playlistsData, albums] = await Promise.all([
       db.user.findMany({
@@ -52,12 +51,14 @@ export async function GET(req: NextRequest) {
       }),
       db.songs.findMany({
         where: { name: { contains: q, mode: "insensitive" } },
+        include: { album: { select: { vibrantColor: true } } },
       }),
       db.playlist.findMany({
         where: { title: { contains: q, mode: "insensitive" } },
       }),
       db.album.findMany({
-        where: { title: { contains: q, mode: "insensitive" } }, include: { artist: { select: { username: true } } }
+        where: { title: { contains: q, mode: "insensitive" } },
+        include: { artist: { select: { username: true } } },
       }),
     ]);
 
@@ -94,21 +95,16 @@ export async function GET(req: NextRequest) {
     const songsMapped = songs.map((song) => {
       return {
         title: song.name,
-        songData: song,
+        songData: { ...song, album: { name: song.name, id: song.albumId, vibrantColor: song.album.vibrantColor } },
         coverPhoto: song.coverPhoto,
         refId: song.albumId,
         type: "Album",
         desc: `Music • ${song.albumName}`,
       };
     });
-    return NextResponse.json([
-      ...playlistMapped,
-      ...usersMapped,
-      ...albumsMapped,
-      ...songsMapped,
-    ]);
+    return NextResponse.json([...playlistMapped, ...usersMapped, ...albumsMapped, ...songsMapped]);
   } catch (error) {
-    console.log(error)
+    console.log(error);
     return NextResponse.json({
       error: true,
       message: "We had a problem trying to get the search info",
@@ -118,11 +114,9 @@ export async function GET(req: NextRequest) {
 
 export async function PATCH(req: NextRequest) {
   try {
-    const { username, action, refId, type, coverPhoto, title, desc } =
-      await req.json();
+    const { username, action, refId, type, coverPhoto, title, desc } = await req.json();
     const user = await db.user.findFirst({ where: { username } });
-    if (!user)
-      return NextResponse.json({ error: true, message: "User not found" });
+    if (!user) return NextResponse.json({ error: true, message: "User not found" });
 
     const searchHistory = await db.searchHistory.findFirst({
       where: { userId: user.id },
@@ -144,9 +138,7 @@ export async function PATCH(req: NextRequest) {
     }
 
     if (action === "remove") {
-      const newHistoric = searchHistory.historic.filter(
-        (res) => res.refId !== refId
-      );
+      const newHistoric = searchHistory.historic.filter((res) => res.refId !== refId);
       await db.searchHistory.update({
         where: { id: searchHistory.id },
         data: {

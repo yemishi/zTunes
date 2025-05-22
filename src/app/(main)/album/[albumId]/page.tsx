@@ -5,7 +5,9 @@ import { getServerSession } from "next-auth";
 import { notFound } from "next/navigation";
 
 async function fetchData(albumId: string) {
-  const albumInfo = await fetch(`${process.env.URL}/api/album?albumId=${albumId}`).then((res) => res.json());
+  const albumInfo = await fetch(`${process.env.URL}/api/album?albumId=${albumId}`, {
+    next: { revalidate: 7200, tags: ["album", albumId] },
+  }).then((res) => res.json());
 
   if (albumInfo.error) {
     if (albumInfo.status === 404) return notFound();
@@ -43,7 +45,7 @@ export default async function Album(props: { params: Promise<{ albumId: string }
       <SongsGridQuery
         username={session?.user.name}
         asOl
-        queryKey={["Songs", id]}
+        queryKey={["albumsSongs", id]}
         url={`/api/song?albumId=${albumId}`}
       />
     </div>

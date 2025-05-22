@@ -35,7 +35,7 @@ describe("Card component", () => {
 
   it("links to the correct URL", () => {
     render(<Card {...defaultProps} />);
-    const link = screen.getAllByRole("link")[0]; // first Link is for the card URL
+    const link = screen.getAllByRole("link")[0];
     expect(link).toHaveAttribute("href", defaultProps.url);
   });
 });

@@ -12,19 +12,23 @@ import { ExpandableText, Button } from "@/ui";
 import ArtistAlbums from "./ArtistAlbums";
 
 const artistData = async (artistId: string, username: string) => {
-  const artist = await fetch(`${process.env.URL}/api/artist?id=${artistId}`).then((res) => res.json());
+  const artist = await fetch(`${process.env.URL}/api/artist?id=${artistId}`, {
+    next: { revalidate: 7200, tags: ["artist", artistId] },
+  }).then((res) => res.json());
 
   if (artist.error) return notFound();
   const followers = await getFollowers(username, artistId);
   return [artist, followers];
 };
 const getSongs = async (artistId: string) =>
-  await fetch(`${process.env.URL}/api/song?artistId=${artistId}&take=5`).then((res) => res.json());
+  await fetch(`${process.env.URL}/api/song?artistId=${artistId}&take=5`, {
+    next: { revalidate: 7200, tags: ["artistSongs", artistId] },
+  }).then((res) => res.json());
 
 const getFollowers = async (username: string, artistId: string) => {
-  const data = await fetch(`${process.env.URL}/api/followers?artistId=${artistId}&username=${username}`).then((res) =>
-    res.json()
-  );
+  const data = await fetch(`${process.env.URL}/api/followers?artistId=${artistId}&username=${username}`, {
+    next: { revalidate: 7200, tags: ["artistFollowers", artistId] },
+  }).then((res) => res.json());
   return data;
 };
 

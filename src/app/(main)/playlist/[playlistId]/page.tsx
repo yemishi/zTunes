@@ -8,9 +8,9 @@ import { getServerSession } from "next-auth";
 import { notFound } from "next/navigation";
 
 async function getData(playlistId: string, username: string) {
-  const response = await fetch(`${process.env.URL}/api/playlist?playlistId=${playlistId}&username=${username}`).then(
-    (res) => res.json()
-  );
+  const response = await fetch(`${process.env.URL}/api/playlist?playlistId=${playlistId}&username=${username}`, {
+    next: { revalidate: 7200, tags: ["playlist", playlistId] },
+  }).then((res) => res.json());
   if (response.error) {
     if (response.status === 404) return notFound();
     throw new Error(response.message);

@@ -55,10 +55,10 @@ describe("SongOptions", () => {
 
   it("opens and closes the options menu", () => {
     render(withQueryClient(<SongOptions {...baseProps} />));
-    fireEvent.click(screen.getByRole('button', { name: /toggle/i }));
+    fireEvent.click(screen.getByRole("button", { name: /toggle/i }));
     expect(screen.getByText(/See Artist/i)).toBeInTheDocument();
 
-    fireEvent.click(screen.getByRole('button', { name: /toggle/i }));
+    fireEvent.click(screen.getByRole("button", { name: /toggle/i }));
     expect(screen.queryByText(/See Artist/i)).not.toBeInTheDocument();
   });
 });

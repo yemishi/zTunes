@@ -1,13 +1,14 @@
 "use client";
 
-import { Image } from "@/ui";
-
-import { SearchType } from "../page";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { usePlayerContext } from "@/context/Provider";
-import { FaCheck, FaPlus } from "react-icons/fa";
+import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
+import { FaCheck, FaPlus } from "react-icons/fa";
+import { IoRemoveCircle } from "react-icons/io5";
+
+import { Image } from "@/ui";
+import { usePlayerContext } from "@/context/Provider";
+import { SearchType } from "../page";
 
 type UrlValues = "album" | "artist" | "user" | "playlist";
 
@@ -26,98 +27,86 @@ export default function CardSearch({
   playlistId?: string;
   isHistoric?: true;
 }) {
-  const { refId, type, title, coverPhoto, desc: descData, songData } = data;
+  const router = useRouter();
   const { turnOnPlayer } = usePlayerContext();
-  const desc = descData || type;
-  const baseUrl = {
-    album: "/album",
-    artist: "/artist",
-    user: "/user",
-    playlist: "/playlist",
-  };
-  const goTo = baseUrl[type.toLowerCase() as UrlValues]
-    ? `${baseUrl[type.toLowerCase() as UrlValues]}/${refId}`
-    : "/search";
-
-  const { refresh, push } = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  const [songSelected, setSongSelected] = useState<{ createAt: string; songId: string } | null>(
-    data.songData?.songSelected || null
-  );
+  const [songSelected, setSongSelected] = useState(data.songData?.songSelected ?? null);
 
-  const handleHistoric = async (action?: string) => {
+  const { refId, type, title, coverPhoto, desc: descData, songData } = data;
+
+  const desc = descData || type;
+  const goTo = `/${type.toLowerCase()}/${refId}` as const;
+
+  const loading = isLoading || loadingProp;
+  const loadingClass = loading ? "grayscale animate-pulse pointer-events-none" : "";
+
+  const handleHistoric = async (action?: "remove") => {
     if (!username) return;
-    setIsLoading(true);
-    const { songData, ...rest } = data;
-    await fetch(`/api/search`, {
-      method: "PATCH",
-      body: JSON.stringify({
-        ...rest,
-        username,
-        action,
-      }),
-    });
-    setIsLoading(false);
+    try {
+      setIsLoading(true);
+      const { songData, ...rest } = data;
+      await fetch("/api/search", {
+        method: "PATCH",
+        body: JSON.stringify({ ...rest, username, action }),
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const removeFromHistory = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    if (!username) return;
-    setIsLoading(true);
+  const handleClick = () => {
+    console.log(data);
+    handleHistoric();
+
+    if (songData) {
+      turnOnPlayer([songData], 0);
+    } else {
+      router.push(goTo);
+    }
+  };
+
+  const handleRemoveFromHistory = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
     await handleHistoric("remove");
-    return refresh(), setIsLoading(false);
+    router.refresh();
   };
 
   const toggleInPlaylist = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
-    if (!songData || !playlistId) return;
+    if (!playlistId || !songData) return;
+
     setIsLoading(true);
+    const payload = {
+      id: playlistId,
+      ...(songSelected ? { songSelected, toRemove: true } : { songSelected: songData.id }),
+    };
 
-    if (songSelected) {
-      const data = await fetch(`/api/playlist`, {
-        method: "PATCH",
-        body: JSON.stringify({ id: playlistId, songSelected, toRemove: true }),
-      }).then((res) => res.json());
-      setIsLoading(false);
-      if (data.error) return toast.error(data.message);
-      refresh();
-      if (refetch) refetch();
-      return setSongSelected(null);
-    }
-
-    const data = await fetch(`/api/playlist`, {
+    const res = await fetch("/api/playlist", {
       method: "PATCH",
-      body: JSON.stringify({ id: playlistId, songSelected: songData.id }),
-    }).then((res) => res.json());
+      body: JSON.stringify(payload),
+    });
+
+    const result = await res.json();
     setIsLoading(false);
-    refresh();
-    if (refetch) refetch();
-    if (data.error) return toast.error(data.message);
-    setSongSelected(data.newSong);
-    refresh();
-    if (refetch) refetch();
+
+    if (result.error) {
+      return toast.error(result.message);
+    }
+
+    setSongSelected(songSelected ? null : result.newSong);
+    router.refresh();
+    refetch?.();
   };
 
-  const loadingClass = isLoading || loadingProp ? "grayscale animate-pulse pointer-events-none" : "";
-  const handleOnClick = () => {
-    handleHistoric();
-    if (songData) {
-      turnOnPlayer([songData], 0);
-      return;
-    }
-    push(goTo);
-  };
   return (
     <div
-      onClick={handleOnClick}
-      className={`w-full flex gap-3 p-2 py-1 duration-150 hover:bg-black-500 active:bg-black items-center cursor-pointer ${loadingClass}`}
+      onClick={handleClick}
+      className={`w-full flex gap-3 p-2 py-1 hover:bg-black-500 active:bg-black items-center cursor-pointer ${loadingClass}`}
     >
       <span className="size-12 md:size-16">
         <Image
           src={coverPhoto}
-          className={`h-full w-full ${
-            desc.toLowerCase() === "user" || desc.toLowerCase() === "artist" ? "rounded-full" : "rounded-lg"
-          }`}
+          className={`h-full w-full ${["user", "artist"].includes(desc.toLowerCase()) ? "rounded-full" : "rounded-lg"}`}
         />
       </span>
 
@@ -126,7 +115,7 @@ export default function CardSearch({
         <button
           onClick={(e) => {
             e.stopPropagation();
-            push(goTo);
+            router.push(goTo);
             handleHistoric();
           }}
           className="text-white text-opacity-65 text-sm md:text-base w-max hover:text-opacity-100 active:text-orange-500"
@@ -134,6 +123,7 @@ export default function CardSearch({
           {desc}
         </button>
       </div>
+
       {playlistId && (
         <button
           onClick={toggleInPlaylist}
@@ -141,15 +131,18 @@ export default function CardSearch({
             songSelected
               ? "text-green-400 border-green-400"
               : "active:text-orange-500 active:border-orange-500 hover:opacity-100"
-          }
-       size-7 md:size-8 ml-auto mr-3 border-2 opacity-75 rounded-full flex items-center justify-center cursor-pointer`}
+          } size-7 md:size-8 ml-auto mr-3 border-2 opacity-75 rounded-full flex items-center justify-center`}
         >
           {songSelected ? <FaCheck /> : <FaPlus />}
         </button>
       )}
+
       {isHistoric && (
-        <button onClick={removeFromHistory} className="ml-auto self-center font-kanit text-xl md:text-2xl">
-          X
+        <button
+          onClick={handleRemoveFromHistory}
+          className="ml-auto rounded-lg self-center font-kanit text-xl md:text-2xl cursor-pointer hover:brightness-90 active:brightness-110"
+        >
+          <IoRemoveCircle className="size-10" />
         </button>
       )}
     </div>

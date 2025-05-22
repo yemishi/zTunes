@@ -6,7 +6,9 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 
 async function fetchData(artistId: string) {
-  const res = await fetch(`${process.env.URL}/api/album?artistId=${artistId}`);
+  const res = await fetch(`${process.env.URL}/api/album?artistId=${artistId}`, {
+    next: { revalidate: 7200, tags: ["artistDiscography", artistId] },
+  });
 
   const albums = await res.json();
 

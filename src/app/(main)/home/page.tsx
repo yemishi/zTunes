@@ -1,18 +1,24 @@
+"use server";
+
 import { authOptions } from "@/lib/auth";
 import { getServerSession } from "next-auth";
 import { ErrorWrapper, ProfileGrid, BundleGrid } from "@/components";
 
 const getPlaylists = async (username: string): Promise<any> => {
-  const playlists = await fetch(`${process.env.URL}/api/playlist/recommended?username=${username}`).then((res) =>
-    res.json()
-  );
+  const playlists = await fetch(`${process.env.URL}/api/playlist/recommended?username=${username}`, {
+    next: { revalidate: 7200, tags: ["recommendedPlaylists", username || "anonymous"] },
+  }).then((res) => res.json());
   return playlists;
 };
 
 const getAlbums = async () =>
-  await fetch(`${process.env.URL}/api/album?take=10`, { next: { revalidate: 3600 } }).then((res) => res.json());
+  await fetch(`${process.env.URL}/api/album?take=10`, { next: { revalidate: 7200, tags: ["highlightAlbums"] } }).then(
+    (res) => res.json()
+  );
 const getArtists = async () =>
-  await fetch(`${process.env.URL}/api/artist?take=10`, { next: { revalidate: 3600 } }).then((res) => res.json());
+  await fetch(`${process.env.URL}/api/artist?take=10`, { next: { revalidate: 7200, tags: ["highlightArtists"] } }).then(
+    (res) => res.json()
+  );
 
 export default async function Home() {
   const session = await getServerSession(authOptions);
@@ -21,7 +27,6 @@ export default async function Home() {
     getArtists(),
     getPlaylists(session?.user?.name as string),
   ]);
-
   return (
     <div className="w-full h-full flex flex-col">
       <ErrorWrapper error={albums.error} message={albums.message} className="ml-4 mt-4 self-center md:self-start">
