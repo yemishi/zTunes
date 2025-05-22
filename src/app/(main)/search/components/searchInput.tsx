@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { PreviousPage } from "@/ui";
+import { IoIosRemove } from "react-icons/io";
 
 export default function SearchInput() {
   const { push } = useRouter();
@@ -22,18 +23,19 @@ export default function SearchInput() {
       </span>
       <input
         autoFocus
-        className="w-full p-2 bg-transparent outline-none md:text-lg "
+        className="w-full p-2 bg-transparent outline-none md:text-lg md:rounded-lg"
         value={search}
         onChange={onChange}
       />
-      <span
+
+      <button
         onClick={() => {
           setSearch(""), push("/search");
         }}
-        className="font-montserrat text-2xl mx-4 cursor-pointer"
+        className="ml-auto rounded-lg self-center font-kanit text-xl md:text-2xl cursor-pointer hover:brightness-90 active:brightness-110"
       >
-        X
-      </span>
+        <IoIosRemove className="size-10" />
+      </button>
     </div>
   );
 }
