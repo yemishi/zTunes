@@ -14,9 +14,12 @@ A music interactive website that allows users to control music playback, create 
 
 - Nextjs 15
 - NextAuth
-- MongoDb
 - Typescript
-- Jest (for unit tests)
+- Context api
+- Firebase
+- Prisma
+- MongoDb
+- Jest 
 
 ## Screenshots
 
@@ -25,12 +28,9 @@ Mobile
 <div style="display:flex;flex-wrap: wrap;gap:2px">
   <img src="public/screenshots/mobile/artistPage.png" alt="Artist Page Mobile" width="300" />
   <img src="public/screenshots/mobile/expandedSongView.png" alt="Song View" width="300" />
-  <img src="public/screenshots/mobile/albumPage.png" alt="Album Page Mobile" width="300" />
 </div>
 
 Desktop
-
-![Artist Page Desktop](public/screenshots/desktop/artistPage.png)
 
 ![Album Page Desktop](public/screenshots/desktop/albumPage.png)
 
