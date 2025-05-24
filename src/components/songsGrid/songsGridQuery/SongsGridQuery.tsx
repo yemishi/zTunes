@@ -1,6 +1,6 @@
 "use client";
 import useScrollQuery from "@/hooks/useScrollQuery/useScrollQuery";
-import SongsOrganizer from "../SongsGrid";
+import SongsGrid from "../SongsGrid";
 import { SongType } from "@/types/response";
 import SongSkeleton from "../../skeletons/SongSkeleton";
 import AddSongToPlaylist from "@/components/songsGrid/songsGridQuery/addSongToPlaylist/AddSongToPlaylist";
@@ -61,7 +61,7 @@ export default function SongsGridQuery({
         </Button>
       )}
 
-      <SongsOrganizer
+      <SongsGrid
         asOl={asOl}
         songs={songs}
         refetch={refetch}
