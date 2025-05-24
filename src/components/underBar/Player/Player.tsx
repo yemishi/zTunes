@@ -11,6 +11,7 @@ import VolumeInput from "@/components/underBar/Player/progressBar/volumeHandler/
 import SongOptions from "@/components/songOptions/songOptions";
 import { IoMdWater } from "react-icons/io";
 import { useSession } from "next-auth/react";
+import PlayerControls from "@/hooks/usePlayer/playControls/PlayControls";
 
 export default function Player({ player }: { player: UsePlayerType }) {
   const [showDetails, setShowDetails] = useState(false);
@@ -19,13 +20,14 @@ export default function Player({ player }: { player: UsePlayerType }) {
   const {
     currentTime,
     handleProgress,
+    queueLength,
     handleVolume,
     togglePlayer,
+    currIndex,
     previous,
     isPlaying,
     audioRef,
     onend,
-    PlayerControls,
     song,
     volume,
     next,
@@ -71,7 +73,14 @@ export default function Player({ player }: { player: UsePlayerType }) {
       </div>
 
       <span onClick={(e) => e.stopPropagation()}>
-        <PlayerControls />
+        <PlayerControls
+          next={next}
+          currIndex={currIndex}
+          previous={previous}
+          isPlaying={isPlaying}
+          togglePlayer={togglePlayer}
+          queueLength={queueLength}
+        />
       </span>
 
       <div className="hidden md:flex justify-center gap-3 font-kanit">
