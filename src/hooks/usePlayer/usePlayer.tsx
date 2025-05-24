@@ -17,14 +17,22 @@ export default function usePlayer() {
   const [isPlaying, setIsPlaying] = useState(true);
   const [volume, setVolume] = useState(1);
 
-  const togglePlayer = (justPlay?: "play" | React.MouseEvent<any, MouseEvent>) => {
-    if (audioRef.current?.paused) {
-      audioRef.current.play(), setIsPlaying(true);
+  const togglePlayer = async (justPlay?: "play" | React.MouseEvent<any, MouseEvent>) => {
+    if (!audioRef.current) return;
+
+    if (audioRef.current.paused || justPlay === "play") {
+      try {
+        await audioRef.current.play();
+        setIsPlaying(true);
+      } catch (err) {
+        console.warn("Playback failed:", err);
+        setIsPlaying(false);
+      }
     } else {
-      justPlay !== "play" && (audioRef.current?.pause(), setIsPlaying(false));
+      audioRef.current.pause();
+      setIsPlaying(false);
     }
   };
-
   useEffect(() => {
     const handleTimeUpdate = () => {
       if (!audioRef.current) return;
@@ -41,7 +49,23 @@ export default function usePlayer() {
   }, [currSong]);
 
   useEffect(() => {
-    togglePlayer("play");
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    const handleCanPlay = () => {
+      audio.play().catch((err) => {
+        if (err.name !== "AbortError") {
+          console.error("Audio play error:", err);
+        }
+      });
+      setIsPlaying(true);
+    };
+
+    audio.addEventListener("canplaythrough", handleCanPlay);
+
+    return () => {
+      audio.removeEventListener("canplaythrough", handleCanPlay);
+    };
   }, [currSong, player]);
 
   const onend = async () => {
@@ -63,7 +87,7 @@ export default function usePlayer() {
   };
 
   const next = () => {
-    if (!Number.isInteger(currSong) || !player) return;
+    if (!Number.isInteger(currSong) || !!!player) return;
     (currSong as number) + 1 > player.length - 1
       ? setCurrSong(player.length - 1)
       : setCurrSong((currSong as number) + 1);
@@ -85,39 +109,19 @@ export default function usePlayer() {
     }
   };
 
-  const PlayerControls = () => {
-    const CurrIcon = isPlaying ? IoIosPause : IoIosPlay;
-    return (
-      <div className="flex items-center gap-3 md:gap-3 p-2">
-        <IoPlaySkipBackSharp
-          onClick={previous}
-          className={`size-4 md:size-6 ${Number(currSong) - 1 >= 0 ? "cursor-pointer" : "opacity-50"}`}
-        />
-
-        <CurrIcon onClick={togglePlayer} className="size-8 md:size-10 cursor-pointer" />
-
-        <IoPlaySkipForward
-          onClick={next}
-          className={`size-4 md:size-6 ${
-            player && Number(currSong) + 1 <= player.length - 1 ? "cursor-pointer" : "opacity-50"
-          }`}
-        />
-      </div>
-    );
-  };
-
   return {
     handleProgress,
     handleVolume,
     currentTime,
     togglePlayer,
-    PlayerControls,
     isPlaying,
     previous,
     audioRef,
     volume,
     onend,
     next,
+    currIndex: currSong,
+    queueLength: player?.length,
     song: player && Number.isInteger(currSong) ? player[currSong as number] : null,
   };
 }
@@ -126,10 +130,11 @@ export interface UsePlayerType {
   handleProgress: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleVolume: (e: React.ChangeEvent<HTMLInputElement>) => void;
   currentTime: number;
+  currIndex: number;
   togglePlayer: (justPlay?: "play" | React.MouseEvent<any, MouseEvent>) => void;
-  PlayerControls: () => JSX.Element;
   isPlaying: boolean;
   previous: () => void;
+  queueLength: number;
   audioRef: RefObject<HTMLAudioElement>;
   volume: number;
   onend: () => Promise<void>;
