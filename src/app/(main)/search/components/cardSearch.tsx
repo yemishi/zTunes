@@ -10,8 +10,6 @@ import { Image } from "@/ui";
 import { usePlayerContext } from "@/context/Provider";
 import { SearchType } from "../page";
 
-type UrlValues = "album" | "artist" | "user" | "playlist";
-
 export default function CardSearch({
   data,
   username,
