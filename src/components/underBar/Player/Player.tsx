@@ -67,7 +67,7 @@ export default function Player({ player }: { player: UsePlayerType }) {
       <div className="flex gap-2 font-kanit items-center md:hidden">
         <Image src={coverPhoto} className="size-10 rounded" />
         <div className="flex flex-col">
-          <span>{title}</span>
+          <span className="line-clamp-1">{title}</span>
           <span className="first-letter:uppercase text-sm">{artistName}</span>
         </div>
       </div>
@@ -93,7 +93,7 @@ export default function Player({ player }: { player: UsePlayerType }) {
           <Link href={`/artist/${artistId}`} className="first-letter:uppercase">
             {artistName}
           </Link>
-          <span className="">{title}</span>
+          <span className="line-clamp-1">{title}</span>
         </div>
         <ToggleLike className="ml-4" songId={songId} username={username} />
       </div>
