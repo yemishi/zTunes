@@ -29,7 +29,13 @@ export default async function Playlist(props: { params: Promise<{ playlistId: st
 
   return (
     <div className="flex relative flex-col">
-      <GenericHeader username={user?.name} info={info} vibrantColor={info?.vibrantColor} playlistId={playlistId} />
+      <GenericHeader
+        dataTags={["playlist", playlistId]}
+        username={user?.name}
+        info={info}
+        vibrantColor={info?.vibrantColor}
+        playlistId={playlistId}
+      />
       <SongsGridQuery
         playlistId={playlistId}
         queryKey={["SongsPlaylist", playlistId]}

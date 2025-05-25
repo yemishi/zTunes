@@ -12,7 +12,9 @@ async function fetchData(albumId: string, artistName: string) {
   const albumInfo: BundleType & {
     vibrantColor: { color: string; isLight: boolean };
     tracks: { url: string; duration: number }[];
-  } = await fetch(`${process.env.URL}/api/album?albumId=${albumId}`).then((res) => res.json());
+  } = await fetch(`${process.env.URL}/api/album?albumId=${albumId}`, {
+    next: { revalidate: 7200, tags: ["album", albumId] },
+  }).then((res) => res.json());
 
   if (albumInfo.error || albumInfo.artistName !== artistName) {
     if (albumInfo.status === 404 || albumInfo.artistName !== artistName) return notFound();
@@ -35,6 +37,7 @@ export default async function ArtistPage(props: { params: Promise<{ albumId: str
   return (
     <div className="flex flex-col relative">
       <GenericHeader
+        dataTags={["album", albumId]}
         vibrantColor={vibrantColor}
         info={{
           avatar,

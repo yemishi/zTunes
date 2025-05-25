@@ -48,6 +48,7 @@ export default async function Artist(props: { params: Promise<{ artistId: string
       <ProfileHeader
         username={username}
         followersLength={followers.length}
+        dataTags={["artist", artistId]}
         isInclude={followers.isInclude}
         artistAbout={artist.summary}
         profileInfo={{

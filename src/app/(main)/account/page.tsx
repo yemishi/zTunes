@@ -13,7 +13,7 @@ import { ErrorWrapper } from "@/components";
 
 async function fetchData(username: string) {
   const data = await fetch(`${process.env.URL}/api/user?username=${username}&artistToo=true`, {
-    cache: "no-store",
+    next: { revalidate: 7200, tags: ["userInfo", username] },
   }).then((res) => res.json());
   if (data.error) {
     if (data.status === 404) return notFound();
@@ -41,11 +41,11 @@ export default async function Dashboard() {
   return (
     <div className="flex flex-col gap-4 relative">
       <ProfileHeader
+        dataTags={["userInfo", username]}
         followersLength={0}
         disableFollow
         profileInfo={{ cover: avatar, profileId: id, profileName: name, vibrantColor }}
         username={name}
-        
       />
 
       <div className="flex flex-col max-w-7xl">

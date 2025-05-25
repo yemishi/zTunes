@@ -29,6 +29,7 @@ export default async function Album(props: { params: Promise<{ albumId: string }
     <div className="flex flex-col">
       <GenericHeader
         vibrantColor={vibrantColor}
+        dataTags={["album", albumId]}
         updateUrl={`/api/album?albumId=${albumId}`}
         info={{
           isOwner: false,
