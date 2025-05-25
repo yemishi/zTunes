@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { PreviousPage } from "@/ui";
-import { IoIosRemove } from "react-icons/io";
+import { TiDelete } from "react-icons/ti";
 
 export default function SearchInput() {
   const { push } = useRouter();
@@ -34,7 +34,7 @@ export default function SearchInput() {
         }}
         className="ml-auto rounded-lg self-center font-kanit text-xl md:text-2xl cursor-pointer hover:brightness-90 active:brightness-110"
       >
-        <IoIosRemove className="size-10" />
+        <TiDelete className="size-10" />
       </button>
     </div>
   );
