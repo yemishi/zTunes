@@ -22,6 +22,7 @@ type ProfileInfo = {
 interface ProfileHeaderProps {
   profileInfo: ProfileInfo;
   followersLength: number;
+  dataTags: string[];
   username?: string;
   isArtist?: boolean;
   isInclude?: boolean;
@@ -37,6 +38,7 @@ export default function ProfileHeader({
   profileInfo,
   followersLength,
   disableFollow,
+  dataTags,
 }: ProfileHeaderProps) {
   const { update } = useSession();
   const { refresh } = useRouter();
@@ -45,6 +47,12 @@ export default function ProfileHeader({
   const [follows, setFollows] = useState(followersLength);
   const [vibrant, setVibrant] = useState(vibrantColor);
 
+  const revalidateData = async () => {
+    await fetch("/api/revalidate", {
+      method: "POST",
+      body: JSON.stringify({ tag: dataTags }),
+    });
+  };
   const fetchVibrantColor = async (newImg?: string) => {
     const vibrantColor = await getVibrantColor(newImg || cover);
     setVibrant(vibrantColor);
@@ -53,7 +61,10 @@ export default function ProfileHeader({
       vibrantColor,
     };
 
-    await fetch(`/api/user`, { method: "PATCH", body: JSON.stringify(body) });
+    const response = await fetch(`/api/user`, { method: "PATCH", body: JSON.stringify(body) }).then((res) =>
+      res.json()
+    );
+    if (!response.error) await revalidateData();
   };
   useEffect(() => {
     if (!vibrantColor) fetchVibrantColor();

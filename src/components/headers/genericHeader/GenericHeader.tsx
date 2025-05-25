@@ -18,6 +18,8 @@ export default function GenericHeader({
   username,
   extraBody = { id: playlistId },
   onUpdateText,
+  popoverTarget,
+  dataTags,
   vibrantColor,
   ...props
 }: DivProps) {
@@ -46,6 +48,12 @@ export default function GenericHeader({
       queryKey: ["User playlists", username],
     });
   };
+  const revalidateData = async () => {
+    await fetch("/api/revalidate", {
+      method: "POST",
+      body: JSON.stringify({ tag: dataTags }),
+    });
+  };
   const updateVibrantColor = async (img: string) => {
     const vibrantColor = await getVibrantColor(img);
     setVibrant(vibrantColor);
@@ -53,8 +61,8 @@ export default function GenericHeader({
       ...extraBody,
       vibrantColor,
     };
-
-    await fetch(updateUrl, { method: "PATCH", body: JSON.stringify(body) });
+    const response = await fetch(updateUrl, { method: "PATCH", body: JSON.stringify(body) }).then((res) => res.json());
+    if (!response.error) await revalidateData();
   };
   useEffect(() => {
     if (!vibrant) updateVibrantColor(coverPhoto);
@@ -149,7 +157,7 @@ interface DivProps extends HTMLAttributes<HTMLDivElement> {
   vibrantColor: { color: string; isLight: boolean };
   username?: string;
   playlistId?: string;
-
+  dataTags: string[];
   updateUrl?: string;
   onUpdateText?: () => void;
   extraBody?: {};
