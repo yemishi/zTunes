@@ -11,7 +11,8 @@ export default function SearchInput() {
     const value = e.target.value.replace(/\s+/g, " ");
     setSearch(value);
     if (!value) {
-      console.log(value), push("/search");
+      push("/search");
+      return;
     }
     push(`/search?q=${value}`);
   };
@@ -32,9 +33,10 @@ export default function SearchInput() {
         onClick={() => {
           setSearch(""), push("/search");
         }}
-        className="ml-auto rounded-lg self-center font-kanit text-xl md:text-2xl cursor-pointer hover:brightness-90 active:brightness-110"
+        className={`${search ? "opacity-100" : "opacity-0 pointer-events-none"} transition-all  ml-auto rounded-lg self-center font-kanit text-xl md:text-2xl cursor-pointer
+         hover:brightness-90 active:brightness-110 `}
       >
-        <TiDelete className="size-10" />
+        <TiDelete className="size-9" />
       </button>
     </div>
   );
