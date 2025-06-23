@@ -8,6 +8,7 @@ import { SkeletonTheme } from "react-loading-skeleton";
 
 import "react-toastify/dist/ReactToastify.css";
 import "react-loading-skeleton/dist/skeleton.css";
+import Analytics from "@/analytics/Analytics";
 
 const nunito = Nunito({ subsets: ["latin"] });
 const poppins = Poppins({
@@ -62,6 +63,7 @@ export default function RootLayout({
             <div className="w-full h-screen">{children}</div>
             <div className="w-full" id="modal" />
           </SkeletonTheme>
+          <Analytics />
         </body>
       </Provider>
     </html>
