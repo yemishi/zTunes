@@ -18,6 +18,20 @@ const Modal = ({ children, onClose, ...props }: Props) => {
       document.body.style.overflow = "";
     };
   }, []);
+  useEffect(() => {
+    window.history.pushState({ modal: true }, "");
+
+    const handlePopState = (e: PopStateEvent) => {
+      onClose();
+    };
+
+    window.addEventListener("popstate", handlePopState);
+
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, []);
+
   const handleBackdropClick = (e: MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
     if (e.target === e.currentTarget) onClose();
@@ -25,7 +39,7 @@ const Modal = ({ children, onClose, ...props }: Props) => {
 
   if (!modalRoot) return <div className="bg-red-500">Modal not found.</div>;
   return createPortal(
-    <div className="flex w-screen h-screen bg-black/60 z-50 top-0 left-0 fixed" onClick={handleBackdropClick}>
+    <div className="flex w-screen h-screen backdrop- bg-black/60 z-50 top-0 left-0 fixed" onClick={handleBackdropClick}>
       <div {...rest} className={className}>
         {children}
       </div>
